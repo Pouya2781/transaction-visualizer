@@ -36,10 +36,11 @@
         </svg>
     </div>
     <div class="nav">
-        <ul nz-menu nzTheme="dark" nzMode="horizontal">
-            <li nz-menu-item>nav 1</li>
-            <li nz-menu-item>nav 2</li>
-            <li nz-menu-item>nav 3</li>
-        </ul>
+        <nz-input-group [nzSuffix]="suffixIconSearch">
+            <input type="text" nz-input placeholder="account id search" />
+        </nz-input-group>
+        <ng-template #suffixIconSearch>
+            <span nz-icon nzType="search"></span>
+        </ng-template>
     </div>
 </div>
