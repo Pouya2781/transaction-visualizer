@@ -17,12 +17,25 @@ import {HeaderComponent} from './header/header.component';
 import {NzInputModule} from 'ng-zorro-antd/input';
 import {SwitchComponent} from './header/switch/switch.component';
 import {NzSwitchModule} from 'ng-zorro-antd/switch';
-import { SearchboxComponent } from './header/searchbox/searchbox.component';
+import {SearchboxComponent} from './header/searchbox/searchbox.component';
+import {BankAccountComponent} from './graph/node/bank-account/bank-account.component';
+import {NzDividerModule} from 'ng-zorro-antd/divider';
+import {NzIconModule} from 'ng-zorro-antd/icon';
+import {NzBadgeModule} from 'ng-zorro-antd/badge';
+import { TranscationComponent } from './graph/edge/transcation/transcation.component';
 
 registerLocaleData(en);
 
 @NgModule({
-    declarations: [AppComponent, MainComponent, HeaderComponent, SwitchComponent, SearchboxComponent],
+    declarations: [
+        AppComponent,
+        MainComponent,
+        HeaderComponent,
+        SwitchComponent,
+        SearchboxComponent,
+        BankAccountComponent,
+        TranscationComponent,
+    ],
     imports: [
         BrowserModule,
         FormsModule,
@@ -33,6 +46,9 @@ registerLocaleData(en);
         NzMenuModule,
         NzInputModule,
         NzSwitchModule,
+        NzBadgeModule,
+        NzIconModule,
+        NzDividerModule,
     ],
     providers: [{provide: NZ_I18N, useValue: en_US}],
     bootstrap: [AppComponent],

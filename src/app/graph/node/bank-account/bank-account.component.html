@@ -1,0 +1,81 @@
+<div class="all-wrapper" #dynamicNodeView>
+    <div class="tiny" *ngIf="nodeState == NodeState.TINY; else normalNodeRef">{{ accountID }}</div>
+    <ng-template #normalNodeRef>
+        <nz-badge [nzCount]="transactionCount" [nzOverflowCount]="100">
+            <div class="full-wrapper" [style.border-inline-start-color]="getBorderColor()">
+                <div class="wrapper">
+                    <span
+                        (click)="showDetail()"
+                        title="اطلاعات بیشتر"
+                        class="more-info"
+                        nz-icon
+                        nzType="question-circle"
+                        nzTheme="outline"
+                    ></span>
+                    <ng-container [ngSwitch]="accountType">
+                        <span
+                            title="حساب جاری"
+                            *ngSwitchCase="AccountType.CURRENT"
+                            nz-icon
+                            nzType="wallet"
+                            nzTheme="outline"
+                        ></span>
+                        <span
+                            title="حساب سپرده"
+                            *ngSwitchCase="AccountType.DEPOSIT"
+                            nz-icon
+                            nzType="bank"
+                            nzTheme="outline"
+                        ></span>
+                        <span
+                            title="حساب پس انداز"
+                            *ngSwitchCase="AccountType.SAVINGS"
+                            nz-icon
+                            nzType="dollar"
+                            nzTheme="outline"
+                        ></span>
+                    </ng-container>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <div class="info">
+                        <div>
+                            نام: <span>{{ ownerName + ' ' + ownerFamilyName }}</span>
+                        </div>
+                        <!--            <nz-divider></nz-divider>-->
+                        <div>
+                            شعبه: <span>{{ branchName }}</span>
+                        </div>
+                        <!--            <nz-divider></nz-divider>-->
+                        <div>
+                            شماره حساب: <span>{{ accountID }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="detail" [class.expand]="nodeState == NodeState.EXPANDED">
+                    <nz-divider></nz-divider>
+                    <div>
+                        <span>:آدرس شعبه</span>
+                        <span [title]="branchAddress">{{ branchAddress }}</span>
+                    </div>
+                    <!--            <nz-divider></nz-divider>-->
+                    <div>
+                        <span>:تلفن شعبه</span>
+                        <span class="line-height" [title]="branchTelephone">{{ branchTelephone }}</span>
+                    </div>
+                    <!--            <nz-divider></nz-divider>-->
+                    <div>
+                        <span>:شماره شبا</span>
+                        <span class="line-height" [title]="sheba">{{ sheba }}</span>
+                    </div>
+                    <div>
+                        <span>:نوع حساب</span>
+                        <span [title]="accountType">{{ accountType }}</span>
+                    </div>
+                    <div>
+                        <span>:شماره کارت</span>
+                        <span class="line-height" [title]="cardID">{{ cardID }}</span>
+                    </div>
+                </div>
+            </div>
+        </nz-badge>
+    </ng-template>
+</div>

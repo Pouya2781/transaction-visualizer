@@ -1,0 +1,34 @@
+<div class="wrapper" (click)="clicked()" #wrapper>
+    <div class="amount">
+        <span class="icon" nz-icon nzType="dollar" nzTheme="outline" #targetIcon></span>
+        <span class="label" #targetLabel>:مبلغ</span>
+        <span class="line-height value" #targetElement>{{ Number(amount).toLocaleString() }}</span>
+    </div>
+    <div class="more-info">
+        <div>
+            <span nz-icon nzType="environment" nzTheme="outline"></span>
+            <span>:مبدا</span>
+            <span class="line-height value">{{ sourceAccount }}</span>
+        </div>
+        <div>
+            <span nz-icon nzType="flag" nzTheme="outline"></span>
+            <span>:مقصد</span>
+            <span class="line-height value">{{ destinationAccount }}</span>
+        </div>
+        <div>
+            <span nz-icon nzType="calendar" nzTheme="outline"></span>
+            <span>:تاریخ</span>
+            <span class="line-height value">{{ date.toLocaleDateString() }}</span>
+        </div>
+        <div>
+            <span nz-icon nzType="transaction" nzTheme="outline"></span>
+            <span>:شناسه تراکنش</span>
+            <span class="line-height value">{{ transactionID }}</span>
+        </div>
+        <div>
+            <span nz-icon nzType="swap" nzTheme="outline"></span>
+            <span>:نوع تراکنش</span>
+            <span class="value">{{ transactionType }}</span>
+        </div>
+    </div>
+</div>
