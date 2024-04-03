@@ -75,10 +75,13 @@ export class MainComponent implements AfterViewInit {
                 name: 'manhattan',
                 args: {
                     side: 'right',
+                    padding: {
+                        left: 50,
+                    },
                 },
             },
             connector: {
-                name: 'jumpover',
+                name: 'rounded',
                 args: {
                     type: 'arc',
                     size: 5,
