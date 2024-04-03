@@ -5,6 +5,8 @@ import {register} from '@antv/x6-angular-shape';
 import {AccountType} from '../enums/account-type';
 import {TransactionType} from '../enums/transaction-type';
 import {TranscationComponent} from '../graph/edge/transcation/transcation.component';
+import {ApiService} from '../services/api.service';
+import {log} from 'ng-zorro-antd/core/logger';
 
 @Component({
     selector: 'app-main',
