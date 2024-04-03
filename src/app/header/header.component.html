@@ -36,11 +36,7 @@
         </svg>
     </div>
     <div class="nav">
-        <nz-input-group [nzSuffix]="suffixIconSearch">
-            <input type="text" nz-input placeholder="account id search" />
-        </nz-input-group>
-        <ng-template #suffixIconSearch>
-            <span nz-icon nzType="search"></span>
-        </ng-template>
+        <app-switch (change)="console.log($event)"></app-switch>
+        <app-searchbox (search)="console.log($event)"></app-searchbox>
     </div>
 </div>

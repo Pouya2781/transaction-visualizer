@@ -15,11 +15,14 @@ import {NzMenuModule} from 'ng-zorro-antd/menu';
 import {MainComponent} from './main/main.component';
 import {HeaderComponent} from './header/header.component';
 import {NzInputModule} from 'ng-zorro-antd/input';
+import {SwitchComponent} from './header/switch/switch.component';
+import {NzSwitchModule} from 'ng-zorro-antd/switch';
+import { SearchboxComponent } from './header/searchbox/searchbox.component';
 
 registerLocaleData(en);
 
 @NgModule({
-    declarations: [AppComponent, MainComponent, HeaderComponent],
+    declarations: [AppComponent, MainComponent, HeaderComponent, SwitchComponent, SearchboxComponent],
     imports: [
         BrowserModule,
         FormsModule,
@@ -29,6 +32,7 @@ registerLocaleData(en);
         NzLayoutModule,
         NzMenuModule,
         NzInputModule,
+        NzSwitchModule,
     ],
     providers: [{provide: NZ_I18N, useValue: en_US}],
     bootstrap: [AppComponent],
