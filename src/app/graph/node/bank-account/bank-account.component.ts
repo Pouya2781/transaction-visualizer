@@ -65,11 +65,19 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
     }
 
     onSelect() {
-        this.selectionIndex = 1;
+        this.selectionIndex = this.bankGraphService.requestSelection(this);
+        this.changeDetector.detectChanges();
     }
 
     onDeselect() {
+        this.bankGraphService.requestDeselection(this);
         this.selectionIndex = -1;
+        this.changeDetector.detectChanges();
+    }
+
+    updateSelectionIndex(selectionIndex: number) {
+        this.selectionIndex = selectionIndex;
+        this.changeDetector.detectChanges();
     }
 
     onExpand(depth: number) {

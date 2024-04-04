@@ -6,6 +6,7 @@ import {GraphService} from './graph.service';
 import {BankGraphNode} from '../models/bank-graph-node';
 import {ApiService} from './api.service';
 import {BehaviorSubject, Observable, ReplaySubject} from 'rxjs';
+import {BankAccountComponent} from '../graph/node/bank-account/bank-account.component';
 
 @Injectable({
     providedIn: 'root',
@@ -14,6 +15,7 @@ export class BankGraphService {
     private bankGraphNodes: Map<number, BankGraphNode>;
     private bankGraphEdges: Map<number, BankGraphEdge>;
     public liteMode: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private selectedComponents: BankAccountComponent[] = [];
 
     constructor(
         private readonly graphService: GraphService,
@@ -25,6 +27,23 @@ export class BankGraphService {
 
     public setLightMode(value: boolean) {
         this.liteMode.next(value);
+    }
+
+    public requestSelection(component: BankAccountComponent) {
+        if (this.selectedComponents.length == 2) return -1;
+        if (this.selectedComponents.length == 1) {
+            this.selectedComponents.push(component);
+            return 1;
+        }
+        this.selectedComponents.push(component);
+        return 0;
+    }
+
+    public requestDeselection(component: BankAccountComponent) {
+        const selectionIndex = this.selectedComponents.indexOf(component);
+        this.selectedComponents.splice(selectionIndex, 1);
+        if (selectionIndex == 0 && this.selectedComponents.length == 1)
+            this.selectedComponents[0].updateSelectionIndex(selectionIndex);
     }
 
     public addAccountById(accountId: number): Observable<boolean> {
