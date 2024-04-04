@@ -13,6 +13,7 @@ export class TransactionComponent {
     @Input() public date!: string;
     @Input() public transactionId!: string;
     @Input() public type!: TransactionType;
+    visible: boolean = false;
 
     @ViewChild('targetElement') targetElement!: ElementRef;
     @ViewChild('targetIcon') targetIcon!: ElementRef;

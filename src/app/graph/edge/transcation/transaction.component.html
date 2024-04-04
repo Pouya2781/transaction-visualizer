@@ -1,4 +1,4 @@
-<div class="wrapper" (click)="clicked()" #wrapper>
+<div class="wrapper" (click)="clicked()" #wrapper *ngIf="visible">
     <div class="amount">
         <span class="icon" nz-icon nzType="dollar" nzTheme="outline" #targetIcon></span>
         <span class="label" #targetLabel>:مبلغ</span>
