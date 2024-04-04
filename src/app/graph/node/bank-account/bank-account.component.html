@@ -3,6 +3,9 @@
         class="tiny"
         [class.selected0]="selectionIndex == 0"
         [class.selected1]="selectionIndex == 1"
+        [class.current]="accountType == AccountType.CURRENT"
+        [class.deposit]="accountType == AccountType.DEPOSIT"
+        [class.saving]="accountType == AccountType.SAVINGS"
         *ngIf="nodeState == NodeState.TINY; else normalNodeRef"
     >
         {{ accountId }}
