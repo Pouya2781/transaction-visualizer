@@ -4,6 +4,7 @@ import {BankAccount} from '../models/bank-account';
 import {BankGraphEdge} from '../models/bank-graph-edge';
 import {GraphService} from './graph.service';
 import {BankGraphNode} from '../models/bank-graph-node';
+import {ApiService} from './api.service';
 
 @Injectable({
     providedIn: 'root',
@@ -12,9 +13,21 @@ export class BankGraphService {
     private bankGraphNodes: Map<number, BankGraphNode>;
     private bankGraphEdges: Map<number, BankGraphEdge>;
 
-    constructor(private readonly graphService: GraphService) {
+    constructor(
+        private readonly graphService: GraphService,
+        private apiService: ApiService
+    ) {
         this.bankGraphNodes = new Map<number, BankGraphNode>();
         this.bankGraphEdges = new Map<number, BankGraphEdge>();
+    }
+
+    public addAccountById(accountId: number): Promise<boolean> {
+        return new Promise<boolean>((resolve) => {
+            this.apiService.getAccount(accountId).subscribe((bankAccount: BankAccount) => {
+                this.addAccount(bankAccount);
+                resolve(true);
+            });
+        });
     }
 
     public addAccount(bankAccount: BankAccount) {
@@ -115,6 +128,21 @@ export class BankGraphService {
 
             this.graphService.removeEdge(bankGraphEdge.transactionEdge.id);
             this.bankGraphEdges.delete(bankGraphEdge.transaction.transactionId);
+        }
+    }
+
+    public expandAccount(accountId: number) {
+        const bankGraphNode = this.bankGraphNodes.get(accountId);
+        console.log(bankGraphNode);
+        if (bankGraphNode) {
+            this.apiService.getOutgoingTransaction(accountId).subscribe((transactions) => {
+                transactions.forEach((transaction) => {
+                    this.apiService.getAccount(transaction.destinationAccountId).subscribe((bankAccount) => {
+                        this.addAccount(bankAccount);
+                        this.addTransaction(transaction);
+                    });
+                });
+            });
         }
     }
 }

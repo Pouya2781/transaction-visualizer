@@ -18,17 +18,19 @@ export class HeaderComponent {
         private apiService: ApiService,
         private bankGraphService: BankGraphService
     ) {}
-    onSearch(value: string) {
-        this.apiService.getAccount(6534454617).subscribe((bankAccount: BankAccount) => {
-            this.bankGraphService.addAccount(bankAccount);
-        });
-        this.apiService.getAccount(6039548046).subscribe((bankAccount: BankAccount) => {
-            this.bankGraphService.addAccount(bankAccount);
-        });
-        this.apiService.getOutgoingTransaction(6534454617).subscribe((transactions: Transaction[]) => {
-            console.log(transactions[0]);
-            this.bankGraphService.addTransaction(transactions[0]);
-        });
+    async onSearch(value: string) {
+        await this.bankGraphService.addAccountById(6039548046);
+        this.bankGraphService.expandAccount(6039548046);
+        // this.apiService.getAccount(6534454617).subscribe((bankAccount: BankAccount) => {
+        //     this.bankGraphService.addAccount(bankAccount);
+        // });
+        // this.apiService.getAccount(6039548046).subscribe((bankAccount: BankAccount) => {
+        //     this.bankGraphService.addAccount(bankAccount);
+        // });
+        // this.apiService.getOutgoingTransaction(6534454617).subscribe((transactions: Transaction[]) => {
+        //     console.log(transactions[0]);
+        //     this.bankGraphService.addTransaction(transactions[0]);
+        // });
         // this.apiService.getAccount(value).subscribe((bankAccount: BankAccount) => {
         //     console.log(bankAccount);
         //     this.bankGraphService.addAccount(bankAccount);
