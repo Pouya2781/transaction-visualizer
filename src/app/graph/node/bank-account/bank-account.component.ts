@@ -21,8 +21,8 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
     @Input() public branchTelephone!: string;
     @Input() public accountType!: AccountType;
     @Input() public sheba!: string;
-    @Input() public cardID!: string;
-    @Input() public accountID!: string;
+    @Input() public cardId!: string;
+    @Input() public accountId!: string;
     protected readonly AccountType = AccountType;
     protected readonly NodeState = NodeState;
 
@@ -34,7 +34,6 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
     ) {}
 
     ngAfterViewInit() {
-        this.graphService.interConnectNode(this);
         this.graphService.setUpDynamicResize(this);
     }
 

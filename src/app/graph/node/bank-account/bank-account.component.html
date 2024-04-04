@@ -1,5 +1,5 @@
 <div class="all-wrapper" #dynamicNodeView>
-    <div class="tiny" *ngIf="nodeState == NodeState.TINY; else normalNodeRef">{{ accountID }}</div>
+    <div class="tiny" *ngIf="nodeState == NodeState.TINY; else normalNodeRef">{{ accountId }}</div>
     <ng-template #normalNodeRef>
         <nz-badge [nzCount]="transactionCount" [nzOverflowCount]="100">
             <div class="full-wrapper" [style.border-inline-start-color]="getBorderColor()">
@@ -46,7 +46,7 @@
                         </div>
                         <!--            <nz-divider></nz-divider>-->
                         <div>
-                            شماره حساب: <span>{{ accountID }}</span>
+                            شماره حساب: <span>{{ accountId }}</span>
                         </div>
                     </div>
                 </div>
@@ -72,7 +72,7 @@
                     </div>
                     <div>
                         <span>:شماره کارت</span>
-                        <span class="line-height" [title]="cardID">{{ cardID }}</span>
+                        <span class="line-height" [title]="cardId">{{ cardId }}</span>
                     </div>
                 </div>
             </div>

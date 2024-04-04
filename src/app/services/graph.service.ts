@@ -14,8 +14,11 @@ export class GraphService {
 
     private graph!: Graph;
     private nodeMap: Map<string, Node> = new Map<string, Node>();
-    private nodeComponentMap: Map<string, InterconnectedNode> = new Map<string, InterconnectedNode>();
     private nodeDynamicViewMap: Map<Element, string> = new Map<Element, string>();
+    private nodeDynamicViewReverseMap: Map<string, DynamicNodeViewComponentRef> = new Map<
+        string,
+        DynamicNodeViewComponentRef
+    >();
     private edgeLabelMap: Map<string, ComponentType<any>> = new Map<string, ComponentType<any>>();
     private edgeMap: Map<string, CustomEdge> = new Map<string, CustomEdge>();
     private resizeObserver: ResizeObserver;
@@ -69,10 +72,6 @@ export class GraphService {
         });
 
         this.renderer = renderer;
-    }
-
-    public interConnectNode(component: InterconnectedNode) {
-        this.nodeComponentMap.set(component.nodeId, component);
     }
 
     public setUpDynamicResize(component: DynamicNodeViewComponentRef) {
@@ -142,5 +141,22 @@ export class GraphService {
             this.initializationResolver(null);
         };
         return customEdge;
+    }
+
+    public removeEdge(id: string) {
+        const edge = this.graph.removeEdge(id);
+        if (!!edge) this.edgeMap.delete(edge.id);
+        return edge;
+    }
+
+    public removeNode(id: string) {
+        const node = this.graph.removeNode(id);
+        if (!!node) {
+            this.resizeObserver.unobserve(this.nodeDynamicViewReverseMap.get(node.id)?.dynamicNodeView.nativeElement);
+            this.nodeMap.delete(node.id);
+            this.nodeDynamicViewMap.delete(this.nodeDynamicViewReverseMap.get(node.id)?.dynamicNodeView.nativeElement);
+            this.nodeDynamicViewReverseMap.delete(node.id);
+        }
+        return node;
     }
 }

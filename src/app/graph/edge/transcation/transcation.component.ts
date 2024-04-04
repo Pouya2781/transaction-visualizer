@@ -11,7 +11,7 @@ export class TranscationComponent {
     @Input() public destinationAccount!: string;
     @Input() public amount!: number;
     @Input() public date!: Date;
-    @Input() public transactionID!: string;
+    @Input() public transactionId!: string;
     @Input() public transactionType!: TransactionType;
 
     @ViewChild('targetElement') targetElement!: ElementRef;
