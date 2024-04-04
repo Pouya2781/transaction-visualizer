@@ -1,5 +1,6 @@
 import {ChangeDetectorRef, Component, ElementRef, Input, Renderer2, ViewChild} from '@angular/core';
 import {TransactionType} from '../../../enums/transaction-type';
+import {BankGraphService} from '../../../services/bank-graph.service';
 
 @Component({
     selector: 'app-transcation',
@@ -25,8 +26,13 @@ export class TransactionComponent {
 
     constructor(
         private changeDetector: ChangeDetectorRef,
-        private renderer: Renderer2
-    ) {}
+        private renderer: Renderer2,
+        private bankGraphService: BankGraphService
+    ) {
+        this.bankGraphService.liteMode.subscribe((value) => {
+            this.visible = !value;
+        });
+    }
 
     clicked() {
         this.expanded = !this.expanded;

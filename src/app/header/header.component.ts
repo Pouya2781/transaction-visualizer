@@ -47,4 +47,8 @@ export class HeaderComponent {
         //     // });
         // });
     }
+
+    onLiteMode(value: boolean) {
+        this.bankGraphService.setLightMode(value);
+    }
 }

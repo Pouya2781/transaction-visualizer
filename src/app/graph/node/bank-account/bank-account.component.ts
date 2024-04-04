@@ -37,7 +37,12 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
         private readonly changeDetector: ChangeDetectorRef,
         private nzContextMenuService: NzContextMenuService,
         private bankGraphService: BankGraphService
-    ) {}
+    ) {
+        this.bankGraphService.liteMode.subscribe((value) => {
+            if (value) this.nodeState = NodeState.TINY;
+            else this.nodeState = NodeState.NORMAL;
+        });
+    }
 
     ngAfterViewInit() {
         this.graphService.setUpDynamicResize(this);

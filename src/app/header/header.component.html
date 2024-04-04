@@ -36,7 +36,7 @@
         </svg>
     </div>
     <div class="nav">
-        <app-switch (change)="console.log($event)"></app-switch>
+        <app-switch (change)="onLiteMode($event)" [defaultValue]="false"></app-switch>
         <app-searchbox (search)="onSearch($event)"></app-searchbox>
     </div>
 </div>

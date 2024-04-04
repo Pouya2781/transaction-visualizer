@@ -5,7 +5,7 @@ import {BankGraphEdge} from '../models/bank-graph-edge';
 import {GraphService} from './graph.service';
 import {BankGraphNode} from '../models/bank-graph-node';
 import {ApiService} from './api.service';
-import {Observable, ReplaySubject} from 'rxjs';
+import {BehaviorSubject, Observable, ReplaySubject} from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -13,6 +13,7 @@ import {Observable, ReplaySubject} from 'rxjs';
 export class BankGraphService {
     private bankGraphNodes: Map<number, BankGraphNode>;
     private bankGraphEdges: Map<number, BankGraphEdge>;
+    public liteMode: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     constructor(
         private readonly graphService: GraphService,
@@ -20,6 +21,10 @@ export class BankGraphService {
     ) {
         this.bankGraphNodes = new Map<number, BankGraphNode>();
         this.bankGraphEdges = new Map<number, BankGraphEdge>();
+    }
+
+    public setLightMode(value: boolean) {
+        this.liteMode.next(value);
     }
 
     public addAccountById(accountId: number): Observable<boolean> {
