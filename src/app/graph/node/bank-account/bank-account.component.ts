@@ -67,7 +67,7 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
         this.selectionIndex = -1;
     }
 
-    onExpand() {
-        this.bankGraphService.expandAccount(this.accountId);
+    onExpand(depth: number) {
+        this.bankGraphService.expandAccount(this.accountId, depth);
     }
 }

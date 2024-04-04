@@ -22,16 +22,19 @@ export class BankGraphService {
         this.bankGraphEdges = new Map<number, BankGraphEdge>();
     }
 
-    public addAccountById(accountId: number): ReplaySubject<boolean> {
+    public addAccountById(accountId: number): Observable<boolean> {
         const replaySubject = new ReplaySubject<boolean>();
         if (this.bankGraphNodes.get(accountId)) {
             replaySubject.next(false);
+            replaySubject.complete();
             return replaySubject;
         }
         this.apiService.getAccount(accountId).subscribe((bankAccount: BankAccount) => {
             this.addAccount(bankAccount);
             replaySubject.next(true);
+            replaySubject.complete();
         });
+
         return replaySubject;
     }
 
@@ -71,14 +74,11 @@ export class BankGraphService {
                     name: 'manhattan',
                     args: {
                         side: 'right',
+                        padding: 50,
                     },
                 },
                 connector: {
-                    name: 'jumpover',
-                    args: {
-                        type: 'arc',
-                        size: 5,
-                    },
+                    name: 'rounded',
                 },
                 labelShape: 'transaction-label',
                 label: {
@@ -138,7 +138,8 @@ export class BankGraphService {
         }
     }
 
-    public expandAccount(accountId: number) {
+    public expandAccount(accountId: number, depth: number) {
+        if (depth == 0) return;
         const bankGraphNode = this.bankGraphNodes.get(accountId);
         console.log(bankGraphNode);
         if (bankGraphNode) {
@@ -146,6 +147,7 @@ export class BankGraphService {
                 transactions.forEach((transaction) => {
                     this.addAccountById(transaction.destinationAccountId).subscribe((created) => {
                         this.addTransaction(transaction);
+                        this.expandAccount(transaction.destinationAccountId, depth - 1);
                     });
                 });
             });

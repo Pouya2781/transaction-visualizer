@@ -97,6 +97,7 @@ export class GraphService {
         metadata.id = uuid;
         const newNode = this.graph.addNode(metadata);
         this.nodeMap.set(newNode.id, newNode);
+        this.graph.zoom();
         return newNode;
     }
 

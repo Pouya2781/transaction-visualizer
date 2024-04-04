@@ -116,11 +116,27 @@
                 </span>
             </li>
         </ng-template>
-        <li nz-menu-item (click)="onExpand()">
-            <span class="context-item">
-                <span nz-icon nzType="fullscreen" nzTheme="outline"></span>
-                <span class="context-text">گسترش</span>
-            </span>
+        <li nz-submenu nzTitle="گسترش">
+            <ul class="context">
+                <li nz-menu-item (click)="onExpand(1)">
+                    <span class="context-item">
+                        <span nz-icon nzType="fullscreen" nzTheme="outline"></span>
+                        <span class="context-text">عمق یک</span>
+                    </span>
+                </li>
+                <li nz-menu-item (click)="onExpand(2)">
+                    <span class="context-item">
+                        <span nz-icon nzType="fullscreen" nzTheme="outline"></span>
+                        <span class="context-text">عمق دو</span>
+                    </span>
+                </li>
+                <li nz-menu-item (click)="onExpand(3)">
+                    <span class="context-item">
+                        <span nz-icon nzType="fullscreen" nzTheme="outline"></span>
+                        <span class="context-text">عمق سه</span>
+                    </span>
+                </li>
+            </ul>
         </li>
         <li nz-menu-item *ngIf="nodeState == NodeState.TINY">
             <span class="context-item">
