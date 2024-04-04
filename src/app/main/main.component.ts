@@ -5,6 +5,8 @@ import {register} from '@antv/x6-angular-shape';
 import {AccountType} from '../enums/account-type';
 import {TransactionType} from '../enums/transaction-type';
 import {TranscationComponent} from '../graph/edge/transcation/transcation.component';
+import {ApiService} from '../services/api.service';
+import {log} from 'ng-zorro-antd/core/logger';
 
 @Component({
     selector: 'app-main',
@@ -75,10 +77,13 @@ export class MainComponent implements AfterViewInit {
                 name: 'manhattan',
                 args: {
                     side: 'right',
+                    padding: {
+                        left: 50,
+                    },
                 },
             },
             connector: {
-                name: 'jumpover',
+                name: 'rounded',
                 args: {
                     type: 'arc',
                     size: 5,
