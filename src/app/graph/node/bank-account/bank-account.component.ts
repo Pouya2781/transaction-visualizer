@@ -4,6 +4,7 @@ import {AccountType} from 'src/app/enums/account-type';
 import {NodeState} from 'src/app/enums/node-state';
 import {GraphService} from '../../../services/graph.service';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
+import {BankGraphService} from '../../../services/bank-graph.service';
 
 @Component({
     selector: 'app-bank-account',
@@ -20,11 +21,11 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
     @Input() public ownerFamilyName!: string;
     @Input() public branchName!: string;
     @Input() public branchAddress!: string;
-    @Input() public branchTelephone!: string;
+    @Input() public branchTelephone!: number;
     @Input() public accountType!: AccountType;
     @Input() public sheba!: string;
     @Input() public cardId!: string;
-    @Input() public accountId!: string;
+    @Input() public accountId!: number;
     protected readonly AccountType = AccountType;
     protected readonly NodeState = NodeState;
 
@@ -34,7 +35,8 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
     constructor(
         private graphService: GraphService,
         private readonly changeDetector: ChangeDetectorRef,
-        private nzContextMenuService: NzContextMenuService
+        private nzContextMenuService: NzContextMenuService,
+        private bankGraphService: BankGraphService
     ) {}
 
     ngAfterViewInit() {
@@ -63,5 +65,9 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
 
     onDeselect() {
         this.selectionIndex = -1;
+    }
+
+    onExpand() {
+        this.bankGraphService.expandAccount(this.accountId);
     }
 }

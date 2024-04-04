@@ -5,6 +5,7 @@ import {BankGraphEdge} from '../models/bank-graph-edge';
 import {GraphService} from './graph.service';
 import {BankGraphNode} from '../models/bank-graph-node';
 import {ApiService} from './api.service';
+import {Observable, ReplaySubject} from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -21,16 +22,21 @@ export class BankGraphService {
         this.bankGraphEdges = new Map<number, BankGraphEdge>();
     }
 
-    public addAccountById(accountId: number): Promise<boolean> {
-        return new Promise<boolean>((resolve) => {
-            this.apiService.getAccount(accountId).subscribe((bankAccount: BankAccount) => {
-                this.addAccount(bankAccount);
-                resolve(true);
-            });
+    public addAccountById(accountId: number): ReplaySubject<boolean> {
+        const replaySubject = new ReplaySubject<boolean>();
+        if (this.bankGraphNodes.get(accountId)) {
+            replaySubject.next(false);
+            return replaySubject;
+        }
+        this.apiService.getAccount(accountId).subscribe((bankAccount: BankAccount) => {
+            this.addAccount(bankAccount);
+            replaySubject.next(true);
         });
+        return replaySubject;
     }
 
     public addAccount(bankAccount: BankAccount) {
+        if (this.bankGraphNodes.get(bankAccount.accountId)) return;
         const node = this.graphService.addCustomNode({
             shape: 'custom-angular-component-node',
             x: 250,
@@ -51,6 +57,7 @@ export class BankGraphService {
     }
 
     public addTransaction(transaction: Transaction) {
+        if (this.bankGraphEdges.get(transaction.transactionId)) return;
         const sourceBankGraphNode = this.bankGraphNodes.get(transaction.sourceAccountId);
         const destinationBankGraphNode = this.bankGraphNodes.get(transaction.destinationAccountId);
         console.log(sourceBankGraphNode);
@@ -137,8 +144,7 @@ export class BankGraphService {
         if (bankGraphNode) {
             this.apiService.getOutgoingTransaction(accountId).subscribe((transactions) => {
                 transactions.forEach((transaction) => {
-                    this.apiService.getAccount(transaction.destinationAccountId).subscribe((bankAccount) => {
-                        this.addAccount(bankAccount);
+                    this.addAccountById(transaction.destinationAccountId).subscribe((created) => {
                         this.addTransaction(transaction);
                     });
                 });

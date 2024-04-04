@@ -18,9 +18,9 @@ export class HeaderComponent {
         private apiService: ApiService,
         private bankGraphService: BankGraphService
     ) {}
-    async onSearch(value: string) {
-        await this.bankGraphService.addAccountById(6039548046);
-        this.bankGraphService.expandAccount(6039548046);
+    onSearch(value: string) {
+        this.bankGraphService.addAccountById(6039548046);
+        // this.bankGraphService.expandAccount(6039548046);
         // this.apiService.getAccount(6534454617).subscribe((bankAccount: BankAccount) => {
         //     this.bankGraphService.addAccount(bankAccount);
         // });
