@@ -7,6 +7,7 @@ import {TransactionType} from '../enums/transaction-type';
 import {TransactionComponent} from '../graph/edge/transcation/transaction.component';
 import {ApiService} from '../services/api.service';
 import {log} from 'ng-zorro-antd/core/logger';
+import {StencilService} from '../services/stencil.service';
 
 @Component({
     selector: 'app-main',
@@ -15,15 +16,17 @@ import {log} from 'ng-zorro-antd/core/logger';
 })
 export class MainComponent implements AfterViewInit {
     @ViewChild('graphContainer') graphContainer!: ElementRef;
+    @ViewChild('stencilContainer') stencilContainer!: ElementRef;
 
     constructor(
         private graphService: GraphService,
+        private stencilService: StencilService,
         private injector: Injector,
         private renderer: Renderer2
     ) {}
     ngAfterViewInit() {
         this.graphService.createGraph(this.graphContainer.nativeElement, this.renderer);
-        // this.graphService.registerCustomNode('bank-account', BankAccountComponent);
+        this.stencilService.createStencil(this.stencilContainer.nativeElement);
         this.graphService.registerEdgeLabel('transaction-label', TransactionComponent);
 
         register({

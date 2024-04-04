@@ -39,6 +39,10 @@ export class GraphService {
         });
     }
 
+    get getGraph() {
+        return this.graph;
+    }
+
     public createGraph(container: HTMLElement, renderer: Renderer2) {
         this.graph = new Graph({
             container: container,
