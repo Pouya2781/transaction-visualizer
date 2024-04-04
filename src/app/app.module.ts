@@ -23,6 +23,7 @@ import {NzDividerModule} from 'ng-zorro-antd/divider';
 import {NzIconModule} from 'ng-zorro-antd/icon';
 import {NzBadgeModule} from 'ng-zorro-antd/badge';
 import {TransactionComponent} from './graph/edge/transcation/transaction.component';
+import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
 
 registerLocaleData(en);
 
@@ -49,6 +50,7 @@ registerLocaleData(en);
         NzBadgeModule,
         NzIconModule,
         NzDividerModule,
+        NzDropDownModule,
     ],
     providers: [{provide: NZ_I18N, useValue: en_US}],
     bootstrap: [AppComponent],

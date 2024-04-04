@@ -3,6 +3,7 @@ import {DynamicNodeView, InterconnectedNode} from '../../../models/node.type';
 import {AccountType} from 'src/app/enums/account-type';
 import {NodeState} from 'src/app/enums/node-state';
 import {GraphService} from '../../../services/graph.service';
+import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 
 @Component({
     selector: 'app-bank-account',
@@ -28,10 +29,12 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
     protected readonly NodeState = NodeState;
 
     public nodeState: NodeState = NodeState.NORMAL;
+    public selectionIndex: number = -1;
 
     constructor(
         private graphService: GraphService,
-        private readonly changeDetector: ChangeDetectorRef
+        private readonly changeDetector: ChangeDetectorRef,
+        private nzContextMenuService: NzContextMenuService
     ) {}
 
     ngAfterViewInit() {
@@ -48,5 +51,17 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
         if (this.accountType == AccountType.CURRENT) return 'red';
         if (this.accountType == AccountType.DEPOSIT) return 'green';
         return 'blue';
+    }
+
+    contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
+        this.nzContextMenuService.create($event, menu);
+    }
+
+    onSelect() {
+        this.selectionIndex = 1;
+    }
+
+    onDeselect() {
+        this.selectionIndex = -1;
     }
 }

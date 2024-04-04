@@ -15,6 +15,14 @@
         background-color: #eeeeee;
         box-shadow: 0 0 5px 0.5px gray;
         border-radius: 0.75rem;
+
+        &.selected0 {
+            box-shadow: 0 0 5px 3px green;
+        }
+
+        &.selected1 {
+            box-shadow: 0 0 5px 3px blue;
+        }
     }
 
     .full-wrapper {
@@ -28,6 +36,14 @@
         border-inline-start-style: solid;
         width: 27rem;
         //pointer-events: none;
+
+        &.selected0 {
+            box-shadow: 0 0 5px 3px green;
+        }
+
+        &.selected1 {
+            box-shadow: 0 0 5px 3px blue;
+        }
 
         .wrapper {
             display: flex;
@@ -153,4 +169,20 @@
 
 .context {
     border-radius: 0.5rem;
+
+    li {
+        display: flex;
+        justify-content: flex-end;
+
+        .context-item {
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: center;
+            gap: 0.75rem;
+
+            .context-text {
+                padding-block-start: 0.2rem;
+            }
+        }
+    }
 }

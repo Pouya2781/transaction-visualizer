@@ -1,8 +1,20 @@
-<div class="all-wrapper" #dynamicNodeView>
-    <div class="tiny" *ngIf="nodeState == NodeState.TINY; else normalNodeRef">{{ accountId }}</div>
+<div class="all-wrapper" #dynamicNodeView (contextmenu)="contextMenu($event, menu)">
+    <div
+        class="tiny"
+        [class.selected0]="selectionIndex == 0"
+        [class.selected1]="selectionIndex == 1"
+        *ngIf="nodeState == NodeState.TINY; else normalNodeRef"
+    >
+        {{ accountId }}
+    </div>
     <ng-template #normalNodeRef>
         <nz-badge [nzCount]="transactionCount" [nzOverflowCount]="100">
-            <div class="full-wrapper" [style.border-inline-start-color]="getBorderColor()">
+            <div
+                class="full-wrapper"
+                [class.selected0]="selectionIndex == 0"
+                [class.selected1]="selectionIndex == 1"
+                [style.border-inline-start-color]="getBorderColor()"
+            >
                 <div class="wrapper">
                     <span
                         (click)="showDetail()"
@@ -87,3 +99,40 @@
         </nz-badge>
     </ng-template>
 </div>
+
+<nz-dropdown-menu #menu="nzDropdownMenu">
+    <ul nz-menu class="context">
+        <li nz-menu-item *ngIf="selectionIndex == -1; else deselect" (click)="onSelect()">
+            <span class="context-item">
+                <span nz-icon nzType="check" nzTheme="outline"></span>
+                <span class="context-text">انتخاب</span>
+            </span>
+        </li>
+        <ng-template #deselect>
+            <li (click)="onDeselect()" nz-menu-item>
+                <span class="context-item">
+                    <span nz-icon nzType="close" nzTheme="outline"></span>
+                    <span class="context-text">لغو</span>
+                </span>
+            </li>
+        </ng-template>
+        <li nz-menu-item>
+            <span class="context-item">
+                <span nz-icon nzType="fullscreen" nzTheme="outline"></span>
+                <span class="context-text">گسترش</span>
+            </span>
+        </li>
+        <li nz-menu-item *ngIf="nodeState == NodeState.TINY">
+            <span class="context-item">
+                <span nz-icon nzType="info-circle" nzTheme="outline"></span>
+                <span class="context-text">جزئیات</span>
+            </span>
+        </li>
+        <li nz-menu-item>
+            <span class="context-item">
+                <span nz-icon nzType="delete" nzTheme="outline"></span>
+                <span class="context-text">حذف</span>
+            </span>
+        </li>
+    </ul>
+</nz-dropdown-menu>
