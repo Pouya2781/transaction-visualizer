@@ -4,7 +4,7 @@ import {BankAccountComponent} from '../graph/node/bank-account/bank-account.comp
 import {register} from '@antv/x6-angular-shape';
 import {AccountType} from '../enums/account-type';
 import {TransactionType} from '../enums/transaction-type';
-import {TranscationComponent} from '../graph/edge/transcation/transcation.component';
+import {TransactionComponent} from '../graph/edge/transcation/transaction.component';
 import {ApiService} from '../services/api.service';
 import {log} from 'ng-zorro-antd/core/logger';
 
@@ -24,7 +24,7 @@ export class MainComponent implements AfterViewInit {
     ngAfterViewInit() {
         this.graphService.createGraph(this.graphContainer.nativeElement, this.renderer);
         // this.graphService.registerCustomNode('bank-account', BankAccountComponent);
-        this.graphService.registerEdgeLabel('transaction-label', TranscationComponent);
+        this.graphService.registerEdgeLabel('transaction-label', TransactionComponent);
 
         register({
             shape: 'custom-angular-component-node',
@@ -38,6 +38,7 @@ export class MainComponent implements AfterViewInit {
             data: {
                 ngArguments: {
                     ownerName: 'افسر',
+                    ownerId: 1253664585,
                     ownerFamilyName: 'طباطبایی',
                     accountId: '6534454617',
                     branchName: 'گلوبندک',
@@ -57,6 +58,7 @@ export class MainComponent implements AfterViewInit {
             data: {
                 ngArguments: {
                     ownerName: 'افسر',
+                    ownerId: 1255664596,
                     ownerFamilyName: 'طباطبایی',
                     accountId: '6534454617',
                     branchName: 'گلوبندک',
@@ -99,12 +101,12 @@ export class MainComponent implements AfterViewInit {
                 },
             },
             ngArguments: {
-                sourceAccount: '6534454617',
-                destinationAccount: '6039548046',
+                sourceAccountId: 6534454617,
+                destinationAccountId: 6039548046,
                 amount: '500000000',
-                date: new Date('1399/04/23'),
+                date: '1399/04/23',
                 transactionId: '153348811341',
-                transactionType: TransactionType.PAYA,
+                type: TransactionType.PAYA,
             },
         });
     }

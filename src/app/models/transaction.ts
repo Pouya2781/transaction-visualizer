@@ -1,10 +1,10 @@
 import {TransactionType} from '../enums/transaction-type';
 
 export interface Transaction {
-    sourceId: number;
-    destinationId: number;
-    amount: number;
-    date: Date;
-    transactionID: number;
-    transactionType: TransactionType;
+    sourceAccountId: number;
+    destinationAccountId: number;
+    amount: string;
+    date: string;
+    transactionId: number;
+    type: TransactionType;
 }

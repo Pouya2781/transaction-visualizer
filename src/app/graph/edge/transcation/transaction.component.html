@@ -2,23 +2,23 @@
     <div class="amount">
         <span class="icon" nz-icon nzType="dollar" nzTheme="outline" #targetIcon></span>
         <span class="label" #targetLabel>:مبلغ</span>
-        <span class="line-height value" #targetElement>{{ Number(amount).toLocaleString() }}</span>
+        <span class="line-height value" #targetElement>{{ amount }}</span>
     </div>
     <div class="more-info">
         <div>
             <span nz-icon nzType="environment" nzTheme="outline"></span>
             <span>:مبدا</span>
-            <span class="line-height value">{{ sourceAccount }}</span>
+            <span class="line-height value">{{ sourceAccountId }}</span>
         </div>
         <div>
             <span nz-icon nzType="flag" nzTheme="outline"></span>
             <span>:مقصد</span>
-            <span class="line-height value">{{ destinationAccount }}</span>
+            <span class="line-height value">{{ destinationAccountId }}</span>
         </div>
         <div>
             <span nz-icon nzType="calendar" nzTheme="outline"></span>
             <span>:تاریخ</span>
-            <span class="line-height value">{{ date.toLocaleDateString() }}</span>
+            <span class="line-height value">{{ date }}</span>
         </div>
         <div>
             <span nz-icon nzType="transaction" nzTheme="outline"></span>
@@ -28,7 +28,7 @@
         <div>
             <span nz-icon nzType="swap" nzTheme="outline"></span>
             <span>:نوع تراکنش</span>
-            <span class="value">{{ transactionType }}</span>
+            <span class="value">{{ type }}</span>
         </div>
     </div>
 </div>

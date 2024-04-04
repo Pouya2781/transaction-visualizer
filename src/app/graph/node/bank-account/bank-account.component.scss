@@ -1,3 +1,7 @@
+.line-height {
+    line-height: 1.25;
+}
+
 .all-wrapper {
     font-size: 1.25rem;
     display: inline-block;
@@ -61,7 +65,13 @@
                 padding-inline: 1rem;
                 text-align: right;
 
-                span {
+                display: flex;
+                align-items: flex-start;
+                flex-direction: row-reverse;
+                justify-content: flex-start;
+                gap: 0.35rem;
+
+                span:nth-child(2) {
                     font-weight: 600;
                 }
             }
@@ -82,7 +92,7 @@
                 0.5s cubic-bezier(0, 0.4, 0, 1);
 
             &.expand {
-                height: 144px;
+                height: 17rem;
                 opacity: 1;
             }
 
@@ -103,10 +113,6 @@
                     padding-block: 0.5rem;
                     display: inline-block;
                     flex-shrink: 0;
-
-                    &.line-height {
-                        line-height: 1.25;
-                    }
 
                     &:nth-child(2) {
                         direction: rtl;

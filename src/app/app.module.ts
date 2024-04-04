@@ -22,7 +22,7 @@ import {BankAccountComponent} from './graph/node/bank-account/bank-account.compo
 import {NzDividerModule} from 'ng-zorro-antd/divider';
 import {NzIconModule} from 'ng-zorro-antd/icon';
 import {NzBadgeModule} from 'ng-zorro-antd/badge';
-import { TranscationComponent } from './graph/edge/transcation/transcation.component';
+import {TransactionComponent} from './graph/edge/transcation/transaction.component';
 
 registerLocaleData(en);
 
@@ -34,7 +34,7 @@ registerLocaleData(en);
         SwitchComponent,
         SearchboxComponent,
         BankAccountComponent,
-        TranscationComponent,
+        TransactionComponent,
     ],
     imports: [
         BrowserModule,

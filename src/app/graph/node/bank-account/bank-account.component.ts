@@ -15,6 +15,7 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
 
     @Input() public transactionCount!: number;
     @Input() public ownerName!: string;
+    @Input() public ownerId!: number;
     @Input() public ownerFamilyName!: string;
     @Input() public branchName!: string;
     @Input() public branchAddress!: string;

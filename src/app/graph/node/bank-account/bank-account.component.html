@@ -38,20 +38,28 @@
                     <nz-divider nzType="vertical"></nz-divider>
                     <div class="info">
                         <div>
-                            نام: <span>{{ ownerName + ' ' + ownerFamilyName }}</span>
+                            <span>:نام</span>
+                            <span>{{ ownerName + ' ' + ownerFamilyName }}</span>
                         </div>
-                        <!--            <nz-divider></nz-divider>-->
+                        <!--                        <div>-->
+                        <!--                            شعبه: <span>{{ branchName }}</span>-->
+                        <!--                        </div>-->
                         <div>
-                            شعبه: <span>{{ branchName }}</span>
+                            <span>:کد ملی</span>
+                            <span class="line-height">{{ ownerId }}</span>
                         </div>
-                        <!--            <nz-divider></nz-divider>-->
                         <div>
-                            شماره حساب: <span>{{ accountId }}</span>
+                            <span>:شماره حساب</span>
+                            <span class="line-height">{{ accountId }}</span>
                         </div>
                     </div>
                 </div>
                 <div class="detail" [class.expand]="nodeState == NodeState.EXPANDED">
                     <nz-divider></nz-divider>
+                    <div>
+                        <span>:شعبه</span>
+                        <span [title]="branchName">{{ branchName }}</span>
+                    </div>
                     <div>
                         <span>:آدرس شعبه</span>
                         <span [title]="branchAddress">{{ branchAddress }}</span>

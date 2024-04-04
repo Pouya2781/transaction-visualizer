@@ -1,6 +1,7 @@
 import {AccountType} from '../enums/account-type';
 
 export interface BankAccount {
+    ownerId: number;
     ownerName: string;
     ownerFamilyName: string;
     branchName: string;
@@ -8,6 +9,6 @@ export interface BankAccount {
     branchTelephone: number;
     accountType: AccountType;
     sheba: string;
-    cardID: string;
-    accountID: number;
+    cardId: string;
+    accountId: number;
 }

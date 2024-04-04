@@ -3,16 +3,16 @@ import {TransactionType} from '../../../enums/transaction-type';
 
 @Component({
     selector: 'app-transcation',
-    templateUrl: './transcation.component.html',
-    styleUrls: ['./transcation.component.scss'],
+    templateUrl: './transaction.component.html',
+    styleUrls: ['./transaction.component.scss'],
 })
-export class TranscationComponent {
-    @Input() public sourceAccount!: string;
-    @Input() public destinationAccount!: string;
-    @Input() public amount!: number;
-    @Input() public date!: Date;
+export class TransactionComponent {
+    @Input() public sourceAccountId!: string;
+    @Input() public destinationAccountId!: string;
+    @Input() public amount!: string;
+    @Input() public date!: string;
     @Input() public transactionId!: string;
-    @Input() public transactionType!: TransactionType;
+    @Input() public type!: TransactionType;
 
     @ViewChild('targetElement') targetElement!: ElementRef;
     @ViewChild('targetIcon') targetIcon!: ElementRef;

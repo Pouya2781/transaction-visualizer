@@ -29,7 +29,7 @@ export class BankGraphService {
                 },
             },
         });
-        this.bankGraphNodes.set(bankAccount.accountID, {
+        this.bankGraphNodes.set(bankAccount.accountId, {
             bankAccount,
             bankAccountNode: node,
             incomingBankGraphEdges: [],
@@ -38,8 +38,10 @@ export class BankGraphService {
     }
 
     public addTransaction(transaction: Transaction) {
-        const sourceBankGraphNode = this.bankGraphNodes.get(transaction.sourceId);
-        const destinationBankGraphNode = this.bankGraphNodes.get(transaction.destinationId);
+        const sourceBankGraphNode = this.bankGraphNodes.get(transaction.sourceAccountId);
+        const destinationBankGraphNode = this.bankGraphNodes.get(transaction.destinationAccountId);
+        console.log(sourceBankGraphNode);
+        console.log(destinationBankGraphNode);
         if (!!sourceBankGraphNode && !!destinationBankGraphNode) {
             const edge = this.graphService.addCustomEdge({
                 shape: 'edge',
@@ -73,7 +75,7 @@ export class BankGraphService {
             const bankGraphEdge = {transaction, transactionEdge: edge, sourceBankGraphNode, destinationBankGraphNode};
             sourceBankGraphNode.outgoingBankGraphEdges.push(bankGraphEdge);
             destinationBankGraphNode.incomingBankGraphEdges.push(bankGraphEdge);
-            this.bankGraphEdges.set(transaction.transactionID, bankGraphEdge);
+            this.bankGraphEdges.set(transaction.transactionId, bankGraphEdge);
         }
     }
 
@@ -82,13 +84,13 @@ export class BankGraphService {
 
         if (!!bankGraphNode) {
             for (let bankAccountEdge of bankGraphNode.outgoingBankGraphEdges) {
-                this.deleteTransaction(bankAccountEdge.transaction.transactionID);
+                this.deleteTransaction(bankAccountEdge.transaction.transactionId);
             }
             for (let bankAccountEdge of bankGraphNode.incomingBankGraphEdges) {
-                this.deleteTransaction(bankAccountEdge.transaction.transactionID);
+                this.deleteTransaction(bankAccountEdge.transaction.transactionId);
             }
 
-            this.bankGraphNodes.delete(bankGraphNode.bankAccount.accountID);
+            this.bankGraphNodes.delete(bankGraphNode.bankAccount.accountId);
             this.graphService.removeNode(bankGraphNode.bankAccountNode.id);
         }
     }
@@ -99,20 +101,20 @@ export class BankGraphService {
             bankGraphEdge.sourceBankGraphNode.outgoingBankGraphEdges =
                 bankGraphEdge.sourceBankGraphNode.outgoingBankGraphEdges.filter((bankGraphEdge) => {
                     return !(
-                        bankGraphEdge.transaction.sourceId == bankGraphEdge.transaction.sourceId &&
-                        bankGraphEdge.transaction.destinationId == bankGraphEdge.transaction.destinationId
+                        bankGraphEdge.transaction.sourceAccountId == bankGraphEdge.transaction.sourceAccountId &&
+                        bankGraphEdge.transaction.destinationAccountId == bankGraphEdge.transaction.destinationAccountId
                     );
                 });
             bankGraphEdge.destinationBankGraphNode.incomingBankGraphEdges =
                 bankGraphEdge.destinationBankGraphNode.incomingBankGraphEdges.filter((bankGraphEdge) => {
                     return !(
-                        bankGraphEdge.transaction.sourceId == bankGraphEdge.transaction.sourceId &&
-                        bankGraphEdge.transaction.destinationId == bankGraphEdge.transaction.destinationId
+                        bankGraphEdge.transaction.sourceAccountId == bankGraphEdge.transaction.sourceAccountId &&
+                        bankGraphEdge.transaction.destinationAccountId == bankGraphEdge.transaction.destinationAccountId
                     );
                 });
 
             this.graphService.removeEdge(bankGraphEdge.transactionEdge.id);
-            this.bankGraphEdges.delete(bankGraphEdge.transaction.transactionID);
+            this.bankGraphEdges.delete(bankGraphEdge.transaction.transactionId);
         }
     }
 }
