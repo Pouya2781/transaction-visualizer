@@ -5,6 +5,8 @@ import {NodeState} from 'src/app/enums/node-state';
 import {GraphService} from '../../../services/graph.service';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {BankGraphService} from '../../../services/bank-graph.service';
+import {NzDrawerService} from 'ng-zorro-antd/drawer';
+import {DrawerComponent} from '../../../drawer/drawer.component';
 
 @Component({
     selector: 'app-bank-account',
@@ -36,7 +38,8 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
         private graphService: GraphService,
         private readonly changeDetector: ChangeDetectorRef,
         private nzContextMenuService: NzContextMenuService,
-        private bankGraphService: BankGraphService
+        private bankGraphService: BankGraphService,
+        private drawerService: NzDrawerService
     ) {
         this.bankGraphService.liteMode.subscribe((value) => {
             if (value) this.nodeState = NodeState.TINY;
@@ -86,5 +89,34 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
 
     onDelete() {
         this.bankGraphService.deleteAccount(this.accountId);
+    }
+
+    onDetail() {
+        const drawerRef = this.drawerService.create({
+            nzTitle: 'جزییات حساب',
+            nzContent: DrawerComponent,
+            nzContentParams: {
+                transactionCount: this.transactionCount,
+                ownerName: this.ownerName,
+                ownerId: this.ownerId,
+                ownerFamilyName: this.ownerFamilyName,
+                branchName: this.branchName,
+                branchAddress: this.branchAddress,
+                branchTelephone: this.branchTelephone,
+                accountType: this.accountType,
+                sheba: this.sheba,
+                cardId: this.cardId,
+                accountId: this.accountId,
+                // AccountType: this.AccountType,
+            },
+        });
+
+        drawerRef.afterOpen.subscribe(() => {
+            console.log('Drawer(Template) open');
+        });
+
+        drawerRef.afterClose.subscribe(() => {
+            console.log('Drawer(Template) close');
+        });
     }
 }

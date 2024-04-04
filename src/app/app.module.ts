@@ -24,6 +24,10 @@ import {NzIconModule} from 'ng-zorro-antd/icon';
 import {NzBadgeModule} from 'ng-zorro-antd/badge';
 import {TransactionComponent} from './graph/edge/transcation/transaction.component';
 import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
+import {NzDrawerModule} from 'ng-zorro-antd/drawer';
+import {DrawerComponent} from './drawer/drawer.component';
+import {NzFormModule} from 'ng-zorro-antd/form';
+import {NzButtonModule} from 'ng-zorro-antd/button';
 
 registerLocaleData(en);
 
@@ -36,6 +40,7 @@ registerLocaleData(en);
         SearchboxComponent,
         BankAccountComponent,
         TransactionComponent,
+        DrawerComponent,
     ],
     imports: [
         BrowserModule,
@@ -51,6 +56,9 @@ registerLocaleData(en);
         NzIconModule,
         NzDividerModule,
         NzDropDownModule,
+        NzDrawerModule,
+        NzFormModule,
+        NzButtonModule,
     ],
     providers: [{provide: NZ_I18N, useValue: en_US}],
     bootstrap: [AppComponent],
