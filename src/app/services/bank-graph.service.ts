@@ -97,7 +97,6 @@ export class BankGraphService {
                 router: {
                     name: 'manhattan',
                     args: {
-                        side: 'right',
                         padding: 50,
                     },
                 },
