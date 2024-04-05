@@ -1,10 +1,12 @@
 import {Injectable, Injector, Renderer2} from '@angular/core';
-import {Graph, Markup, Model, Node, Edge} from '@antv/x6';
+import {Graph, Markup, Model, Node, Edge, Timing} from '@antv/x6';
 import {DynamicNodeViewComponent, DynamicNodeViewComponentRef, InterconnectedNode} from '../models/node.type';
 import {CustomEdge, CustomEdgeMetadata} from '../models/edge.type';
 import {ComponentType} from '@angular/cdk/portal';
 import {ComponentCreatorService} from './component-creator.service';
 import {register} from '@antv/x6-angular-shape';
+import {ReplaySubject} from 'rxjs';
+import {Layout} from '../models/layout';
 
 @Injectable({
     providedIn: 'root',
@@ -74,7 +76,6 @@ export class GraphService {
                 return () => {};
             },
         });
-
         this.renderer = renderer;
     }
 
@@ -163,5 +164,46 @@ export class GraphService {
             this.nodeDynamicViewReverseMap.delete(node.id);
         }
         return node;
+    }
+
+    public animateMove(node: Node, x: number, y: number) {
+        const transitionDuration = 1000;
+        node.translate(x - node.position().x, y - node.position().y, {
+            transition: {
+                duration: transitionDuration,
+                timing: Timing.easeOutCubic,
+            },
+        });
+        const transitionFinished = new ReplaySubject<void>();
+        setTimeout(() => {
+            transitionFinished.next();
+            transitionFinished.complete();
+        }, transitionDuration);
+        return transitionFinished;
+    }
+
+    public layout(
+        nodeWidth: number,
+        nodeHeight: number,
+        cellPadding: number,
+        targetNodes: Node<Node.Properties>[] = this.graph.getNodes(),
+        animated: boolean = false,
+        randomOffset: number = 0
+    ) {
+        const customLayout: Layout = new Layout(this.graph, this, nodeWidth, nodeHeight, cellPadding, randomOffset);
+        return customLayout.layout(targetNodes, animated);
+    }
+
+    public layoutAroundCenter(
+        nodeWidth: number,
+        nodeHeight: number,
+        cellPadding: number,
+        centerNode: Node<Node.Properties>,
+        targetNodes: Node<Node.Properties>[] = this.graph.getNodes(),
+        animated: boolean = false,
+        randomOffset: number = 0
+    ) {
+        const customLayout: Layout = new Layout(this.graph, this, nodeWidth, nodeHeight, cellPadding, randomOffset);
+        return customLayout.layoutAroundCenter(centerNode, targetNodes, animated);
     }
 }

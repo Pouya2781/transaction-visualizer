@@ -19,7 +19,7 @@ export class HeaderComponent {
         private bankGraphService: BankGraphService
     ) {}
     onSearch(value: string) {
-        this.bankGraphService.addAccountById(6039548046);
+        this.bankGraphService.addAccountById(6534454617, {x: 200, y: 200});
         // this.bankGraphService.expandAccount(6039548046);
         // this.apiService.getAccount(6534454617).subscribe((bankAccount: BankAccount) => {
         //     this.bankGraphService.addAccount(bankAccount);

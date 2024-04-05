@@ -28,89 +28,92 @@ export class MainComponent implements AfterViewInit {
         this.graphService.createGraph(this.graphContainer.nativeElement, this.renderer);
         this.stencilService.createStencil(this.stencilContainer.nativeElement);
         this.graphService.registerEdgeLabel('transaction-label', TransactionComponent);
+        this.graphService.getGraph.zoomTo(0.65, {center: {x: 0, y: 0}});
+
+        console.log(this.graphService.getGraph.zoom());
 
         register({
             shape: 'custom-angular-component-node',
             content: BankAccountComponent,
             injector: this.injector,
         });
-        let node1 = this.graphService.addCustomNode({
-            shape: 'custom-angular-component-node',
-            x: 100,
-            y: 100,
-            data: {
-                ngArguments: {
-                    ownerName: 'افسر',
-                    ownerId: 1253664585,
-                    ownerFamilyName: 'طباطبایی',
-                    accountId: '6534454617',
-                    branchName: 'گلوبندک',
-                    branchAddress: 'تهران-خیابان خیام-بالاتر از چهارراه گلوبندک',
-                    branchTelephone: '55638667',
-                    sheba: 'IR120778801496000000198',
-                    cardId: '6104335000000190',
-                    accountType: AccountType.SAVINGS,
-                    transactionCount: 196,
-                },
-            },
-        });
-        let node2 = this.graphService.addCustomNode({
-            shape: 'custom-angular-component-node',
-            x: 100,
-            y: 100,
-            data: {
-                ngArguments: {
-                    ownerName: 'افسر',
-                    ownerId: 1255664596,
-                    ownerFamilyName: 'طباطبایی',
-                    accountId: '6534454617',
-                    branchName: 'گلوبندک',
-                    branchAddress: 'تهران-خیابان خیام-بالاتر از چهارراه گلوبندک',
-                    branchTelephone: '55638667',
-                    sheba: 'IR120778801496000000198',
-                    cardId: '6104335000000190',
-                    accountType: AccountType.SAVINGS,
-                    transactionCount: 196,
-                },
-            },
-        });
-        const edge2 = this.graphService.addCustomEdge({
-            shape: 'edge',
-            source: node1,
-            target: node2,
-            router: {
-                name: 'manhattan',
-                args: {
-                    side: 'right',
-                    padding: {
-                        left: 50,
-                    },
-                },
-            },
-            connector: {
-                name: 'rounded',
-                args: {
-                    type: 'arc',
-                    size: 5,
-                },
-            },
-            labelShape: 'transaction-label',
-            label: {
-                position: 0.5,
-            },
-            attrs: {
-                line: {
-                    stroke: '#ccc',
-                },
-            },
-            ngArguments: {
-                sourceAccountId: 6534454617,
-                destinationAccountId: 6039548046,
-                amount: '500000000',
-                date: '1399/04/23',
-                transactionId: '153348811341',
-                type: TransactionType.PAYA,
-            },
-        });
+        // let node1 = this.graphService.addCustomNode({
+        //     shape: 'custom-angular-component-node',
+        //     x: 100,
+        //     y: 100,
+        //     data: {
+        //         ngArguments: {
+        //             ownerName: 'افسر',
+        //             ownerId: 1253664585,
+        //             ownerFamilyName: 'طباطبایی',
+        //             accountId: '6534454617',
+        //             branchName: 'گلوبندک',
+        //             branchAddress: 'تهران-خیابان خیام-بالاتر از چهارراه گلوبندک',
+        //             branchTelephone: '55638667',
+        //             sheba: 'IR120778801496000000198',
+        //             cardId: '6104335000000190',
+        //             accountType: AccountType.SAVINGS,
+        //             transactionCount: 196,
+        //         },
+        //     },
+        // });
+        // let node2 = this.graphService.addCustomNode({
+        //     shape: 'custom-angular-component-node',
+        //     x: 100,
+        //     y: 100,
+        //     data: {
+        //         ngArguments: {
+        //             ownerName: 'افسر',
+        //             ownerId: 1255664596,
+        //             ownerFamilyName: 'طباطبایی',
+        //             accountId: '6534454617',
+        //             branchName: 'گلوبندک',
+        //             branchAddress: 'تهران-خیابان خیام-بالاتر از چهارراه گلوبندک',
+        //             branchTelephone: '55638667',
+        //             sheba: 'IR120778801496000000198',
+        //             cardId: '6104335000000190',
+        //             accountType: AccountType.SAVINGS,
+        //             transactionCount: 196,
+        //         },
+        //     },
+        // });
+        // const edge2 = this.graphService.addCustomEdge({
+        //     shape: 'edge',
+        //     source: node1,
+        //     target: node2,
+        //     router: {
+        //         name: 'manhattan',
+        //         args: {
+        //             side: 'right',
+        //             padding: {
+        //                 left: 50,
+        //             },
+        //         },
+        //     },
+        //     connector: {
+        //         name: 'rounded',
+        //         args: {
+        //             type: 'arc',
+        //             size: 5,
+        //         },
+        //     },
+        //     labelShape: 'transaction-label',
+        //     label: {
+        //         position: 0.5,
+        //     },
+        //     attrs: {
+        //         line: {
+        //             stroke: '#ccc',
+        //         },
+        //     },
+        //     ngArguments: {
+        //         sourceAccountId: 6534454617,
+        //         destinationAccountId: 6039548046,
+        //         amount: '500000000',
+        //         date: '1399/04/23',
+        //         transactionId: '153348811341',
+        //         type: TransactionType.PAYA,
+        //     },
+        // });
     }
 }
