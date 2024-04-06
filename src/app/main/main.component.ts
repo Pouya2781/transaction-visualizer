@@ -8,6 +8,7 @@ import {TransactionComponent} from '../graph/edge/transcation/transaction.compon
 import {ApiService} from '../services/api.service';
 import {log} from 'ng-zorro-antd/core/logger';
 import {StencilService} from '../services/stencil.service';
+import {MiniMap} from '@antv/x6-plugin-minimap';
 
 @Component({
     selector: 'app-main',
@@ -17,6 +18,7 @@ import {StencilService} from '../services/stencil.service';
 export class MainComponent implements AfterViewInit {
     @ViewChild('graphContainer') graphContainer!: ElementRef;
     @ViewChild('stencilContainer') stencilContainer!: ElementRef;
+    @ViewChild('minimapContainer') minimapContainer!: ElementRef;
 
     constructor(
         private graphService: GraphService,
@@ -29,8 +31,11 @@ export class MainComponent implements AfterViewInit {
         this.stencilService.createStencil(this.stencilContainer.nativeElement);
         this.graphService.registerEdgeLabel('transaction-label', TransactionComponent);
         this.graphService.getGraph.zoomTo(0.65, {center: {x: 0, y: 0}});
-
-        console.log(this.graphService.getGraph.zoom());
+        this.graphService.getGraph.use(
+            new MiniMap({
+                container: this.minimapContainer.nativeElement,
+            })
+        );
 
         register({
             shape: 'custom-angular-component-node',

@@ -1,17 +1,27 @@
 .wrapper {
     display: grid;
     grid-template-columns: 200px 1fr;
-    gap: 1rem;
+    grid-template-rows: 1fr 200px;
+    grid-template-areas: "stencil graph" "minimap graph";
     height: 100%;
 
     .stencil {
         width: 100%;
         height: 100%;
         position: relative;
+        grid-area: stencil;
+    }
+
+    .minimap {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        grid-area: minimap;
     }
 
     .container {
         min-height: 100% !important;
         width: 100% !important;
+        grid-area: graph;
     }
 }

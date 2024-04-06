@@ -16,6 +16,8 @@ export class Layout {
     graphZoom: number;
     graphWidth: number;
     graphHeight: number;
+    graphOriginX: number;
+    graphOriginY: number;
     gridRowCount: number;
     gridColCount: number;
     gridCellCount: number;
@@ -39,6 +41,8 @@ export class Layout {
         this.graphZoom = graph.zoom();
         this.graphWidth = this.containerWidth / this.graphZoom;
         this.graphHeight = this.containerHeight / this.graphZoom;
+        this.graphOriginX = graph.options.x;
+        this.graphOriginY = graph.options.y;
         this.gridCellWidth = this.nodeWidth + 2 * this.cellPadding;
         this.gridCellHeight = this.nodeHeight + 2 * this.cellPadding;
         this.gridColCount = Math.floor(this.graphWidth / this.gridCellWidth);
@@ -82,7 +86,19 @@ export class Layout {
 
         if (this.gridCellCount < allNodes.length) {
             const scaleFactor = this.findSmallestScale(allNodes.length);
-            this.graph.zoomTo(this.graphZoom / scaleFactor, {center: {x: 0, y: 0}});
+            console.log(this.graphOriginX, this.graphOriginY);
+            this.graph.zoomTo(this.graphZoom / scaleFactor, {
+                center: {
+                    x: 0,
+                    y: 0,
+                },
+            });
+            this.graphOriginX = this.graph.options.x;
+            this.graphOriginY = this.graph.options.y;
+            console.log(this.graphOriginX, this.graphOriginY);
+            setTimeout(() => {
+                console.log(this.graph.options.x, this.graph.options.y);
+            }, 1000);
             this.graphWidth = this.graphWidth * scaleFactor;
             this.graphHeight = this.graphHeight * scaleFactor;
             this.gridColCount = Math.floor(this.graphWidth / this.gridCellWidth);
@@ -97,6 +113,20 @@ export class Layout {
             this.fixStaticNodes(nodeGridCellOccupation, occupiedCellCount, targetNodes.length, animated, gridCells),
             this.fixTargetNodesAroundCenter(centerNode, targetNodes, animated, gridCells),
         ]);
+    }
+
+    private mapPosition(pos: PointLike) {
+        return {
+            x: pos.x + this.graphOriginX,
+            y: pos.y + this.graphOriginY,
+        };
+    }
+
+    private unmapPosition(pos: PointLike) {
+        return {
+            x: pos.x - this.graphOriginX,
+            y: pos.y - this.graphOriginY,
+        };
     }
 
     private findSmallestScale(nodeCount: number) {
@@ -164,28 +194,28 @@ export class Layout {
             const minDist2 = Math.min(dist2TopLeft, dist2TopRight, dist2BottomLeft, dist2BottomRight);
 
             if (minDist2 == dist2TopLeft) {
-                const pos = this.applyRandomOffset(cellTopLeftPos, this.randomOffset);
+                const pos = this.unmapPosition(this.applyRandomOffset(cellTopLeftPos, this.randomOffset));
                 if (animated) transitionFinished.push(this.graphService.animateMove(node, pos.x, pos.y));
                 else node.setPosition(pos.x, pos.y);
                 if (this.freeCell(gridCells, cellTopRight, node) == 0) occupiedCellCount--;
                 if (this.freeCell(gridCells, cellBottomLeft, node) == 0) occupiedCellCount--;
                 if (this.freeCell(gridCells, cellBottomRight, node) == 0) occupiedCellCount--;
             } else if (minDist2 == dist2TopRight) {
-                const pos = this.applyRandomOffset(cellTopRightPos, this.randomOffset);
+                const pos = this.unmapPosition(this.applyRandomOffset(cellTopRightPos, this.randomOffset));
                 if (animated) transitionFinished.push(this.graphService.animateMove(node, pos.x, pos.y));
                 else node.setPosition(pos.x, pos.y);
                 if (this.freeCell(gridCells, cellTopLeft, node) == 0) occupiedCellCount--;
                 if (this.freeCell(gridCells, cellBottomLeft, node) == 0) occupiedCellCount--;
                 if (this.freeCell(gridCells, cellBottomRight, node) == 0) occupiedCellCount--;
             } else if (minDist2 == dist2BottomLeft) {
-                const pos = this.applyRandomOffset(cellBottomLeftPos, this.randomOffset);
+                const pos = this.unmapPosition(this.applyRandomOffset(cellBottomLeftPos, this.randomOffset));
                 if (animated) transitionFinished.push(this.graphService.animateMove(node, pos.x, pos.y));
                 else node.setPosition(pos.x, pos.y);
                 if (this.freeCell(gridCells, cellTopLeft, node) == 0) occupiedCellCount--;
                 if (this.freeCell(gridCells, cellTopRight, node) == 0) occupiedCellCount--;
                 if (this.freeCell(gridCells, cellBottomRight, node) == 0) occupiedCellCount--;
             } else {
-                const pos = this.applyRandomOffset(cellBottomRightPos, this.randomOffset);
+                const pos = this.unmapPosition(this.applyRandomOffset(cellBottomRightPos, this.randomOffset));
                 if (animated) transitionFinished.push(this.graphService.animateMove(node, pos.x, pos.y));
                 else node.setPosition(pos.x, pos.y);
                 if (this.freeCell(gridCells, cellTopLeft, node) == 0) occupiedCellCount--;
@@ -198,7 +228,7 @@ export class Layout {
     }
 
     private calcCorners(node: Node<Node.Properties>) {
-        const pos = node.getPosition();
+        const pos = this.mapPosition(node.getPosition());
         const nodeSize = node.size();
         return {
             topLeft: {
@@ -258,7 +288,7 @@ export class Layout {
             for (let col = 0; col < this.gridColCount; col++) {
                 if (gridCells[row][col].length == 0) {
                     const posInCell = this.calcNodePosInCell({row: row, col: col});
-                    const finalPos = this.applyRandomOffset(posInCell, this.randomOffset);
+                    const finalPos = this.unmapPosition(this.applyRandomOffset(posInCell, this.randomOffset));
 
                     if (targetNodeIndex == targetNodes.length) {
                         nodeExist = false;
@@ -290,10 +320,7 @@ export class Layout {
         dummyObservable.complete();
         const transitionFinished: Observable<void>[] = [dummyObservable];
 
-        const topLeft = {
-            x: centerNode.getPosition().x,
-            y: centerNode.getPosition().y,
-        };
+        const topLeft = this.mapPosition(centerNode.getPosition());
         const cellTopLeft = this.calcGridCell(topLeft);
         let radius = 1;
         while (true) {
@@ -303,7 +330,7 @@ export class Layout {
             for (let i = 0; i < ring.length; i++) {
                 if (gridCells[ring[i].row][ring[i].col].length == 0) {
                     const posInCell = this.calcNodePosInCell(ring[i]);
-                    const finalPos = this.applyRandomOffset(posInCell, this.randomOffset);
+                    const finalPos = this.unmapPosition(this.applyRandomOffset(posInCell, this.randomOffset));
 
                     if (targetNodeIndex == targetNodes.length) {
                         nodeExist = false;
