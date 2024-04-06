@@ -104,6 +104,13 @@ export class StencilService {
             notFoundText: 'Not Found',
             collapsable: true,
             stencilGraphHeight: 0,
+            getDropNode: (draggingNode, options) => {
+                const node = draggingNode.clone();
+                this.graphService.mountCustomNode(node);
+                console.log('dsfs');
+                // this.modalService.showModale(node);
+                return node;
+            },
             layoutOptions: {
                 center: false,
                 marginX: 15,
