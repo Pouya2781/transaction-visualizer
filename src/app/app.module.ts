@@ -28,6 +28,8 @@ import {NzDrawerModule} from 'ng-zorro-antd/drawer';
 import {DrawerComponent} from './drawer/drawer.component';
 import {NzFormModule} from 'ng-zorro-antd/form';
 import {NzButtonModule} from 'ng-zorro-antd/button';
+import {NzModalModule} from 'ng-zorro-antd/modal';
+import { BFSModalComponent } from './bfsmodal/bfsmodal.component';
 
 registerLocaleData(en);
 
@@ -41,6 +43,7 @@ registerLocaleData(en);
         BankAccountComponent,
         TransactionComponent,
         DrawerComponent,
+        BFSModalComponent,
     ],
     imports: [
         BrowserModule,
@@ -59,6 +62,7 @@ registerLocaleData(en);
         NzDrawerModule,
         NzFormModule,
         NzButtonModule,
+        NzModalModule,
     ],
     providers: [{provide: NZ_I18N, useValue: en_US}],
     bootstrap: [AppComponent],

@@ -18,6 +18,9 @@ export class BankGraphService {
     private bankGraphEdges: Map<number, BankGraphEdge>;
     public liteMode: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private selectedComponents: BankAccountComponent[] = [];
+    public get canExecuteRouting() {
+        return this.selectedComponents.length == 2;
+    }
 
     private readonly NODE_WIDTH = 270;
     private readonly NODE_HEIGHT = 80;
@@ -366,8 +369,8 @@ export class BankGraphService {
         return routes;
     }
 
-    public runBFS() {
-        const routes = this.route(this.selectedComponents[0].accountId, this.selectedComponents[1].accountId, 7);
+    public executeRouting(length: number) {
+        const routes = this.route(this.selectedComponents[0].accountId, this.selectedComponents[1].accountId, length);
         for (let route of routes) {
             for (let bankGraphEdge of route.bankGraphEdges) {
                 this.graphService.highlightEdge(bankGraphEdge.transactionEdge);

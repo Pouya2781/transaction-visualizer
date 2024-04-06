@@ -5,6 +5,8 @@ import {AccountType} from '../enums/account-type';
 import {BankGraphService} from '../services/bank-graph.service';
 import {BankAccount} from '../models/bank-account';
 import {Transaction} from '../models/transaction';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {BFSModalComponent} from '../bfsmodal/bfsmodal.component';
 
 @Component({
     selector: 'app-header',
@@ -15,44 +17,28 @@ export class HeaderComponent {
     console: any = console;
 
     constructor(
-        private apiService: ApiService,
-        private bankGraphService: BankGraphService
+        private bankGraphService: BankGraphService,
+        private modalService: NzModalService
     ) {}
     onSearch(value: string) {
         this.bankGraphService.addAccountById(6534454617, {x: 200, y: 200});
-        // this.bankGraphService.expandAccount(6039548046);
-        // this.apiService.getAccount(6534454617).subscribe((bankAccount: BankAccount) => {
-        //     this.bankGraphService.addAccount(bankAccount);
-        // });
-        // this.apiService.getAccount(6039548046).subscribe((bankAccount: BankAccount) => {
-        //     this.bankGraphService.addAccount(bankAccount);
-        // });
-        // this.apiService.getOutgoingTransaction(6534454617).subscribe((transactions: Transaction[]) => {
-        //     console.log(transactions[0]);
-        //     this.bankGraphService.addTransaction(transactions[0]);
-        // });
-        // this.apiService.getAccount(value).subscribe((bankAccount: BankAccount) => {
-        //     console.log(bankAccount);
-        //     this.bankGraphService.addAccount(bankAccount);
-        //     // this.graphService.addCustomNode({
-        //     //     shape: 'custom-angular-component-node',
-        //     //     x: 100,
-        //     //     y: 100,
-        //     //     data: {
-        //     //         ngArguments: {
-        //     //             ...account,
-        //     //             transactionCount: 0,
-        //     //         },
-        //     //     },
-        //     // });
-        // });
     }
 
     onLiteMode(value: boolean) {
         this.bankGraphService.setLightMode(value);
     }
 
-    onClick() {
-        this.bankGraphService.runBFS();
+    onExecuteRouting() {
+        if (this.bankGraphService.canExecuteRouting) {
+            const modal = this.modalService.create({
+                nzTitle: 'مسیریابی',
+                nzContent: BFSModalComponent,
+                nzFooter: null,
+            });
+
+            modal.afterClose.subscribe((result) => {
+                this.bankGraphService.executeRouting(result.routeLength);
+            });
+        }
     }
 }

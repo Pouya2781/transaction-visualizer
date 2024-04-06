@@ -36,8 +36,10 @@
         </svg>
     </div>
     <div class="nav">
-        <button (click)="onClick()">bfs</button>
         <app-switch (change)="onLiteMode($event)" [defaultValue]="false"></app-switch>
+        <button (click)="onExecuteRouting()" nz-button nzType="primary" nzSize="default" nzShape="round">
+            مسیریابی
+        </button>
         <app-searchbox (search)="onSearch($event)"></app-searchbox>
     </div>
 </div>
