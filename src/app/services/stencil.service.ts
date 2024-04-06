@@ -1,7 +1,10 @@
-import {Injectable} from '@angular/core';
+import {Injectable, Injector} from '@angular/core';
 import {Stencil} from '@antv/x6-plugin-stencil';
 import {Node} from '@antv/x6';
 import {GraphService} from './graph.service';
+import {AccountType} from '../enums/account-type';
+import {register} from '@antv/x6-angular-shape';
+import {BankAccountComponent} from '../graph/node/bank-account/bank-account.component';
 
 @Injectable({
     providedIn: 'root',
@@ -12,48 +15,24 @@ export class StencilService {
         {
             metaDatas: [
                 {
-                    shape: 'rect',
-                    width: 80,
-                    height: 40,
-                    label: 'rect',
-                    ports: {
-                        groups: {
-                            input: {
-                                attrs: {
-                                    circle: {
-                                        r: 6,
-                                        magnet: 'passive',
-                                        stroke: '#31d0c6',
-                                        fill: '#fff',
-                                        strokeWidth: 2,
-                                    },
-                                },
-                                position: 'left',
-                            },
-                            output: {
-                                attrs: {
-                                    circle: {
-                                        r: 6,
-                                        magnet: true,
-                                        stroke: '#990000',
-                                        fill: '#fff',
-                                        strokeWidth: 2,
-                                    },
-                                },
-                                position: 'right',
-                            },
+                    shape: 'custom-angular-component-node',
+                    width: 290,
+                    height: 80,
+                    data: {
+                        ngArguments: {
+                            ownerName: 'افسر',
+                            ownerId: 1253664585,
+                            ownerFamilyName: 'طباطبایی',
+                            accountId: '6534454617',
+                            branchName: 'گلوبندک',
+                            branchAddress: 'تهران-خیابان خیام-بالاتر از چهارراه گلوبندک',
+                            branchTelephone: '55638667',
+                            sheba: 'IR120778801496000000198',
+                            cardId: '6104335000000190',
+                            accountType: AccountType.CURRENT,
+                            transactionCount: 196,
                         },
-                        items: [
-                            {id: 'input-port', group: 'input'},
-                            {id: 'output-port', group: 'output'},
-                        ],
                     },
-                },
-                {
-                    shape: 'circle',
-                    width: 40,
-                    height: 40,
-                    label: 'circle',
                 },
             ],
             groupName: 'group1',
@@ -61,56 +40,58 @@ export class StencilService {
         {
             metaDatas: [
                 {
-                    shape: 'ellipse',
-                    width: 80,
-                    height: 40,
-                    label: 'ellipse',
-                    ports: {
-                        groups: {
-                            input: {
-                                attrs: {
-                                    circle: {
-                                        r: 6,
-                                        magnet: true,
-                                        stroke: '#31d0c6',
-                                        fill: '#fff',
-                                        strokeWidth: 2,
-                                    },
-                                },
-                                position: 'left',
-                            },
-                            output: {
-                                attrs: {
-                                    circle: {
-                                        r: 6,
-                                        magnet: true,
-                                        stroke: '#990000',
-                                        fill: '#fff',
-                                        strokeWidth: 2,
-                                    },
-                                },
-                                position: 'right',
-                            },
+                    shape: 'custom-angular-component-node',
+                    width: 290,
+                    height: 80,
+                    data: {
+                        ngArguments: {
+                            ownerName: 'افسر',
+                            ownerId: 1253664585,
+                            ownerFamilyName: 'طباطبایی',
+                            accountId: '6534454617',
+                            branchName: 'گلوبندک',
+                            branchAddress: 'تهران-خیابان خیام-بالاتر از چهارراه گلوبندک',
+                            branchTelephone: '55638667',
+                            sheba: 'IR120778801496000000198',
+                            cardId: '6104335000000190',
+                            accountType: AccountType.DEPOSIT,
+                            transactionCount: 196,
                         },
-                        items: [
-                            {id: 'input-port', group: 'input'},
-                            {id: 'output-port', group: 'output'},
-                        ],
                     },
-                },
-                {
-                    shape: 'path',
-                    width: 40,
-                    height: 40,
-                    // https://www.svgrepo.com/svg/13653/like
-                    path: 'M24.85,10.126c2.018-4.783,6.628-8.125,11.99-8.125c7.223,0,12.425,6.179,13.079,13.543c0,0,0.353,1.828-0.424,5.119c-1.058,4.482-3.545,8.464-6.898,11.503L24.85,48L7.402,32.165c-3.353-3.038-5.84-7.021-6.898-11.503c-0.777-3.291-0.424-5.119-0.424-5.119C0.734,8.179,5.936,2,13.159,2C18.522,2,22.832,5.343,24.85,10.126z',
-                    label: 'path',
                 },
             ],
             groupName: 'group2',
         },
+        {
+            metaDatas: [
+                {
+                    shape: 'custom-angular-component-node',
+                    width: 290,
+                    height: 80,
+                    data: {
+                        ngArguments: {
+                            ownerName: 'افسر',
+                            ownerId: 1253664585,
+                            ownerFamilyName: 'طباطبایی',
+                            accountId: '6534454617',
+                            branchName: 'گلوبندک',
+                            branchAddress: 'تهران-خیابان خیام-بالاتر از چهارراه گلوبندک',
+                            branchTelephone: '55638667',
+                            sheba: 'IR120778801496000000198',
+                            cardId: '6104335000000190',
+                            accountType: AccountType.SAVINGS,
+                            transactionCount: 196,
+                        },
+                    },
+                },
+            ],
+            groupName: 'group3',
+        },
     ];
-    constructor(private graphService: GraphService) {}
+    constructor(
+        private graphService: GraphService,
+        private injector: Injector
+    ) {}
 
     public createStencil(stencilContainerRef: HTMLElement) {
         this.stencil = new Stencil({
@@ -123,16 +104,31 @@ export class StencilService {
             notFoundText: 'Not Found',
             collapsable: true,
             stencilGraphHeight: 0,
+            layoutOptions: {
+                center: false,
+                marginX: 15,
+                marginY: 15,
+            },
             groups: [
                 {
                     name: 'group1',
-                    title: 'Group 1',
+                    title: 'حساب جاری',
                 },
                 {
                     name: 'group2',
-                    title: 'Group 2',
+                    title: 'حساب سپرده',
+                },
+                {
+                    name: 'group3',
+                    title: 'حساب پس انداز',
                 },
             ],
+        });
+
+        register({
+            shape: 'custom-angular-component-node',
+            content: BankAccountComponent,
+            injector: this.injector,
         });
 
         stencilContainerRef.appendChild(this.stencil.container);
