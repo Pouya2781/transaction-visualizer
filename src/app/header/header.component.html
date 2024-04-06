@@ -37,7 +37,14 @@
     </div>
     <div class="nav">
         <app-switch (change)="onLiteMode($event)" [defaultValue]="false"></app-switch>
-        <button (click)="onExecuteRouting()" nz-button nzType="primary" nzSize="default" nzShape="round">
+        <button
+            [disabled]="!bankGraphService.canExecuteRouting"
+            (click)="onExecuteRouting()"
+            nz-button
+            nzType="primary"
+            nzSize="default"
+            nzShape="round"
+        >
             مسیریابی
         </button>
         <app-searchbox (search)="onSearch($event)"></app-searchbox>

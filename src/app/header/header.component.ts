@@ -17,7 +17,7 @@ export class HeaderComponent {
     console: any = console;
 
     constructor(
-        private bankGraphService: BankGraphService,
+        public bankGraphService: BankGraphService,
         private modalService: NzModalService
     ) {}
     onSearch(value: string) {
