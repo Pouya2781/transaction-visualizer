@@ -36,6 +36,7 @@
         </svg>
     </div>
     <div class="nav">
+        <button (click)="onClick()">bfs</button>
         <app-switch (change)="onLiteMode($event)" [defaultValue]="false"></app-switch>
         <app-searchbox (search)="onSearch($event)"></app-searchbox>
     </div>

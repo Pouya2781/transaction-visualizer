@@ -68,6 +68,7 @@ export class BankGraphService {
     }
 
     public requestDeselection(component: BankAccountComponent) {
+        this.graphService.resetAllEdgeHighlights();
         const selectionIndex = this.selectedComponents.indexOf(component);
         this.selectedComponents.splice(selectionIndex, 1);
         if (selectionIndex == 0 && this.selectedComponents.length == 1)
@@ -288,5 +289,89 @@ export class BankGraphService {
     public expandAccountInDepth(accountId: number, depth: number) {
         if (depth == 0) return;
         this.expandAccountInDepthQueue([{accountId: accountId, depth: depth}], [], [accountId]);
+    }
+
+    public routeInLength(
+        openAccounts: {
+            bankGraphNode: BankGraphNode;
+            length: number;
+            route: {bankGraphNodes: BankGraphNode[]; bankGraphEdges: BankGraphEdge[]};
+        }[],
+        destinationBankGraphNode: BankGraphNode,
+        routes: {bankGraphNodes: BankGraphNode[]; bankGraphEdges: BankGraphEdge[]}[]
+    ) {
+        while (openAccounts.length > 0) {
+            const account = openAccounts.shift();
+
+            if (account) {
+                if (account.bankGraphNode == destinationBankGraphNode) {
+                    routes.push({
+                        bankGraphNodes: [...account.route.bankGraphNodes],
+                        bankGraphEdges: [...account.route.bankGraphEdges],
+                    });
+                } else {
+                    if (account.length > 0) {
+                        const uniqueEdges: BankGraphEdge[] = [];
+                        for (let bankGraphEdge of account.bankGraphNode.outgoingBankGraphEdges) {
+                            if (
+                                !uniqueEdges.find(
+                                    (p) => p.destinationBankGraphNode == bankGraphEdge.destinationBankGraphNode
+                                )
+                            ) {
+                                uniqueEdges.push(bankGraphEdge);
+                            }
+                        }
+
+                        for (let bankGraphEdge of uniqueEdges) {
+                            if (!account.route.bankGraphNodes.includes(bankGraphEdge.destinationBankGraphNode)) {
+                                openAccounts.push({
+                                    bankGraphNode: bankGraphEdge.destinationBankGraphNode,
+                                    length: account.length - 1,
+                                    route: {
+                                        bankGraphNodes: [
+                                            ...account.route.bankGraphNodes,
+                                            bankGraphEdge.destinationBankGraphNode,
+                                        ],
+                                        bankGraphEdges: [...account.route.bankGraphEdges, bankGraphEdge],
+                                    },
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public route(sourceAccountId: number, destinationAccountId: number, length: number) {
+        const sourceBankGraphNode = this.bankGraphNodes.get(sourceAccountId);
+        if (!sourceBankGraphNode) return [];
+        const destinationBankGraphNode = this.bankGraphNodes.get(destinationAccountId);
+        if (!destinationBankGraphNode) return [];
+        if (sourceBankGraphNode == destinationBankGraphNode) return [];
+        length = Math.max(0, Math.min(7, length));
+
+        const routes: {bankGraphNodes: BankGraphNode[]; bankGraphEdges: BankGraphEdge[]}[] = [];
+        this.routeInLength(
+            [
+                {
+                    bankGraphNode: sourceBankGraphNode,
+                    length: length,
+                    route: {bankGraphNodes: [sourceBankGraphNode], bankGraphEdges: []},
+                },
+            ],
+            destinationBankGraphNode,
+            routes
+        );
+        return routes;
+    }
+
+    public runBFS() {
+        const routes = this.route(this.selectedComponents[0].accountId, this.selectedComponents[1].accountId, 7);
+        for (let route of routes) {
+            for (let bankGraphEdge of route.bankGraphEdges) {
+                this.graphService.highlightEdge(bankGraphEdge.transactionEdge);
+            }
+        }
     }
 }

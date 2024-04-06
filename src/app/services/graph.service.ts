@@ -1,5 +1,5 @@
 import {Injectable, Injector, Renderer2} from '@angular/core';
-import {Graph, Markup, Model, Node, Edge, Timing} from '@antv/x6';
+import {Graph, Markup, Model, Node, Edge, Timing, Color} from '@antv/x6';
 import {DynamicNodeViewComponent, DynamicNodeViewComponentRef, InterconnectedNode} from '../models/node.type';
 import {CustomEdge, CustomEdgeMetadata} from '../models/edge.type';
 import {ComponentType} from '@angular/cdk/portal';
@@ -12,6 +12,9 @@ import {Layout} from '../models/layout';
     providedIn: 'root',
 })
 export class GraphService {
+    private readonly DEFAULT_COLOR = '#ccc';
+    private readonly HIGHLIGHT_COLOR = '#000';
+
     private renderer!: Renderer2;
 
     private graph!: Graph;
@@ -133,8 +136,8 @@ export class GraphService {
         return newCustomEdge;
     }
 
-    private convertEdge(Edge: Edge, metadata: CustomEdgeMetadata): CustomEdge {
-        const customEdge = Edge as CustomEdge;
+    private convertEdge(edge: Edge, metadata: CustomEdgeMetadata): CustomEdge {
+        const customEdge = edge as CustomEdge;
         customEdge.ngArguments = metadata.ngArguments || {};
         customEdge.labelShape = metadata.labelShape;
         customEdge.initialization = new Promise((resolve, reject) => {
@@ -153,6 +156,21 @@ export class GraphService {
             this.initializationResolver(null);
         };
         return customEdge;
+    }
+
+    public highlightEdge(edge: Edge) {
+        edge.attr('line/stroke', this.HIGHLIGHT_COLOR);
+        edge.toFront();
+    }
+
+    public resetEdgeHighlight(edge: Edge) {
+        edge.attr('line/stroke', this.DEFAULT_COLOR);
+    }
+
+    public resetAllEdgeHighlights() {
+        for (let edge of this.edgeMap.values()) {
+            this.resetEdgeHighlight(edge);
+        }
     }
 
     public removeEdge(id: string) {
