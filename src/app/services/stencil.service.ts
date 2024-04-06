@@ -5,6 +5,8 @@ import {GraphService} from './graph.service';
 import {AccountType} from '../enums/account-type';
 import {register} from '@antv/x6-angular-shape';
 import {BankAccountComponent} from '../graph/node/bank-account/bank-account.component';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {ModalComponent} from '../modal/modal.component';
 
 @Injectable({
     providedIn: 'root',
@@ -90,6 +92,7 @@ export class StencilService {
     ];
     constructor(
         private graphService: GraphService,
+        private modal: NzModalService,
         private injector: Injector
     ) {}
 
@@ -107,8 +110,36 @@ export class StencilService {
             getDropNode: (draggingNode, options) => {
                 const node = draggingNode.clone();
                 this.graphService.mountCustomNode(node);
-                console.log('dsfs');
-                // this.modalService.showModale(node);
+
+                this.modal.create({
+                    nzTitle: 'ایجاد حساب جدید',
+                    nzContent: ModalComponent,
+                    nzData: {
+                        favoriteLibrary: 'angular',
+                        favoriteFramework: 'angular',
+                    },
+                    nzCentered: true,
+                    nzOnCancel: () => {
+                        this.graphService.getGraph.removeNode(node.id);
+                    },
+                    nzFooter: [
+                        {
+                            label: 'لغو',
+                            onClick: (componentInstance) => {
+                                this.graphService.getGraph.removeNode(node.id);
+                                this.modal.closeAll();
+                            },
+                        },
+                        {
+                            label: 'ثبت',
+                            type: 'primary',
+                            onClick: (componentInstance) => {
+                                this.modal.closeAll();
+                            },
+                        },
+                    ],
+                });
+
                 return node;
             },
             layoutOptions: {
