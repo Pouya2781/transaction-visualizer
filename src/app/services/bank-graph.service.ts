@@ -9,40 +9,55 @@ import {BehaviorSubject, forkJoin, Observable, ReplaySubject} from 'rxjs';
 import {BankAccountComponent} from '../graph/node/bank-account/bank-account.component';
 import {PointLike} from '@antv/x6';
 import {AccountCreation, PartialAccountCreationArray} from './account-creation';
+// todo extract service anjam beshe 
+export interface BankGraph {
+    nodes:  Map<number, BankGraphNode>,
+    edges: Map<number, BankGraphEdge>
 
+    graphProperties: {
+        
+    nodeHeight : NODE_HEIGHT;
+    nodeWidth : NODE_WIDTH;
+    cellPadding : CELL_PADDING;
+    randomOffset : RANDOM_OFFSET;
+    }
+}
 @Injectable({
     providedIn: 'root',
 })
 export class BankGraphService {
-    private bankGraphNodes: Map<number, BankGraphNode>;
-    private bankGraphEdges: Map<number, BankGraphEdge>;
+    // todo on property hayi ke beham nazdikan interface beshan
     public liteMode: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    private selectedComponents: BankAccountComponent[] = [];
 
+
+    private _bankGraphNodes: Map<number, BankGraphNode>;
+    private _bankGraphEdges: Map<number, BankGraphEdge>;
+    private _selectedComponents: BankAccountComponent[] = [];
+    
     private readonly NODE_WIDTH = 270;
     private readonly NODE_HEIGHT = 80;
     private readonly CELL_PADDING = 80;
     private readonly RANDOM_OFFSET = 40;
-
+    
     private readonly LITE_NODE_WIDTH = 115;
     private readonly LITE_NODE_HEIGHT = 40;
     private readonly LITE_CELL_PADDING = 40;
     private readonly LITE_RANDOM_OFFSET = 20;
-
+    
     private nodeHeight = this.NODE_HEIGHT;
     private nodeWidth = this.NODE_WIDTH;
     private cellPadding = this.CELL_PADDING;
     private randomOffset = this.RANDOM_OFFSET;
-
-    constructor(
+    
+    public constructor(
         private readonly graphService: GraphService,
-        private apiService: ApiService
+        private readonly apiService: ApiService
     ) {
         this.bankGraphNodes = new Map<number, BankGraphNode>();
         this.bankGraphEdges = new Map<number, BankGraphEdge>();
     }
 
-    public setLightMode(value: boolean) {
+    public setLightMode(value: boolean):void {
         if (!value) {
             this.nodeWidth = this.NODE_WIDTH;
             this.nodeHeight = this.NODE_HEIGHT;
@@ -57,7 +72,7 @@ export class BankGraphService {
         this.liteMode.next(value);
     }
 
-    public requestSelection(component: BankAccountComponent) {
+    public requestSelection(component: BankAccountComponent):number{
         if (this.selectedComponents.length == 2) return -1;
         if (this.selectedComponents.length == 1) {
             this.selectedComponents.push(component);
@@ -131,7 +146,7 @@ export class BankGraphService {
                 //         side: 'right',
                 //         padding: 50,
                 //     },
-                // },
+                // },//todo comment nabashe
                 connector: {
                     name: 'rounded',
                 },
@@ -224,7 +239,7 @@ export class BankGraphService {
     public expandAndLayoutAccount(accountId: number, ignoreAccountLayout: number[]) {
         const accountsExpanded = new ReplaySubject<AccountCreation[]>();
         const bankGraphNode = this.bankGraphNodes.get(accountId);
-
+// todo extract method ham anjam beshe 
         if (bankGraphNode) {
             this.expandAccount(accountId).subscribe((accountsAddedObservable) => {
                 accountsAddedObservable.subscribe((accountCreationData) => {
@@ -244,7 +259,7 @@ export class BankGraphService {
                             bankGraphNode.bankAccountNode,
                             bankAccountNodes,
                             true,
-                            this.randomOffset
+                            this.randomOffset//todo ina mitoonan yeja dg declare beshan va be soorat 1 object ersal beshe age beham marbootan
                         )
                         .subscribe(() => {
                             accountsExpanded.next(pureAccountCreationData);
@@ -257,7 +272,7 @@ export class BankGraphService {
     }
 
     public expandAccountInDepthQueue(
-        expansionQueue: {depth: number; accountId: number}[],
+        expansionQueue: {depth: number; accountId: number}[],//todo inteface besazid hard code nadid inja typesho
         expandedAccounts: number[],
         ignoreAccountLayout: number[]
     ) {

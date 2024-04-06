@@ -8,20 +8,26 @@ import {BankGraphService} from '../../../services/bank-graph.service';
     styleUrls: ['./transaction.component.scss'],
 })
 export class TransactionComponent {
-    @Input() public sourceAccountId!: string;
+    @ViewChild('targetElement')
+    protected targetElement!: ElementRef;
+
+    @ViewChild('targetIcon') targetIcon!: ElementRef;
+    @ViewChild('targetLabel') targetLabel!: ElementRef;
+    @ViewChild('wrapper') wrapper!: ElementRef;
+
+    @Input()
+    public sourceAccountId!: string;
+
     @Input() public destinationAccountId!: string;
     @Input() public amount!: string;
     @Input() public date!: string;
     @Input() public transactionId!: string;
     @Input() public type!: TransactionType;
-    visible: boolean = false;
 
-    @ViewChild('targetElement') targetElement!: ElementRef;
-    @ViewChild('targetIcon') targetIcon!: ElementRef;
-    @ViewChild('targetLabel') targetLabel!: ElementRef;
-    @ViewChild('wrapper') wrapper!: ElementRef;
+    protected visible: boolean = false;
 
-    protected readonly Number = Number;
+
+    protected readonly Number = Number;// todo ?
     expanded: boolean = false;
 
     constructor(
@@ -32,9 +38,12 @@ export class TransactionComponent {
         this.bankGraphService.liteMode.subscribe((value) => {
             this.visible = !value;
         });
+        // todo ngOnInit subscribe
     }
 
     clicked() {
+// todo extract method 
+
         this.expanded = !this.expanded;
 
         const firstTarget = this.targetElement.nativeElement.getBoundingClientRect();

@@ -6,3 +6,4 @@ export interface AccountCreation {
 }
 
 export type PartialAccountCreationArray = [Partial<AccountCreation>, ...AccountCreation[]];
+//todo to service nabashe

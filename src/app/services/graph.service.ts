@@ -1,6 +1,6 @@
 import {Injectable, Injector, Renderer2} from '@angular/core';
 import {Graph, Markup, Model, Node, Edge, Timing} from '@antv/x6';
-import {DynamicNodeViewComponent, DynamicNodeViewComponentRef, InterconnectedNode} from '../models/node.type';
+import {DynamicNodeViewComponent, DynamicNodeViewComponentRef} from '../models/node.type';
 import {CustomEdge, CustomEdgeMetadata} from '../models/edge.type';
 import {ComponentType} from '@angular/cdk/portal';
 import {ComponentCreatorService} from './component-creator.service';
@@ -14,7 +14,7 @@ import {Layout} from '../models/layout';
 export class GraphService {
     private renderer!: Renderer2;
 
-    private graph!: Graph;
+    private _graph!: Graph;
     private nodeMap: Map<string, Node> = new Map<string, Node>();
     private nodeDynamicViewMap: Map<Element, string> = new Map<Element, string>();
     private nodeDynamicViewReverseMap: Map<string, DynamicNodeViewComponentRef> = new Map<

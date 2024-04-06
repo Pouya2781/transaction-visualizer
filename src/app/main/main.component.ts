@@ -5,7 +5,7 @@ import {register} from '@antv/x6-angular-shape';
 import {AccountType} from '../enums/account-type';
 import {TransactionType} from '../enums/transaction-type';
 import {TransactionComponent} from '../graph/edge/transcation/transaction.component';
-import {ApiService} from '../services/api.service';
+import {ApiService} from '../services/api.service';// todo optimize imports
 import {log} from 'ng-zorro-antd/core/logger';
 import {StencilService} from '../services/stencil.service';
 
@@ -30,8 +30,7 @@ export class MainComponent implements AfterViewInit {
         this.graphService.registerEdgeLabel('transaction-label', TransactionComponent);
         this.graphService.getGraph.zoomTo(0.65, {center: {x: 0, y: 0}});
 
-        console.log(this.graphService.getGraph.zoom());
-
+        console.log(this.graphService.getGraph.zoom());// todo log nadashte bashid
         register({
             shape: 'custom-angular-component-node',
             content: BankAccountComponent,
@@ -115,5 +114,5 @@ export class MainComponent implements AfterViewInit {
         //         type: TransactionType.PAYA,
         //     },
         // });
-    }
+    }// todo comment
 }

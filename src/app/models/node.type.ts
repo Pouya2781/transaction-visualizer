@@ -5,9 +5,9 @@ export interface DynamicNodeView {
     dynamicNodeView: ElementRef;
 }
 
-export interface InterconnectedNode {
-    nodeId: string;
+export interface InterconnectedNodeId {//todo
+    value: string;
 }
 
-export type DynamicNodeViewComponentRef = InterconnectedNode & DynamicNodeView;
+export type DynamicNodeViewComponentRef = {interconnectedNode: InterconnectedNodeId; dynamicNodeView: DynamicNodeView};
 export type DynamicNodeViewComponent = DynamicNodeViewComponentRef & Content;

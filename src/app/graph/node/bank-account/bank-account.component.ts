@@ -7,7 +7,7 @@ import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropd
 import {BankGraphService} from '../../../services/bank-graph.service';
 import {NzDrawerService} from 'ng-zorro-antd/drawer';
 import {DrawerComponent} from '../../../drawer/drawer.component';
-
+// todo public private methods and return values type 
 @Component({
     selector: 'app-bank-account',
     templateUrl: './bank-account.component.html',
@@ -48,7 +48,7 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
     }
 
     ngAfterViewInit() {
-        this.graphService.setUpDynamicResize(this);
+        this.graphService.setUpDynamicResize(this); // todo dont do this ,never never never :) !!!!
     }
 
     showDetail() {
@@ -112,7 +112,7 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
         });
 
         drawerRef.afterOpen.subscribe(() => {
-            console.log('Drawer(Template) open');
+            console.log('Drawer(Template) open');// todo log hazf beshe 
         });
 
         drawerRef.afterClose.subscribe(() => {

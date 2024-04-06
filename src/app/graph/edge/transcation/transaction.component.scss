@@ -1,19 +1,27 @@
 .wrapper {
     width: 12rem;
     height: 3rem;
-    font-size: 1.25rem;
+
     display: inline-block;
+    
+    font-size: 1.25rem;
+
     background-color: #eeeeee;
     box-shadow: 0 0 5px 0.5px gray;
+
     border-radius: 0.75rem;
+
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     justify-content: center;
+
     transition-property: width, height;
     transition-duration: 400ms;
     transition-timing-function: ease-in;
+
     overflow: hidden;
+    
     cursor: pointer;
 
     > div {
