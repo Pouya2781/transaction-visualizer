@@ -1,1 +1,70 @@
-<p>modal works! {{ favoriteLibrary }} {{ favoriteFramework }}</p>
+<form nz-form dir="rtl">
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">نام </nz-form-label>
+        <nz-form-control nzHasFeedback [nzSpan]="13" nzErrorTip="نام الزامی است!">
+            <input nz-input [(ngModel)]="ownerName" name="required" required />
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">نام خانوادگی </nz-form-label>
+        <nz-form-control nzHasFeedback [nzSpan]="13" nzErrorTip="نام خانوادگی الزامی است!">
+            <input nz-input [(ngModel)]="ownerFamilyName" name="required" required />
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">کد ملی </nz-form-label>
+        <nz-form-control nzHasFeedback [nzSpan]="13" nzErrorTip="کد ملی الزامی است!">
+            <input nz-input [(ngModel)]="ownerId" name="required" required />
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">شماره حساب </nz-form-label>
+        <nz-form-control nzHasFeedback [nzSpan]="13" nzErrorTip="شماره حساب الزامی است!">
+            <input nz-input [(ngModel)]="accountId" name="required" required />
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">شماره شبا </nz-form-label>
+        <nz-form-control nzHasFeedback [nzSpan]="13" nzErrorTip="شماره شبا الزامی است!">
+            <input nz-input [(ngModel)]="sheba" name="required" required />
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">شماره کارت </nz-form-label>
+        <nz-form-control nzHasFeedback [nzSpan]="13" nzErrorTip="شماره کارت الزامی است!">
+            <input nz-input [(ngModel)]="cardId" name="required" required />
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">شعبه </nz-form-label>
+        <nz-form-control nzHasFeedback [nzSpan]="13" nzErrorTip="شعبه الزامی است!">
+            <input nz-input [(ngModel)]="branchName" name="required" required />
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">آدرس شعبه </nz-form-label>
+        <nz-form-control nzHasFeedback [nzSpan]="13" nzErrorTip="آدرس شعبه الزامی است!">
+            <input nz-input [(ngModel)]="branchAddress" name="required" required />
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">تلفن شعبه </nz-form-label>
+        <nz-form-control nzHasFeedback [nzSpan]="13" nzErrorTip="تلفن شعبه الزامی است!">
+            <input nz-input [(ngModel)]="branchTelephone" name="required" required />
+        </nz-form-control>
+    </nz-form-item>
+</form>
+
+<nz-row>
+    <nz-col nzSpan="18" nzOffset="3">
+        <button nz-button nzBlock nzType="primary" (click)="destroyModal()">ثبت اطلاعات</button>
+    </nz-col>
+</nz-row>

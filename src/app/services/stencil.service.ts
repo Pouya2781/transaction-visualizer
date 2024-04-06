@@ -92,7 +92,7 @@ export class StencilService {
     ];
     constructor(
         private graphService: GraphService,
-        private modal: NzModalService,
+        private modalService: NzModalService,
         private injector: Injector
     ) {}
 
@@ -111,7 +111,7 @@ export class StencilService {
                 const node = draggingNode.clone();
                 this.graphService.mountCustomNode(node);
 
-                this.modal.create({
+                const modal = this.modalService.create({
                     nzTitle: 'ایجاد حساب جدید',
                     nzContent: ModalComponent,
                     nzData: {
@@ -122,22 +122,13 @@ export class StencilService {
                     nzOnCancel: () => {
                         this.graphService.getGraph.removeNode(node.id);
                     },
-                    nzFooter: [
-                        {
-                            label: 'لغو',
-                            onClick: (componentInstance) => {
-                                this.graphService.getGraph.removeNode(node.id);
-                                this.modal.closeAll();
-                            },
-                        },
-                        {
-                            label: 'ثبت',
-                            type: 'primary',
-                            onClick: (componentInstance) => {
-                                this.modal.closeAll();
-                            },
-                        },
-                    ],
+                    nzFooter: null,
+                });
+
+                modal.afterClose.subscribe((result) => {
+                    node.setData({
+                        ngArguments: result,
+                    });
                 });
 
                 return node;
