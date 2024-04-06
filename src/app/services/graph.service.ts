@@ -75,6 +75,9 @@ export class GraphService {
 
                 return () => {};
             },
+            connecting: {
+                allowBlank: false,
+            },
         });
         this.renderer = renderer;
     }

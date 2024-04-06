@@ -12,9 +12,21 @@
         font-weight: 600;
         padding-block: 1rem;
         padding-inline: 2rem;
-        background-color: #eeeeee;
         box-shadow: 0 0 5px 0.5px gray;
         border-radius: 0.75rem;
+        color: white;
+
+        &.current {
+            background: #770000;
+        }
+
+        &.deposit {
+            background: #0d3600;
+        }
+
+        &.saving {
+            background: #002060;
+        }
 
         &.selected0 {
             box-shadow: 0 0 5px 3px green;
