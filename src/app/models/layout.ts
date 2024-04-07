@@ -1,26 +1,28 @@
 import {Graph, Node, PointLike} from '@antv/x6';
 import {forkJoin, Observable, ReplaySubject} from 'rxjs';
 import {GraphService} from '../services/graph.service';
+import {RowCol} from './row-col';
 
 export class Layout {
-    graph: Graph;
-    graphService: GraphService;
-    nodeWidth: number;
-    nodeHeight: number;
-    cellPadding: number;
-    randomOffset: number;
-    containerWidth: number;
-    containerHeight: number;
-    gridCellWidth: number;
-    gridCellHeight: number;
-    graphZoom: number;
-    graphWidth: number;
-    graphHeight: number;
-    graphOriginX: number;
-    graphOriginY: number;
-    gridRowCount: number;
-    gridColCount: number;
-    gridCellCount: number;
+    private readonly nodeWidth: number;
+    private readonly nodeHeight: number;
+    private readonly cellPadding: number;
+    private readonly randomOffset: number;
+    private readonly containerWidth: number;
+    private readonly containerHeight: number;
+    private readonly gridCellWidth: number;
+    private readonly gridCellHeight: number;
+    private readonly graphZoom: number;
+
+    private graph: Graph;
+    private graphService: GraphService;
+    private graphWidth: number;
+    private graphHeight: number;
+    private graphOriginX: number;
+    private graphOriginY: number;
+    private gridRowCount: number;
+    private gridColCount: number;
+    private gridCellCount: number;
 
     constructor(
         graph: Graph,
@@ -50,7 +52,7 @@ export class Layout {
         this.gridCellCount = this.gridRowCount * this.gridColCount;
     }
 
-    layout(targetNodes: Node<Node.Properties>[], animated: boolean) {
+    layout(targetNodes: Node<Node.Properties>[], animated: boolean): Observable<[void[], void[]]> {
         const nodeGridCellOccupation: Array<[Node<Node.Properties>, number]> = [];
         const allNodes = this.graph.getNodes();
         const staticNodes = allNodes.filter((node) => !targetNodes.includes(node));
@@ -75,7 +77,11 @@ export class Layout {
         ]);
     }
 
-    layoutAroundCenter(centerNode: Node<Node.Properties>, targetNodes: Node<Node.Properties>[], animated: boolean) {
+    layoutAroundCenter(
+        centerNode: Node<Node.Properties>,
+        targetNodes: Node<Node.Properties>[],
+        animated: boolean
+    ): Observable<[void[], void[]]> {
         const centerIndex = targetNodes.indexOf(centerNode);
         if (centerIndex != -1) targetNodes.splice(centerIndex, 1);
 
@@ -86,19 +92,9 @@ export class Layout {
 
         if (this.gridCellCount < allNodes.length) {
             const scaleFactor = this.findSmallestScale(allNodes.length);
-            console.log(this.graphOriginX, this.graphOriginY);
-            this.graph.zoomTo(this.graphZoom / scaleFactor, {
-                center: {
-                    x: 0,
-                    y: 0,
-                },
-            });
+            this.graph.zoomTo(this.graphZoom / scaleFactor, {center: {x: 0, y: 0}});
             this.graphOriginX = this.graph.options.x;
             this.graphOriginY = this.graph.options.y;
-            console.log(this.graphOriginX, this.graphOriginY);
-            setTimeout(() => {
-                console.log(this.graph.options.x, this.graph.options.y);
-            }, 1000);
             this.graphWidth = this.graphWidth * scaleFactor;
             this.graphHeight = this.graphHeight * scaleFactor;
             this.gridColCount = Math.floor(this.graphWidth / this.gridCellWidth);
@@ -115,21 +111,21 @@ export class Layout {
         ]);
     }
 
-    private mapPosition(pos: PointLike) {
+    private mapPosition(pos: PointLike): PointLike {
         return {
             x: pos.x + this.graphOriginX,
             y: pos.y + this.graphOriginY,
         };
     }
 
-    private unmapPosition(pos: PointLike) {
+    private unmapPosition(pos: PointLike): PointLike {
         return {
             x: pos.x - this.graphOriginX,
             y: pos.y - this.graphOriginY,
         };
     }
 
-    private findSmallestScale(nodeCount: number) {
+    private findSmallestScale(nodeCount: number): number {
         const gridColCount = this.graphWidth / this.gridCellWidth;
         const grindRowCount = this.graphHeight / this.gridCellHeight;
 
@@ -160,7 +156,7 @@ export class Layout {
         targetNodesCount: number,
         animated: boolean,
         gridCells: Array<Array<Array<Node<Node.Properties>>>>
-    ) {
+    ): Observable<void[]> {
         nodeGridCellOccupation.sort((n) => n[1]);
 
         const dummyObservable = new ReplaySubject<void>();
@@ -227,7 +223,12 @@ export class Layout {
         return forkJoin(transitionFinished);
     }
 
-    private calcCorners(node: Node<Node.Properties>) {
+    private calcCorners(node: Node<Node.Properties>): {
+        topLeft: PointLike;
+        topRight: PointLike;
+        bottomLeft: PointLike;
+        bottomRight: PointLike;
+    } {
         const pos = this.mapPosition(node.getPosition());
         const nodeSize = node.size();
         return {
@@ -250,14 +251,14 @@ export class Layout {
         };
     }
 
-    private calcGridCell(pos: PointLike) {
+    private calcGridCell(pos: PointLike): RowCol {
         return {
             col: this.clampCol(pos.x / this.gridCellWidth),
             row: this.clampRow(pos.y / this.gridCellHeight),
         };
     }
 
-    private calcNodePosInCell(cell: {col: number; row: number}) {
+    private calcNodePosInCell(cell: RowCol): PointLike {
         return {
             x: cell.col * this.gridCellWidth + this.cellPadding,
             y: cell.row * this.gridCellHeight + this.cellPadding,
@@ -266,9 +267,9 @@ export class Layout {
 
     private freeCell(
         gridCells: Array<Array<Array<Node<Node.Properties>>>>,
-        cell: {col: number; row: number},
+        cell: RowCol,
         node: Node<Node.Properties>
-    ) {
+    ): number {
         gridCells[cell.row][cell.col].splice(gridCells[cell.row][cell.col].indexOf(node), 1);
         return gridCells[cell.row][cell.col].length;
     }
@@ -277,7 +278,7 @@ export class Layout {
         targetNodes: Node<Node.Properties>[],
         animated: boolean,
         gridCells: Array<Array<Array<Node<Node.Properties>>>>
-    ) {
+    ): Observable<void[]> {
         let targetNodeIndex = 0;
         let nodeExist = true;
         const dummyObservable = new ReplaySubject<void>();
@@ -312,7 +313,7 @@ export class Layout {
         targetNodes: Node<Node.Properties>[],
         animated: boolean,
         gridCells: Array<Array<Array<Node<Node.Properties>>>>
-    ) {
+    ): Observable<void[]> {
         let targetNodeIndex = 0;
         let nodeExist = true;
         const dummyObservable = new ReplaySubject<void>();
@@ -352,8 +353,8 @@ export class Layout {
         return forkJoin(transitionFinished);
     }
 
-    private calcRing(rowCol: {row: number; col: number}, rowCount: number, colCount: number, radius: number) {
-        const ring: {row: number; col: number}[] = [];
+    private calcRing(rowCol: RowCol, rowCount: number, colCount: number, radius: number): RowCol[] {
+        const ring: RowCol[] = [];
         const topLeft = {
             row: rowCol.row - radius,
             col: rowCol.col - radius,
@@ -409,7 +410,7 @@ export class Layout {
         return ring;
     }
 
-    private validRowCol(rowCol: {row: number; col: number}, rowCount: number, colCount: number) {
+    private validRowCol(rowCol: RowCol, rowCount: number, colCount: number): boolean {
         if (rowCol.col >= colCount) return false;
         if (rowCol.row >= rowCount) return false;
         if (rowCol.col < 0) return false;
@@ -421,7 +422,7 @@ export class Layout {
         staticNodes: Node<Node.Properties>[],
         gridCells: Array<Array<Array<Node<Node.Properties>>>>,
         nodeGridCellOccupation: Array<[Node<Node.Properties>, number]>
-    ) {
+    ): number {
         let occupiedCellCount = 0;
         for (let node of staticNodes) {
             const {topLeft, topRight, bottomLeft, bottomRight} = this.calcCorners(node);
@@ -431,7 +432,7 @@ export class Layout {
             const cellBottomLeft = this.calcGridCell(bottomLeft);
             const cellBottomRight = this.calcGridCell(bottomRight);
 
-            const uniqueCells: {row: number; col: number}[] = this.calcUniqueCells([
+            const uniqueCells: RowCol[] = this.calcUniqueCells([
                 cellTopLeft,
                 cellTopRight,
                 cellBottomLeft,
@@ -447,8 +448,8 @@ export class Layout {
         return occupiedCellCount;
     }
 
-    private calcUniqueCells(cells: {row: number; col: number}[]) {
-        const uniqueCells: {row: number; col: number}[] = [];
+    private calcUniqueCells(cells: RowCol[]): RowCol[] {
+        const uniqueCells: RowCol[] = [];
         for (let cell of cells) {
             if (!uniqueCells.find((c) => cell.col == c.col && cell.row == c.row)) {
                 uniqueCells.push(cell);
@@ -457,15 +458,15 @@ export class Layout {
         return uniqueCells;
     }
 
-    private clampRow(row: number) {
+    private clampRow(row: number): number {
         return this.clamp(Math.floor(row), 0, this.gridRowCount - 1);
     }
 
-    private clampCol(col: number) {
+    private clampCol(col: number): number {
         return this.clamp(Math.floor(col), 0, this.gridColCount - 1);
     }
 
-    private initArray() {
+    private initArray(): Node<Node.Properties>[][][] {
         const gridCells: Array<Array<Array<Node<Node.Properties>>>> = Array(this.gridRowCount);
         for (let i = 0; i < this.gridRowCount; i++) {
             gridCells[i] = Array(this.gridColCount);
@@ -477,15 +478,15 @@ export class Layout {
         return gridCells;
     }
 
-    private dist2(x1: number, y1: number, x2: number, y2: number) {
+    private dist2(x1: number, y1: number, x2: number, y2: number): number {
         return Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2);
     }
 
-    private clamp(n: number, minValue: number, maxValue: number) {
+    private clamp(n: number, minValue: number, maxValue: number): number {
         return Math.max(minValue, Math.min(maxValue, n));
     }
 
-    private applyRandomOffset(pos: {x: number; y: number}, randomOffset: number) {
+    private applyRandomOffset(pos: PointLike, randomOffset: number): PointLike {
         const x = pos.x + Math.floor(Math.random() * (randomOffset * 2 + 1)) - randomOffset;
         const y = pos.y + Math.floor(Math.random() * (randomOffset * 2 + 1)) - randomOffset;
         return {x, y};

@@ -9,17 +9,16 @@ import {FormControl, FormGroup, NgForm, NonNullableFormBuilder, Validators} from
 })
 export class ModalComponent {
     readonly #modal = inject(NzModalRef);
-    readonly nzModalData = inject(NZ_MODAL_DATA);
 
-    public ownerId!: number;
-    public ownerName: string = '';
-    public ownerFamilyName: string = '';
-    public branchName: string = '';
-    public branchAddress: string = '';
-    public branchTelephone!: number;
-    public sheba: string = '';
-    public cardId: string = '';
-    public accountId!: number;
+    protected ownerId!: number;
+    protected ownerName: string = '';
+    protected ownerFamilyName: string = '';
+    protected branchName: string = '';
+    protected branchAddress: string = '';
+    protected branchTelephone!: number;
+    protected sheba: string = '';
+    protected cardId: string = '';
+    protected accountId!: number;
 
     destroyModal(): void {
         this.#modal.destroy({

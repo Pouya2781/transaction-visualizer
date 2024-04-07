@@ -9,11 +9,11 @@ export interface CustomEdgeMetadata extends Edge.Metadata {
 }
 
 export class CustomEdge extends Edge<Edge.Properties> {
-    componentRef!: ComponentRef<any>;
-    initialization!: Promise<any>;
-    initializationResolver!: (value: any | PromiseLike<any>) => void;
-    ngArguments!: {[key: string]: any};
-    labelShape!: string;
-    initLabelData!: () => void;
-    setLabelData!: (ngArguments: {[key: string]: any}) => void;
+    public componentRef!: ComponentRef<any>;
+    public initialization!: Promise<any>;
+    public initializationResolver!: (value: any | PromiseLike<any>) => void;
+    public ngArguments!: {[key: string]: any};
+    public labelShape!: string;
+    public initLabelData!: () => void;
+    public setLabelData!: (ngArguments: {[key: string]: any}) => void;
 }
