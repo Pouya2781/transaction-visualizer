@@ -84,6 +84,9 @@ export class GraphService {
 
                 return () => {};
             },
+            connecting: {
+                allowBlank: false,
+            },
         });
         this.renderer = renderer;
     }
@@ -111,8 +114,17 @@ export class GraphService {
         metadata.id = uuid;
         const newNode = this.graph.addNode(metadata);
         this.nodeMap.set(newNode.id, newNode);
-        this.graph.zoom();
         return newNode;
+    }
+
+    public mountCustomNode(node: Node<Node.Properties>): Node {
+        node.setData({
+            ngArguments: {
+                nodeId: node.id,
+            },
+        });
+        this.nodeMap.set(node.id, node);
+        return node;
     }
 
     public addCustomEdge(metadata: CustomEdgeMetadata, options?: Model.AddOptions): CustomEdge {

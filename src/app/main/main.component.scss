@@ -1,7 +1,8 @@
 .wrapper {
     display: grid;
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: 33rem 1fr;
     height: 100%;
+    box-shadow: 0 4px 8px #ccc;
 
     .stencil {
         width: 100%;
