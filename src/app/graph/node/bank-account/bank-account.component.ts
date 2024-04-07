@@ -15,24 +15,28 @@ import {BankAccount} from '../../../models/bank-account';
     styleUrls: ['./bank-account.component.scss'],
 })
 export class BankAccountComponent implements AfterViewInit, DynamicNodeView, InterconnectedNode {
+    private readonly CURRENT_ACCOUNT_BORDER_COLOR = 'red';
+    private readonly DEPOSIT_ACCOUNT_BORDER_COLOR = 'green';
+    private readonly SAVINGS_ACCOUNT_BORDER_COLOR = 'blue';
+
+    protected readonly AccountType = AccountType;
+    protected readonly NodeState = NodeState;
+
     @ViewChild('dynamicNodeView') dynamicNodeView!: ElementRef;
     @Input() public nodeId!: string;
 
     @Input() public bankAccount!: BankAccount;
     @Input() public transactionCount!: number;
 
-    protected readonly AccountType = AccountType;
-    protected readonly NodeState = NodeState;
-
     public nodeState: NodeState = NodeState.NORMAL;
     public selectionIndex: number = -1;
 
     constructor(
-        private graphService: GraphService,
+        private readonly graphService: GraphService,
         private readonly changeDetector: ChangeDetectorRef,
-        private nzContextMenuService: NzContextMenuService,
-        private bankGraphService: BankGraphService,
-        private drawerService: NzDrawerService
+        private readonly nzContextMenuService: NzContextMenuService,
+        private readonly bankGraphService: BankGraphService,
+        private readonly drawerService: NzDrawerService
     ) {
         this.bankGraphService.liteMode.subscribe((value) => {
             if (value) this.nodeState = NodeState.TINY;
@@ -40,51 +44,51 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
         });
     }
 
-    ngAfterViewInit() {
+    ngAfterViewInit(): void {
         this.graphService.setUpDynamicResize(this);
     }
 
-    showDetail() {
+    showDetail(): void {
         if (this.nodeState == NodeState.EXPANDED) this.nodeState = NodeState.NORMAL;
         else this.nodeState = NodeState.EXPANDED;
         this.changeDetector.detectChanges();
     }
 
-    getBorderColor() {
-        if (this.bankAccount.accountType == AccountType.CURRENT) return 'red';
-        if (this.bankAccount.accountType == AccountType.DEPOSIT) return 'green';
-        return 'blue';
+    getBorderColor(): string {
+        if (this.bankAccount.accountType == AccountType.CURRENT) return this.CURRENT_ACCOUNT_BORDER_COLOR;
+        if (this.bankAccount.accountType == AccountType.DEPOSIT) return this.DEPOSIT_ACCOUNT_BORDER_COLOR;
+        return this.SAVINGS_ACCOUNT_BORDER_COLOR;
     }
 
     contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
         this.nzContextMenuService.create($event, menu);
     }
 
-    onSelect() {
+    onSelect(): void {
         this.selectionIndex = this.bankGraphService.requestSelection(this);
         this.changeDetector.detectChanges();
     }
 
-    onDeselect() {
+    onDeselect(): void {
         this.bankGraphService.requestDeselection(this);
         this.selectionIndex = -1;
         this.changeDetector.detectChanges();
     }
 
-    updateSelectionIndex(selectionIndex: number) {
+    updateSelectionIndex(selectionIndex: number): void {
         this.selectionIndex = selectionIndex;
         this.changeDetector.detectChanges();
     }
 
-    onExpand(depth: number) {
+    onExpand(depth: number): void {
         this.bankGraphService.expandAccountInDepth(this.bankAccount.accountId, depth);
     }
 
-    onDelete() {
+    onDelete(): void {
         this.bankGraphService.deleteAccount(this.bankAccount.accountId);
     }
 
-    onDetail() {
+    onDetail(): void {
         const drawerRef = this.drawerService.create({
             nzTitle: 'جزییات حساب',
             nzContent: DrawerComponent,
