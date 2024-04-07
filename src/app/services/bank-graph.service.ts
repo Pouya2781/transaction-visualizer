@@ -15,6 +15,7 @@ import {TransactionComponent} from '../graph/edge/transcation/transaction.compon
 import {BankAccountSelectionService} from './bank-account-selection.service';
 import {LiteModeService} from './lite-mode.service';
 import {BankAccountService} from './bank-account.service';
+import {TransactionService} from './transaction.service';
 
 @Injectable({
     providedIn: 'root',
@@ -53,7 +54,8 @@ export class BankGraphService {
         private readonly modalService: NzModalService,
         private readonly bankAccountSelectionService: BankAccountSelectionService,
         private readonly liteModeService: LiteModeService,
-        private readonly bankAccountService: BankAccountService
+        private readonly bankAccountService: BankAccountService,
+        private readonly transactionService: TransactionService
     ) {
         this.bankAccountSelectionService.init(this.SELECTION_LIMIT);
         this.liteModeService.liteMode.subscribe((value) => {
@@ -90,77 +92,23 @@ export class BankGraphService {
     }
 
     public addAccountById(accountId: number, pos: PointLike, showModal: boolean): Observable<Partial<AccountCreation>> {
-        return this.bankAccountService.addAccountById(accountId, pos, showModal);
+        return this.bankAccountService.addAccountById(this.bankGraphNodes, accountId, pos, showModal);
     }
 
     public addAccount(bankAccount: BankAccount, pos: PointLike): BankGraphNode {
-        return this.bankAccountService.addAccount(bankAccount, pos);
+        return this.bankAccountService.addAccount(this.bankGraphNodes, bankAccount, pos);
     }
 
     public deleteAccount(accountID: number): void {
-        return this.bankAccountService.deleteAccount(accountID);
+        return this.bankAccountService.deleteAccount(this.bankGraphNodes, this.bankGraphEdges, accountID);
     }
 
-    public addTransaction(transaction: Transaction) {
-        if (this.bankGraphEdges.get(transaction.transactionId)) return;
-        const sourceBankGraphNode = this.bankGraphNodes.get(transaction.sourceAccountId);
-        const destinationBankGraphNode = this.bankGraphNodes.get(transaction.destinationAccountId);
-
-        if (!!sourceBankGraphNode && !!destinationBankGraphNode) {
-            const edge = this.graphService.addCustomEdge({
-                shape: 'edge',
-                source: sourceBankGraphNode.bankAccountNode,
-                target: destinationBankGraphNode.bankAccountNode,
-                // router: {
-                //     name: 'orth',
-                //     args: {
-                //         side: 'right',
-                //         padding: 50,
-                //     },
-                // },
-                connector: {
-                    name: 'rounded',
-                },
-                labelShape: 'transaction-label',
-                label: {
-                    position: 0.5,
-                },
-                attrs: {
-                    line: {
-                        stroke: '#ccc',
-                    },
-                },
-                ngArguments: transaction,
-            });
-
-            const bankGraphEdge = {transaction, transactionEdge: edge, sourceBankGraphNode, destinationBankGraphNode};
-            sourceBankGraphNode.outgoingBankGraphEdges.push(bankGraphEdge);
-            destinationBankGraphNode.incomingBankGraphEdges.push(bankGraphEdge);
-            this.bankGraphEdges.set(transaction.transactionId, bankGraphEdge);
-        }
+    public addTransaction(transaction: Transaction): void {
+        this.transactionService.addTransaction(this.bankGraphNodes, this.bankGraphEdges, transaction);
     }
 
-    public deleteTransaction(transactionID: number) {
-        const bankGraphEdge = this.bankGraphEdges.get(transactionID);
-        if (!!bankGraphEdge) {
-            bankGraphEdge.sourceBankGraphNode.outgoingBankGraphEdges =
-                bankGraphEdge.sourceBankGraphNode.outgoingBankGraphEdges.filter((bankGraphEdge) => {
-                    return !(
-                        bankGraphEdge.transaction.sourceAccountId == bankGraphEdge.transaction.sourceAccountId &&
-                        bankGraphEdge.transaction.destinationAccountId == bankGraphEdge.transaction.destinationAccountId
-                    );
-                });
-            bankGraphEdge.destinationBankGraphNode.incomingBankGraphEdges =
-                bankGraphEdge.destinationBankGraphNode.incomingBankGraphEdges.filter((bankGraphEdge) => {
-                    return !(
-                        bankGraphEdge.transaction.sourceAccountId == bankGraphEdge.transaction.sourceAccountId &&
-                        bankGraphEdge.transaction.destinationAccountId == bankGraphEdge.transaction.destinationAccountId
-                    );
-                });
-
-            this.graphService.removeEdge(bankGraphEdge.transactionEdge.id);
-            this.bankGraphEdges.delete(bankGraphEdge.transaction.transactionId);
-        }
+    public deleteTransaction(transactionId: number) {
+        this.transactionService.deleteTransaction(this.bankGraphEdges, transactionId);
     }
 
     public expandAccount(accountId: number) {

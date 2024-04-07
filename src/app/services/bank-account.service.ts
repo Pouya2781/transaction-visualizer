@@ -8,21 +8,28 @@ import {ApiService} from './api.service';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {GraphService} from './graph.service';
 import {BankGraphNode} from '../models/bank-graph-node';
+import {TransactionService} from './transaction.service';
+import {BankGraphEdge} from '../models/bank-graph-edge';
 
 @Injectable({
     providedIn: 'root',
 })
 export class BankAccountService {
     constructor(
-        private readonly bankGraphService: BankGraphService,
         private readonly apiService: ApiService,
         private readonly modalService: NzModalService,
-        private readonly graphService: GraphService
+        private readonly graphService: GraphService,
+        private readonly transactionService: TransactionService
     ) {}
 
-    public addAccountById(accountId: number, pos: PointLike, showModal: boolean): Observable<Partial<AccountCreation>> {
+    public addAccountById(
+        bankGraphNodes: Map<number, BankGraphNode>,
+        accountId: number,
+        pos: PointLike,
+        showModal: boolean
+    ): Observable<Partial<AccountCreation>> {
         const replaySubject = new ReplaySubject<Partial<AccountCreation>>();
-        let bankGraphNode = this.bankGraphService.bankGraphNodes.get(accountId);
+        let bankGraphNode = bankGraphNodes.get(accountId);
         if (bankGraphNode) {
             replaySubject.next({created: false, bankGraphNode});
             replaySubject.complete();
@@ -31,7 +38,7 @@ export class BankAccountService {
         this.apiService.getAccount(accountId).subscribe((bankAccount: BankAccount) => {
             if (!bankAccount) console.log(bankAccount);
             if (bankAccount) {
-                bankGraphNode = this.addAccount(bankAccount, pos);
+                bankGraphNode = this.addAccount(bankGraphNodes, bankAccount, pos);
                 replaySubject.next({created: true, bankGraphNode});
             } else {
                 replaySubject.next({created: false});
@@ -48,8 +55,12 @@ export class BankAccountService {
         return replaySubject;
     }
 
-    public addAccount(bankAccount: BankAccount, pos: PointLike): BankGraphNode {
-        let bankGraphNode = this.bankGraphService.bankGraphNodes.get(bankAccount.accountId);
+    public addAccount(
+        bankGraphNodes: Map<number, BankGraphNode>,
+        bankAccount: BankAccount,
+        pos: PointLike
+    ): BankGraphNode {
+        let bankGraphNode = bankGraphNodes.get(bankAccount.accountId);
         if (bankGraphNode) return bankGraphNode;
         const node = this.graphService.addCustomNode({
             shape: 'custom-angular-component-node',
@@ -68,22 +79,26 @@ export class BankAccountService {
             incomingBankGraphEdges: [],
             outgoingBankGraphEdges: [],
         };
-        this.bankGraphService.bankGraphNodes.set(bankAccount.accountId, bankGraphNode);
+        bankGraphNodes.set(bankAccount.accountId, bankGraphNode);
         return bankGraphNode;
     }
 
-    public deleteAccount(accountID: number): void {
-        const bankGraphNode = this.bankGraphService.bankGraphNodes.get(accountID);
+    public deleteAccount(
+        bankGraphNodes: Map<number, BankGraphNode>,
+        bankGraphEdges: Map<number, BankGraphEdge>,
+        accountId: number
+    ): void {
+        const bankGraphNode = bankGraphNodes.get(accountId);
 
         if (!!bankGraphNode) {
             for (let bankAccountEdge of bankGraphNode.outgoingBankGraphEdges) {
-                this.bankGraphService.deleteTransaction(bankAccountEdge.transaction.transactionId);
+                this.transactionService.deleteTransaction(bankGraphEdges, bankAccountEdge.transaction.transactionId);
             }
             for (let bankAccountEdge of bankGraphNode.incomingBankGraphEdges) {
-                this.bankGraphService.deleteTransaction(bankAccountEdge.transaction.transactionId);
+                this.transactionService.deleteTransaction(bankGraphEdges, bankAccountEdge.transaction.transactionId);
             }
 
-            this.bankGraphService.bankGraphNodes.delete(bankGraphNode.bankAccount.accountId);
+            bankGraphNodes.delete(bankGraphNode.bankAccount.accountId);
             this.graphService.removeNode(bankGraphNode.bankAccountNode.id);
         }
     }
