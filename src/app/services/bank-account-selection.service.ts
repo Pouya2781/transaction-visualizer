@@ -14,9 +14,11 @@ export class BankAccountSelectionService {
     public get selectedComponents(): BankAccountComponent[] {
         return this._selectedComponents;
     }
+
     public get onSelection(): Observable<number> {
         return this.selection;
     }
+
     public get onDeselection(): Observable<number> {
         return this.deselection;
     }
@@ -33,11 +35,12 @@ export class BankAccountSelectionService {
     }
 
     public requestDeselection(component: BankAccountComponent): number {
-        const selectionIndex = this._selectedComponents.indexOf(component);
+        const selectionIndex: number = this._selectedComponents.indexOf(component);
         this._selectedComponents.splice(selectionIndex, 1);
         for (let i = selectionIndex; i < this._selectedComponents.length; i++) {
             this._selectedComponents[i].updateSelectionIndex(i);
         }
+
         this.deselection.next(selectionIndex);
         return selectionIndex;
     }

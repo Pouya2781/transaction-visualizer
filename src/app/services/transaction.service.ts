@@ -1,16 +1,15 @@
 import {Injectable} from '@angular/core';
 import {Transaction} from '../models/transaction.type';
-import {ApiService} from './api.service';
-import {NzModalService} from 'ng-zorro-antd/modal';
 import {GraphService} from './graph.service';
 import {BankGraphEdge} from '../models/bank-graph-edge.type';
 import {BankGraphNode} from '../models/bank-graph-node.type';
+import {CustomEdge} from '../models/edge.type';
 
 @Injectable({
     providedIn: 'root',
 })
 export class TransactionService {
-    constructor(private readonly graphService: GraphService) {}
+    public constructor(private readonly graphService: GraphService) {}
 
     public addTransaction(
         bankGraphNodes: Map<number, BankGraphNode>,
@@ -18,11 +17,13 @@ export class TransactionService {
         transaction: Transaction
     ): void {
         if (bankGraphEdges.get(transaction.transactionId)) return;
-        const sourceBankGraphNode = bankGraphNodes.get(transaction.sourceAccountId);
-        const destinationBankGraphNode = bankGraphNodes.get(transaction.destinationAccountId);
+        const sourceBankGraphNode: BankGraphNode | undefined = bankGraphNodes.get(transaction.sourceAccountId);
+        const destinationBankGraphNode: BankGraphNode | undefined = bankGraphNodes.get(
+            transaction.destinationAccountId
+        );
 
         if (!!sourceBankGraphNode && !!destinationBankGraphNode) {
-            const edge = this.graphService.addCustomEdge({
+            const edge: CustomEdge = this.graphService.addCustomEdge({
                 shape: 'edge',
                 source: sourceBankGraphNode.bankAccountNode,
                 target: destinationBankGraphNode.bankAccountNode,
@@ -47,6 +48,7 @@ export class TransactionService {
                 sourceBankGraphNode,
                 destinationBankGraphNode,
             };
+
             sourceBankGraphNode.outgoingBankGraphEdges.push(bankGraphEdge);
             destinationBankGraphNode.incomingBankGraphEdges.push(bankGraphEdge);
             bankGraphEdges.set(transaction.transactionId, bankGraphEdge);
@@ -54,7 +56,7 @@ export class TransactionService {
     }
 
     public deleteTransaction(bankGraphEdges: Map<number, BankGraphEdge>, transactionId: number): void {
-        const bankGraphEdge = bankGraphEdges.get(transactionId);
+        const bankGraphEdge: BankGraphEdge | undefined = bankGraphEdges.get(transactionId);
         if (!!bankGraphEdge) {
             bankGraphEdge.sourceBankGraphNode.outgoingBankGraphEdges =
                 bankGraphEdge.sourceBankGraphNode.outgoingBankGraphEdges.filter((bankGraphEdge) => {
@@ -63,6 +65,7 @@ export class TransactionService {
                         bankGraphEdge.transaction.destinationAccountId == bankGraphEdge.transaction.destinationAccountId
                     );
                 });
+
             bankGraphEdge.destinationBankGraphNode.incomingBankGraphEdges =
                 bankGraphEdge.destinationBankGraphNode.incomingBankGraphEdges.filter((bankGraphEdge) => {
                     return !(

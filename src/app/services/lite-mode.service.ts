@@ -11,7 +11,7 @@ export class LiteModeService {
         return this._liteMode;
     }
 
-    public setLiteMode(value: boolean) {
+    public setLiteMode(value: boolean): void {
         this._liteMode.next(value);
     }
 }

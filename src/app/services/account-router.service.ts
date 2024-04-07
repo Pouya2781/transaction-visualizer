@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {BankGraphNode} from '../models/bank-graph-node.type';
 import {BankGraphEdge} from '../models/bank-graph-edge.type';
 import {NzModalService} from 'ng-zorro-antd/modal';
-import {ApiService} from './api.service';
 import {GraphService} from './graph.service';
 import {BankAccountSelectionService} from './bank-account-selection.service';
 
@@ -10,9 +9,8 @@ import {BankAccountSelectionService} from './bank-account-selection.service';
     providedIn: 'root',
 })
 export class AccountRouterService {
-    constructor(
+    public constructor(
         private readonly modalService: NzModalService,
-        private readonly apiService: ApiService,
         private readonly graphService: GraphService,
         private readonly bankAccountSelectionService: BankAccountSelectionService
     ) {}
@@ -75,9 +73,9 @@ export class AccountRouterService {
         destinationAccountId: number,
         length: number
     ): {bankGraphNodes: BankGraphNode[]; bankGraphEdges: BankGraphEdge[]}[] {
-        const sourceBankGraphNode = bankGraphNodes.get(sourceAccountId);
+        const sourceBankGraphNode: BankGraphNode | undefined = bankGraphNodes.get(sourceAccountId);
         if (!sourceBankGraphNode) return [];
-        const destinationBankGraphNode = bankGraphNodes.get(destinationAccountId);
+        const destinationBankGraphNode: BankGraphNode | undefined = bankGraphNodes.get(destinationAccountId);
         if (!destinationBankGraphNode) return [];
         if (sourceBankGraphNode == destinationBankGraphNode) return [];
         length = Math.max(0, Math.min(7, length));
@@ -105,12 +103,14 @@ export class AccountRouterService {
             this.bankAccountSelectionService.selectedComponents[1].bankAccount.accountId,
             length
         );
+
         if (showModal && routes.length == 0) {
             this.modalService.warning({
                 nzTitle: 'مسیر پیدا نشد',
                 nzContent: `!مسیری با حداقل طول ${length}  وجود ندارد`,
             });
         }
+
         for (let route of routes) {
             for (let bankGraphEdge of route.bankGraphEdges) {
                 this.graphService.highlightEdge(bankGraphEdge.transactionEdge);

@@ -13,22 +13,22 @@ import {LiteModeService} from './lite-mode.service';
     providedIn: 'root',
 })
 export class AccountExpansionService {
-    private readonly NODE_WIDTH = 270;
-    private readonly NODE_HEIGHT = 80;
-    private readonly CELL_PADDING = 80;
-    private readonly RANDOM_OFFSET = 40;
+    private readonly NODE_WIDTH: number = 270;
+    private readonly NODE_HEIGHT: number = 80;
+    private readonly CELL_PADDING: number = 80;
+    private readonly RANDOM_OFFSET: number = 40;
 
-    private readonly LITE_NODE_WIDTH = 115;
-    private readonly LITE_NODE_HEIGHT = 40;
-    private readonly LITE_CELL_PADDING = 40;
-    private readonly LITE_RANDOM_OFFSET = 20;
+    private readonly LITE_NODE_WIDTH: number = 115;
+    private readonly LITE_NODE_HEIGHT: number = 40;
+    private readonly LITE_CELL_PADDING: number = 40;
+    private readonly LITE_RANDOM_OFFSET: number = 20;
 
-    private nodeHeight = this.NODE_HEIGHT;
-    private nodeWidth = this.NODE_WIDTH;
-    private cellPadding = this.CELL_PADDING;
-    private randomOffset = this.RANDOM_OFFSET;
+    private nodeHeight: number = this.NODE_HEIGHT;
+    private nodeWidth: number = this.NODE_WIDTH;
+    private cellPadding: number = this.CELL_PADDING;
+    private randomOffset: number = this.RANDOM_OFFSET;
 
-    constructor(
+    public constructor(
         private readonly apiService: ApiService,
         private readonly bankAccountService: BankAccountService,
         private readonly transactionService: TransactionService,
@@ -55,7 +55,7 @@ export class AccountExpansionService {
         bankGraphEdges: Map<number, BankGraphEdge>,
         accountId: number
     ): Observable<Observable<PartialAccountCreationArray>> {
-        const bankGraphNode = bankGraphNodes.get(accountId);
+        const bankGraphNode: BankGraphNode | undefined = bankGraphNodes.get(accountId);
 
         const dummyObservable = new ReplaySubject<Partial<AccountCreation>>();
         dummyObservable.next({});
@@ -96,12 +96,12 @@ export class AccountExpansionService {
         ignoreAccountLayout: number[]
     ): Observable<AccountCreation[]> {
         const accountsExpanded = new ReplaySubject<AccountCreation[]>();
-        const bankGraphNode = bankGraphNodes.get(accountId);
+        const bankGraphNode: BankGraphNode | undefined = bankGraphNodes.get(accountId);
 
         if (bankGraphNode) {
             this.expandAccount(bankGraphNodes, bankGraphEdges, accountId).subscribe((accountsAddedObservable) => {
                 accountsAddedObservable.subscribe((accountCreationData) => {
-                    const pureAccountCreationData = accountCreationData.filter(
+                    const pureAccountCreationData: AccountCreation[] = accountCreationData.filter(
                         (accountCreation) => accountCreation.bankGraphNode != undefined
                     ) as AccountCreation[];
                     const bankAccountNodes = pureAccountCreationData

@@ -23,14 +23,6 @@ export class BankGraphService {
     public bankGraphNodes: Map<number, BankGraphNode> = new Map<number, BankGraphNode>();
     public bankGraphEdges: Map<number, BankGraphEdge> = new Map<number, BankGraphEdge>();
 
-    public get canExecuteRouting() {
-        return this.bankAccountSelectionService.selectedComponents.length == this.SELECTION_LIMIT;
-    }
-
-    public get selectedComponents() {
-        return this.bankAccountSelectionService.selectedComponents;
-    }
-
     private readonly SELECTION_LIMIT = 2;
 
     constructor(
@@ -42,6 +34,14 @@ export class BankGraphService {
         private readonly accountRouterService: AccountRouterService
     ) {
         this.bankAccountSelectionService.init(this.SELECTION_LIMIT);
+    }
+
+    public get canExecuteRouting(): boolean {
+        return this.bankAccountSelectionService.selectedComponents.length == this.SELECTION_LIMIT;
+    }
+
+    public get selectedComponents(): BankAccountComponent[] {
+        return this.bankAccountSelectionService.selectedComponents;
     }
 
     public init(injector: Injector): void {

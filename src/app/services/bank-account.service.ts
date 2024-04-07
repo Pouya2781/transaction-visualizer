@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
-import {PointLike} from '@antv/x6';
+import {PointLike, Node} from '@antv/x6';
 import {Observable, ReplaySubject} from 'rxjs';
 import {AccountCreation} from '../models/account-creation.type';
 import {BankAccount} from '../models/bank-account.type';
-import {BankGraphService} from './bank-graph.service';
 import {ApiService} from './api.service';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {GraphService} from './graph.service';
@@ -15,7 +14,7 @@ import {BankGraphEdge} from '../models/bank-graph-edge.type';
     providedIn: 'root',
 })
 export class BankAccountService {
-    constructor(
+    public constructor(
         private readonly apiService: ApiService,
         private readonly modalService: NzModalService,
         private readonly graphService: GraphService,
@@ -29,7 +28,7 @@ export class BankAccountService {
         showModal: boolean
     ): Observable<Partial<AccountCreation>> {
         const replaySubject = new ReplaySubject<Partial<AccountCreation>>();
-        let bankGraphNode = bankGraphNodes.get(accountId);
+        let bankGraphNode: BankGraphNode | undefined = bankGraphNodes.get(accountId);
         if (bankGraphNode) {
             replaySubject.next({created: false, bankGraphNode});
             replaySubject.complete();
@@ -60,9 +59,10 @@ export class BankAccountService {
         bankAccount: BankAccount,
         pos: PointLike
     ): BankGraphNode {
-        let bankGraphNode = bankGraphNodes.get(bankAccount.accountId);
+        let bankGraphNode: BankGraphNode | undefined = bankGraphNodes.get(bankAccount.accountId);
         if (bankGraphNode) return bankGraphNode;
-        const node = this.graphService.addCustomNode({
+
+        const node: Node<Node.Properties> = this.graphService.addCustomNode({
             shape: 'custom-angular-component-node',
             x: pos.x,
             y: pos.y,
@@ -73,12 +73,14 @@ export class BankAccountService {
                 },
             },
         });
+
         bankGraphNode = {
             bankAccount,
             bankAccountNode: node,
             incomingBankGraphEdges: [],
             outgoingBankGraphEdges: [],
         };
+
         bankGraphNodes.set(bankAccount.accountId, bankGraphNode);
         return bankGraphNode;
     }
@@ -88,7 +90,7 @@ export class BankAccountService {
         bankGraphEdges: Map<number, BankGraphEdge>,
         accountId: number
     ): void {
-        const bankGraphNode = bankGraphNodes.get(accountId);
+        const bankGraphNode: BankGraphNode | undefined = bankGraphNodes.get(accountId);
 
         if (!!bankGraphNode) {
             for (let bankAccountEdge of bankGraphNode.outgoingBankGraphEdges) {
