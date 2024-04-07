@@ -10,11 +10,11 @@
         display: inline-block;
         text-align: center;
         font-weight: 600;
-        padding-block: 1rem;
-        padding-inline: 2rem;
         box-shadow: 0 0 5px 0.5px gray;
         border-radius: 0.75rem;
         color: white;
+        padding-block: 1rem;
+        padding-inline: 2rem;
 
         &.current {
             background: #770000;

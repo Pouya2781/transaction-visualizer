@@ -117,7 +117,7 @@ export class BankGraphService {
             y: pos.y,
             data: {
                 ngArguments: {
-                    ...bankAccount,
+                    bankAccount,
                     transactionCount: 0,
                 },
             },
