@@ -16,6 +16,7 @@ import {BankAccountSelectionService} from './bank-account-selection.service';
 import {LiteModeService} from './lite-mode.service';
 import {BankAccountService} from './bank-account.service';
 import {TransactionService} from './transaction.service';
+import {AccountExpansionService} from './account-expansion.service';
 
 @Injectable({
     providedIn: 'root',
@@ -33,44 +34,16 @@ export class BankGraphService {
 
     private readonly SELECTION_LIMIT = 2;
 
-    private readonly NODE_WIDTH = 270;
-    private readonly NODE_HEIGHT = 80;
-    private readonly CELL_PADDING = 80;
-    private readonly RANDOM_OFFSET = 40;
-
-    private readonly LITE_NODE_WIDTH = 115;
-    private readonly LITE_NODE_HEIGHT = 40;
-    private readonly LITE_CELL_PADDING = 40;
-    private readonly LITE_RANDOM_OFFSET = 20;
-
-    private nodeHeight = this.NODE_HEIGHT;
-    private nodeWidth = this.NODE_WIDTH;
-    private cellPadding = this.CELL_PADDING;
-    private randomOffset = this.RANDOM_OFFSET;
-
     constructor(
         private readonly graphService: GraphService,
         private readonly apiService: ApiService,
         private readonly modalService: NzModalService,
         private readonly bankAccountSelectionService: BankAccountSelectionService,
-        private readonly liteModeService: LiteModeService,
         private readonly bankAccountService: BankAccountService,
-        private readonly transactionService: TransactionService
+        private readonly transactionService: TransactionService,
+        private readonly accountExpansionService: AccountExpansionService
     ) {
         this.bankAccountSelectionService.init(this.SELECTION_LIMIT);
-        this.liteModeService.liteMode.subscribe((value) => {
-            if (!value) {
-                this.nodeWidth = this.NODE_WIDTH;
-                this.nodeHeight = this.NODE_HEIGHT;
-                this.cellPadding = this.CELL_PADDING;
-                this.randomOffset = this.RANDOM_OFFSET;
-            } else {
-                this.nodeWidth = this.LITE_NODE_WIDTH;
-                this.nodeHeight = this.LITE_NODE_HEIGHT;
-                this.cellPadding = this.LITE_CELL_PADDING;
-                this.randomOffset = this.LITE_RANDOM_OFFSET;
-            }
-        });
     }
 
     public init(injector: Injector) {
@@ -107,109 +80,39 @@ export class BankGraphService {
         this.transactionService.addTransaction(this.bankGraphNodes, this.bankGraphEdges, transaction);
     }
 
-    public deleteTransaction(transactionId: number) {
+    public deleteTransaction(transactionId: number): void {
         this.transactionService.deleteTransaction(this.bankGraphEdges, transactionId);
     }
 
-    public expandAccount(accountId: number) {
-        const bankGraphNode = this.bankGraphNodes.get(accountId);
-
-        const dummyObservable = new ReplaySubject<Partial<AccountCreation>>();
-        dummyObservable.next({});
-        dummyObservable.complete();
-        const accountsAdded: [Observable<Partial<AccountCreation>>, ...Observable<AccountCreation>[]] = [
-            dummyObservable,
-        ];
-        const apiCallResolved = new ReplaySubject<Observable<PartialAccountCreationArray>>();
-
-        if (bankGraphNode) {
-            const expandedNodePos = bankGraphNode.bankAccountNode.getPosition();
-            this.apiService.getOutgoingTransaction(accountId).subscribe((transactions) => {
-                for (let transaction of transactions) {
-                    const accountAdded = this.addAccountById(transaction.destinationAccountId, expandedNodePos, false);
-                    accountsAdded.push(accountAdded);
-                    accountAdded.subscribe((accountCreation) => {
-                        if (accountCreation.bankGraphNode != undefined) {
-                            this.addTransaction(transaction);
-                        }
-                    });
-                }
-                apiCallResolved.next(forkJoin(accountsAdded));
-            });
-        }
-
-        return apiCallResolved;
+    public expandAccount(accountId: number): Observable<Observable<PartialAccountCreationArray>> {
+        return this.accountExpansionService.expandAccount(this.bankGraphNodes, this.bankGraphEdges, accountId);
     }
 
-    public expandAndLayoutAccount(accountId: number, ignoreAccountLayout: number[]) {
-        const accountsExpanded = new ReplaySubject<AccountCreation[]>();
-        const bankGraphNode = this.bankGraphNodes.get(accountId);
-
-        if (bankGraphNode) {
-            this.expandAccount(accountId).subscribe((accountsAddedObservable) => {
-                accountsAddedObservable.subscribe((accountCreationData) => {
-                    const pureAccountCreationData = accountCreationData.filter(
-                        (accountCreation) => accountCreation.bankGraphNode != undefined
-                    ) as AccountCreation[];
-                    const bankAccountNodes = pureAccountCreationData
-                        .filter((accountCreation) => {
-                            return !ignoreAccountLayout.find((ignoredAccount) => {
-                                return ignoredAccount == accountCreation.bankGraphNode.bankAccount.accountId;
-                            });
-                        })
-                        .map((accountCreation) => accountCreation.bankGraphNode.bankAccountNode);
-                    this.graphService
-                        .layoutAroundCenter(
-                            this.nodeWidth,
-                            this.nodeHeight,
-                            this.cellPadding,
-                            bankGraphNode.bankAccountNode,
-                            bankAccountNodes,
-                            true,
-                            this.randomOffset
-                        )
-                        .subscribe(() => {
-                            accountsExpanded.next(pureAccountCreationData);
-                        });
-                });
-            });
-        }
-
-        return accountsExpanded;
+    public expandAndLayoutAccount(accountId: number, ignoreAccountLayout: number[]): Observable<AccountCreation[]> {
+        return this.accountExpansionService.expandAndLayoutAccount(
+            this.bankGraphNodes,
+            this.bankGraphEdges,
+            accountId,
+            ignoreAccountLayout
+        );
     }
 
     public expandAccountInDepthQueue(
         expansionQueue: {depth: number; accountId: number}[],
         expandedAccounts: number[],
         ignoreAccountLayout: number[]
-    ) {
-        const expansionData = expansionQueue.shift();
-        if (expansionData) {
-            expandedAccounts.push(expansionData.accountId);
-            this.expandAndLayoutAccount(expansionData.accountId, ignoreAccountLayout).subscribe(
-                (accountCreationData) => {
-                    for (let accountCreation of accountCreationData) {
-                        ignoreAccountLayout.push(accountCreation.bankGraphNode.bankAccount.accountId);
-                    }
-                    if (expansionData.depth > 1) {
-                        for (let accountCreation of accountCreationData) {
-                            if (expandedAccounts.indexOf(accountCreation.bankGraphNode.bankAccount.accountId) == -1) {
-                                expansionQueue.push({
-                                    accountId: accountCreation.bankGraphNode.bankAccount.accountId,
-                                    depth: expansionData.depth - 1,
-                                });
-                            }
-                        }
-                    }
-                    this.expandAccountInDepthQueue(expansionQueue, expandedAccounts, ignoreAccountLayout);
-                }
-            );
-        }
+    ): void {
+        return this.accountExpansionService.expandAccountInDepthQueue(
+            this.bankGraphNodes,
+            this.bankGraphEdges,
+            expansionQueue,
+            expandedAccounts,
+            ignoreAccountLayout
+        );
     }
 
-    public expandAccountInDepth(accountId: number, depth: number) {
-        if (depth == 0) return;
-        this.expandAccountInDepthQueue([{accountId: accountId, depth: depth}], [], [accountId]);
+    public expandAccountInDepth(accountId: number, depth: number): void {
+        this.accountExpansionService.expandAccountInDepth(this.bankGraphNodes, this.bankGraphEdges, accountId, depth);
     }
 
     public routeInLength(
