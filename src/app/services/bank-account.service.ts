@@ -1,15 +1,15 @@
 import {Injectable} from '@angular/core';
 import {PointLike} from '@antv/x6';
 import {Observable, ReplaySubject} from 'rxjs';
-import {AccountCreation} from '../models/account-creation';
-import {BankAccount} from '../models/bank-account';
+import {AccountCreation} from '../models/account-creation.type';
+import {BankAccount} from '../models/bank-account.type';
 import {BankGraphService} from './bank-graph.service';
 import {ApiService} from './api.service';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {GraphService} from './graph.service';
-import {BankGraphNode} from '../models/bank-graph-node';
+import {BankGraphNode} from '../models/bank-graph-node.type';
 import {TransactionService} from './transaction.service';
-import {BankGraphEdge} from '../models/bank-graph-edge';
+import {BankGraphEdge} from '../models/bank-graph-edge.type';
 
 @Injectable({
     providedIn: 'root',

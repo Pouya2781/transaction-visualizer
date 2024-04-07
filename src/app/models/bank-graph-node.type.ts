@@ -1,6 +1,6 @@
-import {BankAccount} from './bank-account';
+import {BankAccount} from './bank-account.type';
 import {Node} from '@antv/x6';
-import {BankGraphEdge} from './bank-graph-edge';
+import {BankGraphEdge} from './bank-graph-edge.type';
 
 export interface BankGraphNode {
     bankAccount: BankAccount;

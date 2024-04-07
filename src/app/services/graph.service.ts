@@ -6,7 +6,7 @@ import {ComponentType} from '@angular/cdk/portal';
 import {ComponentCreatorService} from './component-creator.service';
 import {register} from '@antv/x6-angular-shape';
 import {ReplaySubject} from 'rxjs';
-import {Layout} from '../models/layout';
+import {Layout} from '../utils/layout';
 
 @Injectable({
     providedIn: 'root',

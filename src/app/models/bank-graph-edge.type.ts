@@ -1,6 +1,6 @@
 import {CustomEdge} from './edge.type';
-import {Transaction} from './transaction';
-import {BankGraphNode} from './bank-graph-node';
+import {Transaction} from './transaction.type';
+import {BankGraphNode} from './bank-graph-node.type';
 
 export interface BankGraphEdge {
     transaction: Transaction;

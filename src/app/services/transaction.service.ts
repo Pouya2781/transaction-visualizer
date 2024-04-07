@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
-import {Transaction} from '../models/transaction';
+import {Transaction} from '../models/transaction.type';
 import {ApiService} from './api.service';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {GraphService} from './graph.service';
-import {BankGraphEdge} from '../models/bank-graph-edge';
-import {BankGraphNode} from '../models/bank-graph-node';
+import {BankGraphEdge} from '../models/bank-graph-edge.type';
+import {BankGraphNode} from '../models/bank-graph-node.type';
 
 @Injectable({
     providedIn: 'root',

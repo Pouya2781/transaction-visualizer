@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {forkJoin, Observable, ReplaySubject} from 'rxjs';
-import {AccountCreation, PartialAccountCreationArray} from '../models/account-creation';
+import {AccountCreation, PartialAccountCreationArray} from '../models/account-creation.type';
 import {ApiService} from './api.service';
 import {BankAccountService} from './bank-account.service';
 import {TransactionService} from './transaction.service';
-import {BankGraphNode} from '../models/bank-graph-node';
-import {BankGraphEdge} from '../models/bank-graph-edge';
+import {BankGraphNode} from '../models/bank-graph-node.type';
+import {BankGraphEdge} from '../models/bank-graph-edge.type';
 import {GraphService} from './graph.service';
 import {LiteModeService} from './lite-mode.service';
 

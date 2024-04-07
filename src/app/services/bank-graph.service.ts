@@ -1,13 +1,13 @@
 import {Injectable, Injector} from '@angular/core';
-import {Transaction} from '../models/transaction';
-import {BankAccount} from '../models/bank-account';
-import {BankGraphEdge} from '../models/bank-graph-edge';
+import {Transaction} from '../models/transaction.type';
+import {BankAccount} from '../models/bank-account.type';
+import {BankGraphEdge} from '../models/bank-graph-edge.type';
 import {GraphService} from './graph.service';
-import {BankGraphNode} from '../models/bank-graph-node';
+import {BankGraphNode} from '../models/bank-graph-node.type';
 import {Observable} from 'rxjs';
 import {BankAccountComponent} from '../graph/node/bank-account/bank-account.component';
 import {PointLike} from '@antv/x6';
-import {AccountCreation, PartialAccountCreationArray} from '../models/account-creation';
+import {AccountCreation, PartialAccountCreationArray} from '../models/account-creation.type';
 import {register} from '@antv/x6-angular-shape';
 import {TransactionComponent} from '../graph/edge/transcation/transaction.component';
 import {BankAccountSelectionService} from './bank-account-selection.service';

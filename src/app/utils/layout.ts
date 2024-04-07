@@ -1,7 +1,7 @@
 import {Graph, Node, PointLike} from '@antv/x6';
 import {forkJoin, Observable, ReplaySubject} from 'rxjs';
 import {GraphService} from '../services/graph.service';
-import {RowCol} from './row-col';
+import {RowCol} from '../models/row-col.type';
 
 export class Layout {
     private readonly nodeWidth: number;

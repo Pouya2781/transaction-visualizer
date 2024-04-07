@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, ElementRef, Input, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {BankGraphService} from '../../../services/bank-graph.service';
-import {Transaction} from '../../../models/transaction';
+import {Transaction} from '../../../models/transaction.type';
 import {LiteModeService} from '../../../services/lite-mode.service';
 
 @Component({

@@ -1,4 +1,4 @@
-import {BankGraphNode} from './bank-graph-node';
+import {BankGraphNode} from './bank-graph-node.type';
 
 export interface AccountCreation {
     created: boolean;

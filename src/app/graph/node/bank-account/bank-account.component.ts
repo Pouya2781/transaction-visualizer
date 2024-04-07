@@ -7,7 +7,7 @@ import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropd
 import {BankGraphService} from '../../../services/bank-graph.service';
 import {NzDrawerService} from 'ng-zorro-antd/drawer';
 import {DrawerComponent} from '../../../drawer/drawer.component';
-import {BankAccount} from '../../../models/bank-account';
+import {BankAccount} from '../../../models/bank-account.type';
 import {LiteModeService} from '../../../services/lite-mode.service';
 
 @Component({
