@@ -16,7 +16,7 @@ import {LiteModeService} from '../../../services/lite-mode.service';
     styleUrls: ['./bank-account.component.scss'],
 })
 export class BankAccountComponent implements OnInit, AfterViewInit, DynamicNodeView, InterconnectedNode {
-    @ViewChild('dynamicNodeView') dynamicNodeView!: ElementRef;
+    @ViewChild('dynamicNodeView') public dynamicNodeView!: ElementRef;
 
     @Input() public nodeId!: string;
     @Input() public bankAccount!: BankAccount;

@@ -7,12 +7,14 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 })
 export class SwitchComponent {
     @Input('defaultValue') public isChecked: boolean = false;
-    @Output() change: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    onChange(value: boolean): void {
+    @Output() public change: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    protected onChange(value: boolean): void {
         this.change.emit(value);
     }
-    onLabelClick(): void {
+
+    protected onLabelClick(): void {
         this.isChecked = !this.isChecked;
         this.onChange(this.isChecked);
     }

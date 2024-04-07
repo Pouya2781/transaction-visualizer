@@ -35,8 +35,10 @@
             </g>
         </svg>
     </div>
+
     <div class="nav">
         <app-switch (change)="onLiteMode($event)" [defaultValue]="false"></app-switch>
+
         <button
             [disabled]="!bankGraphService.canExecuteRouting"
             (click)="onExecuteRouting()"
@@ -46,6 +48,7 @@
         >
             مسیریابی
         </button>
+
         <app-searchbox (search)="onSearch($event)"></app-searchbox>
     </div>
 </div>

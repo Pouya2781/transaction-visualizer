@@ -6,10 +6,11 @@ import {Component, EventEmitter, Output} from '@angular/core';
     styleUrls: ['./searchbox.component.scss'],
 })
 export class SearchboxComponent {
-    @Output() search: EventEmitter<string> = new EventEmitter<string>();
-    searchValue: string = '';
+    @Output() public search: EventEmitter<string> = new EventEmitter<string>();
 
-    onSearch(event: KeyboardEvent): void {
+    protected searchValue: string = '';
+
+    protected onSearch(event: KeyboardEvent): void {
         if (event.key === 'Enter') this.search.emit(this.searchValue);
     }
 }

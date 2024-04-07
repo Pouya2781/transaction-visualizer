@@ -12,13 +12,14 @@ export class MainComponent implements AfterViewInit {
     @ViewChild('graphContainer') private graphContainer!: ElementRef;
     @ViewChild('stencilContainer') private stencilContainer!: ElementRef;
 
-    constructor(
+    public constructor(
         private readonly graphService: GraphService,
         private readonly stencilService: StencilService,
         private readonly bankGraphService: BankGraphService,
         private readonly injector: Injector,
         private readonly renderer: Renderer2
     ) {}
+
     ngAfterViewInit(): void {
         this.graphService.init(this.graphContainer.nativeElement, this.renderer);
         this.bankGraphService.init(this.injector);

@@ -9,10 +9,10 @@ import {LiteModeService} from '../../../services/lite-mode.service';
     styleUrls: ['./transaction.component.scss'],
 })
 export class TransactionComponent implements OnInit {
-    @ViewChild('targetElement') targetElement!: ElementRef;
-    @ViewChild('targetIcon') targetIcon!: ElementRef;
-    @ViewChild('targetLabel') targetLabel!: ElementRef;
-    @ViewChild('wrapper') wrapper!: ElementRef;
+    @ViewChild('targetElement') private targetElement!: ElementRef;
+    @ViewChild('targetIcon') private targetIcon!: ElementRef;
+    @ViewChild('targetLabel') private targetLabel!: ElementRef;
+    @ViewChild('wrapper') private wrapper!: ElementRef;
 
     @Input() public transaction!: Transaction;
 

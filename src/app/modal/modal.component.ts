@@ -1,6 +1,5 @@
-import {Component, Input, inject} from '@angular/core';
-import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
-import {FormControl, FormGroup, NgForm, NonNullableFormBuilder, Validators} from '@angular/forms';
+import {Component, inject} from '@angular/core';
+import {NzModalRef} from 'ng-zorro-antd/modal';
 
 @Component({
     selector: 'app-modal',
@@ -8,7 +7,7 @@ import {FormControl, FormGroup, NgForm, NonNullableFormBuilder, Validators} from
     styleUrls: ['./modal.component.scss'],
 })
 export class ModalComponent {
-    readonly #modal = inject(NzModalRef);
+    readonly #modal: NzModalRef = inject(NzModalRef);
 
     protected ownerId!: number;
     protected ownerName: string = '';
@@ -20,7 +19,7 @@ export class ModalComponent {
     protected cardId: string = '';
     protected accountId!: number;
 
-    destroyModal(): void {
+    protected destroyModal(): void {
         this.#modal.destroy({
             ownerId: +this.ownerId,
             ownerName: this.ownerName,
