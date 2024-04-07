@@ -9,6 +9,7 @@ import {ApiService} from '../services/api.service';
 import {log} from 'ng-zorro-antd/core/logger';
 import {StencilService} from '../services/stencil.service';
 import {MiniMap} from '@antv/x6-plugin-minimap';
+import {BankGraphService} from '../services/bank-graph.service';
 
 @Component({
     selector: 'app-main',
@@ -16,25 +17,19 @@ import {MiniMap} from '@antv/x6-plugin-minimap';
     styleUrls: ['./main.component.scss'],
 })
 export class MainComponent implements AfterViewInit {
-    @ViewChild('graphContainer') graphContainer!: ElementRef;
-    @ViewChild('stencilContainer') stencilContainer!: ElementRef;
+    @ViewChild('graphContainer') private graphContainer!: ElementRef;
+    @ViewChild('stencilContainer') private stencilContainer!: ElementRef;
 
     constructor(
-        private graphService: GraphService,
-        private stencilService: StencilService,
-        private injector: Injector,
-        private renderer: Renderer2
+        private readonly graphService: GraphService,
+        private readonly stencilService: StencilService,
+        private readonly bankGraphService: BankGraphService,
+        private readonly injector: Injector,
+        private readonly renderer: Renderer2
     ) {}
-    ngAfterViewInit() {
-        this.graphService.createGraph(this.graphContainer.nativeElement, this.renderer);
-        this.stencilService.createStencil(this.stencilContainer.nativeElement);
-        this.graphService.registerEdgeLabel('transaction-label', TransactionComponent);
-        this.graphService.getGraph.zoomTo(0.65, {center: {x: 0, y: 0}});
-
-        register({
-            shape: 'custom-angular-component-node',
-            content: BankAccountComponent,
-            injector: this.injector,
-        });
+    ngAfterViewInit(): void {
+        this.graphService.init(this.graphContainer.nativeElement, this.renderer);
+        this.bankGraphService.init(this.injector);
+        this.stencilService.init(this.stencilContainer.nativeElement);
     }
 }

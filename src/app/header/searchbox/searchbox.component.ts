@@ -9,7 +9,7 @@ export class SearchboxComponent {
     @Output() search: EventEmitter<string> = new EventEmitter<string>();
     searchValue: string = '';
 
-    onSearch(event: KeyboardEvent) {
+    onSearch(event: KeyboardEvent): void {
         if (event.key === 'Enter') this.search.emit(this.searchValue);
     }
 }

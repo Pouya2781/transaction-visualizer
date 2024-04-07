@@ -9,10 +9,10 @@ export class SwitchComponent {
     @Input('defaultValue') public isChecked: boolean = false;
     @Output() change: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    onChange(value: boolean) {
+    onChange(value: boolean): void {
         this.change.emit(value);
     }
-    onLabelClick() {
+    onLabelClick(): void {
         this.isChecked = !this.isChecked;
         this.onChange(this.isChecked);
     }

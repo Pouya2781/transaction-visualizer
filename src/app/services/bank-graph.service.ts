@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, Injector} from '@angular/core';
 import {Transaction} from '../models/transaction';
 import {BankAccount} from '../models/bank-account';
 import {BankGraphEdge} from '../models/bank-graph-edge';
@@ -10,6 +10,8 @@ import {BankAccountComponent} from '../graph/node/bank-account/bank-account.comp
 import {PointLike} from '@antv/x6';
 import {AccountCreation, PartialAccountCreationArray} from './account-creation';
 import {NzModalService} from 'ng-zorro-antd/modal';
+import {register} from '@antv/x6-angular-shape';
+import {TransactionComponent} from '../graph/edge/transcation/transaction.component';
 
 @Injectable({
     providedIn: 'root',
@@ -40,11 +42,20 @@ export class BankGraphService {
 
     constructor(
         private readonly graphService: GraphService,
-        private apiService: ApiService,
-        private modalService: NzModalService
+        private readonly apiService: ApiService,
+        private readonly modalService: NzModalService
     ) {
         this.bankGraphNodes = new Map<number, BankGraphNode>();
         this.bankGraphEdges = new Map<number, BankGraphEdge>();
+    }
+
+    public init(injector: Injector) {
+        this.graphService.registerEdgeLabel('transaction-label', TransactionComponent);
+        register({
+            shape: 'custom-angular-component-node',
+            content: BankAccountComponent,
+            injector: injector,
+        });
     }
 
     public setLightMode(value: boolean) {

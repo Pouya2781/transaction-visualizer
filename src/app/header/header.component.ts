@@ -16,21 +16,19 @@ import {log} from 'ng-zorro-antd/core/logger';
     styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
-    console: any = console;
-
     constructor(
-        public bankGraphService: BankGraphService,
-        private modalService: NzModalService
+        public readonly bankGraphService: BankGraphService,
+        private readonly modalService: NzModalService
     ) {}
-    onSearch(value: string) {
+    onSearch(value: string): void {
         this.bankGraphService.addAccountById(6534454617, {x: 200, y: 200}, true);
     }
 
-    onLiteMode(value: boolean) {
+    onLiteMode(value: boolean): void {
         this.bankGraphService.setLightMode(value);
     }
 
-    onExecuteRouting() {
+    onExecuteRouting(): void {
         if (this.bankGraphService.canExecuteRouting) {
             const modal = this.modalService.create({
                 nzTitle: 'مسیریابی',

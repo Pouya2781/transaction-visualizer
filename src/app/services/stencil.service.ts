@@ -98,11 +98,10 @@ export class StencilService {
     ];
     constructor(
         private graphService: GraphService,
-        private modalService: NzModalService,
-        private injector: Injector
+        private modalService: NzModalService
     ) {}
 
-    public createStencil(stencilContainerRef: HTMLElement) {
+    public init(stencilContainerRef: HTMLElement) {
         this.stencil = new Stencil({
             title: 'انواع حساب',
             target: this.graphService.getGraph,
@@ -158,12 +157,6 @@ export class StencilService {
                     title: 'حساب پس انداز',
                 },
             ],
-        });
-
-        register({
-            shape: 'custom-angular-component-node',
-            content: BankAccountComponent,
-            injector: this.injector,
         });
 
         stencilContainerRef.appendChild(this.stencil.container);

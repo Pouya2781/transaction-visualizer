@@ -48,7 +48,7 @@ export class GraphService {
         return this.graph;
     }
 
-    public createGraph(container: HTMLElement, renderer: Renderer2) {
+    public init(container: HTMLElement, renderer: Renderer2) {
         this.graph = new Graph({
             container: container,
             background: {
@@ -88,6 +88,7 @@ export class GraphService {
                 allowBlank: false,
             },
         });
+        this.graph.zoomTo(0.65, {center: {x: 0, y: 0}});
         this.renderer = renderer;
     }
 
