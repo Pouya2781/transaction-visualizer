@@ -1,6 +1,6 @@
 import {Injectable, Injector, Renderer2} from '@angular/core';
-import {Graph, Markup, Model, Node, Edge, Timing, Color} from '@antv/x6';
-import {DynamicNodeViewComponent, DynamicNodeViewComponentRef, InterconnectedNode} from '../models/node.type';
+import {Edge, Graph, Markup, Model, Node, Timing} from '@antv/x6';
+import {DynamicNodeViewComponent, DynamicNodeViewComponentRef} from '../models/node.type';
 import {CustomEdge, CustomEdgeMetadata} from '../models/edge.type';
 import {ComponentType} from '@angular/cdk/portal';
 import {ComponentCreatorService} from './component-creator.service';
@@ -76,8 +76,7 @@ export class GraphService {
                     const edgeLabelShape = this.edgeLabelMap.get(edge.labelShape);
 
                     if (!!edgeLabelShape) {
-                        const componentRef = this.componentCreatorService.createComponent(element, edgeLabelShape);
-                        edge.componentRef = componentRef;
+                        edge.componentRef = this.componentCreatorService.createComponent(element, edgeLabelShape);
                         edge.initLabelData();
                     }
                 }
@@ -94,6 +93,7 @@ export class GraphService {
 
     public setUpDynamicResize(component: DynamicNodeViewComponentRef) {
         this.nodeDynamicViewMap.set(component.dynamicNodeView.nativeElement, component.nodeId);
+        this.nodeDynamicViewReverseMap.set(component.nodeId, component);
         this.resizeObserver.observe(component.dynamicNodeView.nativeElement);
     }
 

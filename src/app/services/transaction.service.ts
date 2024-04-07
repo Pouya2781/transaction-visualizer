@@ -38,7 +38,7 @@ export class TransactionService {
                         stroke: '#ccc',
                     },
                 },
-                ngArguments: transaction,
+                ngArguments: {transaction},
             });
 
             const bankGraphEdge: BankGraphEdge = {

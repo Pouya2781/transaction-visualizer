@@ -22,7 +22,6 @@ export class ModalComponent {
 
     destroyModal(): void {
         this.#modal.destroy({
-            transactionCount: 0,
             ownerId: +this.ownerId,
             ownerName: this.ownerName,
             ownerFamilyName: this.ownerFamilyName,

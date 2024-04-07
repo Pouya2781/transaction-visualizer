@@ -87,6 +87,7 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
     }
 
     onDelete(): void {
+        if (this.selectionIndex != -1) this.bankGraphService.requestDeselection(this);
         this.bankGraphService.deleteAccount(this.bankAccount.accountId);
     }
 

@@ -132,7 +132,10 @@ export class StencilService {
 
                 modal.afterClose.subscribe((result) => {
                     node.setData({
-                        ngArguments: result,
+                        ngArguments: {
+                            bankAccount: result,
+                            transactionCount: 0,
+                        },
                     });
                 });
 
