@@ -98,13 +98,13 @@ export class StencilService {
 
     public createStencil(stencilContainerRef: HTMLElement) {
         this.stencil = new Stencil({
-            title: 'Stencil',
+            title: 'انواع حساب',
             target: this.graphService.getGraph,
             search(cell, keyword) {
                 return cell.shape.indexOf(keyword) !== -1;
             },
-            placeholder: 'Search by shape name',
-            notFoundText: 'Not Found',
+            placeholder: 'جستجو بر اساس نام',
+            notFoundText: 'یافت نشد!',
             collapsable: true,
             stencilGraphHeight: 0,
             getDropNode: (draggingNode, options) => {
