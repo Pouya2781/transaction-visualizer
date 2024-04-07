@@ -8,7 +8,6 @@ import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 })
 export class BFSModalComponent {
     readonly #modal = inject(NzModalRef);
-    readonly nzModalData = inject(NZ_MODAL_DATA);
 
     public routeLength!: number;
 

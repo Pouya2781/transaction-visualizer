@@ -7,6 +7,8 @@ import {BankAccount} from '../models/bank-account';
 import {Transaction} from '../models/transaction';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {BFSModalComponent} from '../bfsmodal/bfsmodal.component';
+import {from, tap} from 'rxjs';
+import {log} from 'ng-zorro-antd/core/logger';
 
 @Component({
     selector: 'app-header',
@@ -22,7 +24,6 @@ export class HeaderComponent {
     ) {}
     onSearch(value: string) {
         this.bankGraphService.addAccountById(6534454617, {x: 200, y: 200}, true);
-        // this.bankGraphService.addAccountById(6534454617, {x: 200, y: 200});
     }
 
     onLiteMode(value: boolean) {
@@ -38,7 +39,7 @@ export class HeaderComponent {
             });
 
             modal.afterClose.subscribe((result) => {
-                this.bankGraphService.executeRouting(result.routeLength);
+                this.bankGraphService.executeRouting(result.routeLength, true);
             });
         }
     }

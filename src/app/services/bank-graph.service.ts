@@ -386,8 +386,15 @@ export class BankGraphService {
         return routes;
     }
 
-    public executeRouting(length: number) {
+    public executeRouting(length: number, showModal: boolean) {
+        this.graphService.resetAllEdgeHighlights();
         const routes = this.route(this.selectedComponents[0].accountId, this.selectedComponents[1].accountId, length);
+        if (showModal && routes.length == 0) {
+            this.modalService.warning({
+                nzTitle: 'مسیر پیدا نشد',
+                nzContent: `!مسیری با حداقل طول ${length}  وجود ندارد`,
+            });
+        }
         for (let route of routes) {
             for (let bankGraphEdge of route.bankGraphEdges) {
                 this.graphService.highlightEdge(bankGraphEdge.transactionEdge);

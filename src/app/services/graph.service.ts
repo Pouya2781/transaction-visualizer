@@ -55,12 +55,12 @@ export class GraphService {
                 color: '#F2F7FA',
             },
             grid: true,
-            mousewheel: {
-                enabled: true,
-                global: true,
-                modifiers: ['ctrl', 'meta'],
-                zoomAtMousePosition: true,
-            },
+            // mousewheel: {
+            //     enabled: true,
+            //     global: true,
+            //     modifiers: ['ctrl', 'meta'],
+            //     zoomAtMousePosition: true,
+            // },
             onEdgeLabelRendered: (args) => {
                 const element = args.selectors['foContent'] as HTMLDivElement;
                 const foreignObject = args.selectors['fo'] as HTMLDivElement;
@@ -182,6 +182,9 @@ export class GraphService {
     public resetAllEdgeHighlights() {
         for (let edge of this.edgeMap.values()) {
             this.resetEdgeHighlight(edge);
+        }
+        for (let node of this.nodeMap.values()) {
+            node.toFront();
         }
     }
 

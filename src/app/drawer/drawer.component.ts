@@ -1,5 +1,4 @@
-import {Component, Input, TemplateRef, ViewChild} from '@angular/core';
-import {NzDrawerRef, NzDrawerService} from 'ng-zorro-antd/drawer';
+import {Component, Input} from '@angular/core';
 import {AccountType} from '../enums/account-type';
 
 @Component({
@@ -8,7 +7,6 @@ import {AccountType} from '../enums/account-type';
     styleUrls: ['./drawer.component.scss'],
 })
 export class DrawerComponent {
-    @Input() public transactionCount!: number;
     @Input() public ownerName!: string;
     @Input() public ownerId!: number;
     @Input() public ownerFamilyName!: string;
