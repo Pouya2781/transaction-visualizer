@@ -8,10 +8,12 @@ import {ApiService} from './api.service';
 import {BehaviorSubject, forkJoin, Observable, ReplaySubject} from 'rxjs';
 import {BankAccountComponent} from '../graph/node/bank-account/bank-account.component';
 import {PointLike} from '@antv/x6';
-import {AccountCreation, PartialAccountCreationArray} from './account-creation';
+import {AccountCreation, PartialAccountCreationArray} from '../models/account-creation';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {register} from '@antv/x6-angular-shape';
 import {TransactionComponent} from '../graph/edge/transcation/transaction.component';
+import {BankAccountSelectionService} from './bank-account-selection.service';
+import {LiteModeService} from './lite-mode.service';
 
 @Injectable({
     providedIn: 'root',
@@ -19,11 +21,15 @@ import {TransactionComponent} from '../graph/edge/transcation/transaction.compon
 export class BankGraphService {
     private bankGraphNodes: Map<number, BankGraphNode>;
     private bankGraphEdges: Map<number, BankGraphEdge>;
-    public liteMode: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    private selectedComponents: BankAccountComponent[] = [];
+
     public get canExecuteRouting() {
-        return this.selectedComponents.length == 2;
+        return this.bankAccountSelectionService.selectedComponents.length == this.SELECTION_LIMIT;
     }
+    public get selectedComponents() {
+        return this.bankAccountSelectionService.selectedComponents;
+    }
+
+    private readonly SELECTION_LIMIT = 2;
 
     private readonly NODE_WIDTH = 270;
     private readonly NODE_HEIGHT = 80;
@@ -43,10 +49,26 @@ export class BankGraphService {
     constructor(
         private readonly graphService: GraphService,
         private readonly apiService: ApiService,
-        private readonly modalService: NzModalService
+        private readonly modalService: NzModalService,
+        private readonly bankAccountSelectionService: BankAccountSelectionService,
+        private readonly liteModeService: LiteModeService
     ) {
         this.bankGraphNodes = new Map<number, BankGraphNode>();
         this.bankGraphEdges = new Map<number, BankGraphEdge>();
+        this.bankAccountSelectionService.init(this.SELECTION_LIMIT);
+        this.liteModeService.liteMode.subscribe((value) => {
+            if (!value) {
+                this.nodeWidth = this.NODE_WIDTH;
+                this.nodeHeight = this.NODE_HEIGHT;
+                this.cellPadding = this.CELL_PADDING;
+                this.randomOffset = this.RANDOM_OFFSET;
+            } else {
+                this.nodeWidth = this.LITE_NODE_WIDTH;
+                this.nodeHeight = this.LITE_NODE_HEIGHT;
+                this.cellPadding = this.LITE_CELL_PADDING;
+                this.randomOffset = this.LITE_RANDOM_OFFSET;
+            }
+        });
     }
 
     public init(injector: Injector) {
@@ -58,37 +80,13 @@ export class BankGraphService {
         });
     }
 
-    public setLightMode(value: boolean) {
-        if (!value) {
-            this.nodeWidth = this.NODE_WIDTH;
-            this.nodeHeight = this.NODE_HEIGHT;
-            this.cellPadding = this.CELL_PADDING;
-            this.randomOffset = this.RANDOM_OFFSET;
-        } else {
-            this.nodeWidth = this.LITE_NODE_WIDTH;
-            this.nodeHeight = this.LITE_NODE_HEIGHT;
-            this.cellPadding = this.LITE_CELL_PADDING;
-            this.randomOffset = this.LITE_RANDOM_OFFSET;
-        }
-        this.liteMode.next(value);
+    public requestSelection(component: BankAccountComponent): number {
+        return this.bankAccountSelectionService.requestSelection(component);
     }
 
-    public requestSelection(component: BankAccountComponent) {
-        if (this.selectedComponents.length == 2) return -1;
-        if (this.selectedComponents.length == 1) {
-            this.selectedComponents.push(component);
-            return 1;
-        }
-        this.selectedComponents.push(component);
-        return 0;
-    }
-
-    public requestDeselection(component: BankAccountComponent) {
+    public requestDeselection(component: BankAccountComponent): number {
         this.graphService.resetAllEdgeHighlights();
-        const selectionIndex = this.selectedComponents.indexOf(component);
-        this.selectedComponents.splice(selectionIndex, 1);
-        if (selectionIndex == 0 && this.selectedComponents.length == 1)
-            this.selectedComponents[0].updateSelectionIndex(selectionIndex);
+        return this.bankAccountSelectionService.requestDeselection(component);
     }
 
     public addAccountById(accountId: number, pos: PointLike, showModal: boolean) {

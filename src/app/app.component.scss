@@ -1,6 +1,6 @@
 :host {
     display: flex;
-    text-rendering: optimizeLegibility;
+    text-rendering: optimizelegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -15,5 +15,6 @@ nz-content {
 
 .inner-content {
     background: #fff;
+
     height: 100%;
 }

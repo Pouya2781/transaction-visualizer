@@ -9,6 +9,7 @@ import {NzModalService} from 'ng-zorro-antd/modal';
 import {BFSModalComponent} from '../bfsmodal/bfsmodal.component';
 import {from, tap} from 'rxjs';
 import {log} from 'ng-zorro-antd/core/logger';
+import {LiteModeService} from '../services/lite-mode.service';
 
 @Component({
     selector: 'app-header',
@@ -18,14 +19,15 @@ import {log} from 'ng-zorro-antd/core/logger';
 export class HeaderComponent {
     constructor(
         public readonly bankGraphService: BankGraphService,
-        private readonly modalService: NzModalService
+        private readonly modalService: NzModalService,
+        private readonly liteModeService: LiteModeService
     ) {}
     onSearch(value: string): void {
         this.bankGraphService.addAccountById(6534454617, {x: 200, y: 200}, true);
     }
 
     onLiteMode(value: boolean): void {
-        this.bankGraphService.setLightMode(value);
+        this.liteModeService.setLiteMode(value);
     }
 
     onExecuteRouting(): void {

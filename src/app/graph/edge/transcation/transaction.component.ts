@@ -1,6 +1,7 @@
 import {ChangeDetectorRef, Component, ElementRef, Input, Renderer2, ViewChild} from '@angular/core';
 import {BankGraphService} from '../../../services/bank-graph.service';
 import {Transaction} from '../../../models/transaction';
+import {LiteModeService} from '../../../services/lite-mode.service';
 
 @Component({
     selector: 'app-transcation',
@@ -25,9 +26,10 @@ export class TransactionComponent {
     constructor(
         private readonly changeDetector: ChangeDetectorRef,
         private readonly renderer: Renderer2,
-        private readonly bankGraphService: BankGraphService
+        private readonly bankGraphService: BankGraphService,
+        private readonly liteModeService: LiteModeService
     ) {
-        this.bankGraphService.liteMode.subscribe((value) => {
+        this.liteModeService.liteMode.subscribe((value) => {
             this.visible = !value;
         });
     }

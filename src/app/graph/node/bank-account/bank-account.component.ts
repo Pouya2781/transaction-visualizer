@@ -8,6 +8,7 @@ import {BankGraphService} from '../../../services/bank-graph.service';
 import {NzDrawerService} from 'ng-zorro-antd/drawer';
 import {DrawerComponent} from '../../../drawer/drawer.component';
 import {BankAccount} from '../../../models/bank-account';
+import {LiteModeService} from '../../../services/lite-mode.service';
 
 @Component({
     selector: 'app-bank-account',
@@ -36,9 +37,10 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
         private readonly changeDetector: ChangeDetectorRef,
         private readonly nzContextMenuService: NzContextMenuService,
         private readonly bankGraphService: BankGraphService,
-        private readonly drawerService: NzDrawerService
+        private readonly drawerService: NzDrawerService,
+        private readonly liteModeService: LiteModeService
     ) {
-        this.bankGraphService.liteMode.subscribe((value) => {
+        this.liteModeService.liteMode.subscribe((value) => {
             if (value) this.nodeState = NodeState.TINY;
             else this.nodeState = NodeState.NORMAL;
         });

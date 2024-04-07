@@ -1,4 +1,4 @@
-import {BankGraphNode} from '../models/bank-graph-node';
+import {BankGraphNode} from './bank-graph-node';
 
 export interface AccountCreation {
     created: boolean;
