@@ -1,4 +1,4 @@
-import {Graph, Node, PointLike} from '@antv/x6';
+import {Graph, Node, PointLike, Size} from '@antv/x6';
 import {forkJoin, Observable, ReplaySubject} from 'rxjs';
 import {GraphService} from '../services/graph.service';
 import {RowCol} from '../models/row-col.type';
@@ -43,25 +43,32 @@ export class Layout {
             originY: graph.options.y,
         };
 
+        const cellWidth: number = this.nodeWidth + 2 * this.cellPadding;
+        const cellHeight: number = this.nodeHeight + 2 * this.cellPadding;
+        const colCount: number = Math.floor(this.graphData.width / cellWidth);
+        const rowCount: number = Math.floor(this.graphData.height / cellHeight);
+
         this.gridData = {
-            cellWidth: this.nodeWidth + 2 * this.cellPadding;
-            cellHeight: this.nodeHeight + 2 * this.cellPadding;
-            colCount: Math.floor(this.graphData.width / this.gridData.cellWidth);
-            rowCount: Math.floor(this.graphData.height / this.gridData.cellHeight);
-            cellCount: this.gridData.rowCount * this.gridData.colCount;
-        }
+            cellWidth,
+            cellHeight,
+            colCount,
+            rowCount,
+            cellCount: rowCount * colCount,
+        };
 
         this.randomOffset = Math.min(randomOffset, cellPadding);
     }
 
     public layout(targetNodes: Node<Node.Properties>[], animated: boolean): Observable<[void[], void[]]> {
         const nodeGridCellOccupation: Array<[Node<Node.Properties>, number]> = [];
-        const allNodes = this.graph.getNodes();
-        const staticNodes = allNodes.filter((node) => !targetNodes.includes(node));
-        let occupiedCellCount = 0;
+        const allNodes: Node<Node.Properties>[] = this.graph.getNodes();
+        const staticNodes: Node<Node.Properties>[] = allNodes.filter(
+            (node: Node<Node.Properties>) => !targetNodes.includes(node)
+        );
+        let occupiedCellCount: number = 0;
 
         if (this.gridData.cellCount < allNodes.length) {
-            const scaleFactor = this.findSmallestScale(allNodes.length);
+            const scaleFactor: number = this.findSmallestScale(allNodes.length);
             this.graph.zoomTo(this.graphData.zoom / scaleFactor, {center: {x: 0, y: 0}});
             this.graphData.width = this.graphData.width * scaleFactor;
             this.graphData.height = this.graphData.height * scaleFactor;
@@ -84,16 +91,18 @@ export class Layout {
         targetNodes: Node<Node.Properties>[],
         animated: boolean
     ): Observable<[void[], void[]]> {
-        const centerIndex = targetNodes.indexOf(centerNode);
+        const centerIndex: number = targetNodes.indexOf(centerNode);
         if (centerIndex != -1) targetNodes.splice(centerIndex, 1);
 
         const nodeGridCellOccupation: Array<[Node<Node.Properties>, number]> = [];
-        const allNodes = this.graph.getNodes();
-        const staticNodes = allNodes.filter((node) => !targetNodes.includes(node));
-        let occupiedCellCount = 0;
+        const allNodes: Node<Node.Properties>[] = this.graph.getNodes();
+        const staticNodes: Node<Node.Properties>[] = allNodes.filter(
+            (node: Node<Node.Properties>) => !targetNodes.includes(node)
+        );
+        let occupiedCellCount: number = 0;
 
         if (this.gridData.cellCount < allNodes.length) {
-            const scaleFactor = this.findSmallestScale(allNodes.length);
+            const scaleFactor: number = this.findSmallestScale(allNodes.length);
             this.graph.zoomTo(this.graphData.zoom / scaleFactor, {center: {x: 0, y: 0}});
             this.graphData.originX = this.graph.options.x;
             this.graphData.originY = this.graph.options.y;
@@ -128,15 +137,15 @@ export class Layout {
     }
 
     private findSmallestScale(nodeCount: number): number {
-        const gridColCount = this.graphData.width / this.gridData.cellWidth;
-        const grindRowCount = this.graphData.height / this.gridData.cellHeight;
+        const gridColCount: number = this.graphData.width / this.gridData.cellWidth;
+        const grindRowCount: number = this.graphData.height / this.gridData.cellHeight;
 
-        let minScale = 0;
-        let maxScale = nodeCount / Math.floor(Math.max(gridColCount, grindRowCount));
+        let minScale: number = 0;
+        let maxScale: number = nodeCount / Math.floor(Math.max(gridColCount, grindRowCount));
 
         while (true) {
-            const scale = (minScale + maxScale) / 2;
-            const emptyGridCellsCount =
+            const scale: number = (minScale + maxScale) / 2;
+            const emptyGridCellsCount: number =
                 Math.floor(scale * grindRowCount) * Math.floor(scale * gridColCount) - nodeCount;
 
             if (emptyGridCellsCount > 0) {
@@ -159,67 +168,66 @@ export class Layout {
         animated: boolean,
         gridCells: Array<Array<Array<Node<Node.Properties>>>>
     ): Observable<void[]> {
-        nodeGridCellOccupation.sort((n) => n[1]);
+        nodeGridCellOccupation.sort((n: [Node<Node.Properties>, number]) => n[1]);
 
-        const dummyObservable = new ReplaySubject<void>();
+        const dummyObservable: ReplaySubject<void> = new ReplaySubject<void>();
         dummyObservable.next();
         dummyObservable.complete();
         const transitionFinished: Observable<void>[] = [dummyObservable];
 
         while (this.gridData.cellCount - occupiedCellCount < targetNodesCount) {
-            const nodeCell = nodeGridCellOccupation.shift();
+            const nodeCell: [Node<Node.Properties>, number] | undefined = nodeGridCellOccupation.shift();
             if (!nodeCell) break;
 
-            const node = nodeCell[0];
+            const node: Node<Node.Properties> = nodeCell[0];
+            const {topLeft, topRight, bottomLeft, bottomRight}: {[key: string]: PointLike} = this.calcCorners(node);
 
-            const {topLeft, topRight, bottomLeft, bottomRight} = this.calcCorners(node);
+            const cellTopLeft: RowCol = this.calcGridCell(topLeft);
+            const cellTopRight: RowCol = this.calcGridCell(topRight);
+            const cellBottomLeft: RowCol = this.calcGridCell(bottomLeft);
+            const cellBottomRight: RowCol = this.calcGridCell(bottomRight);
 
-            const cellTopLeft = this.calcGridCell(topLeft);
-            const cellTopRight = this.calcGridCell(topRight);
-            const cellBottomLeft = this.calcGridCell(bottomLeft);
-            const cellBottomRight = this.calcGridCell(bottomRight);
+            const cellTopLeftPos: PointLike = this.calcNodePosInCell(cellTopLeft);
+            const cellTopRightPos: PointLike = this.calcNodePosInCell(cellTopRight);
+            const cellBottomLeftPos: PointLike = this.calcNodePosInCell(cellBottomLeft);
+            const cellBottomRightPos: PointLike = this.calcNodePosInCell(cellBottomRight);
 
-            const cellTopLeftPos = this.calcNodePosInCell(cellTopLeft);
-            const cellTopRightPos = this.calcNodePosInCell(cellTopRight);
-            const cellBottomLeftPos = this.calcNodePosInCell(cellBottomLeft);
-            const cellBottomRightPos = this.calcNodePosInCell(cellBottomRight);
+            const dist2TopLeft: number = this.dist2(topLeft.x, topLeft.y, cellTopLeftPos.x, cellTopLeftPos.y);
+            const dist2TopRight: number = this.dist2(topLeft.x, topLeft.y, cellTopRightPos.x, cellTopRightPos.y);
+            const dist2BottomLeft: number = this.dist2(topLeft.x, topLeft.y, cellBottomLeftPos.x, cellBottomLeftPos.y);
+            const dist2BottomRight: number = this.dist2(
+                topLeft.x,
+                topLeft.y,
+                cellBottomRightPos.x,
+                cellBottomRightPos.y
+            );
 
-            const dist2TopLeft = this.dist2(topLeft.x, topLeft.y, cellTopLeftPos.x, cellTopLeftPos.y);
-            const dist2TopRight = this.dist2(topLeft.x, topLeft.y, cellTopRightPos.x, cellTopRightPos.y);
-            const dist2BottomLeft = this.dist2(topLeft.x, topLeft.y, cellBottomLeftPos.x, cellBottomLeftPos.y);
-            const dist2BottomRight = this.dist2(topLeft.x, topLeft.y, cellBottomRightPos.x, cellBottomRightPos.y);
-
-            const minDist2 = Math.min(dist2TopLeft, dist2TopRight, dist2BottomLeft, dist2BottomRight);
-
+            const minDist2: number = Math.min(dist2TopLeft, dist2TopRight, dist2BottomLeft, dist2BottomRight);
+            let pos: PointLike;
             if (minDist2 == dist2TopLeft) {
-                const pos = this.unmapPosition(this.applyRandomOffset(cellTopLeftPos, this.randomOffset));
-                if (animated) transitionFinished.push(this.graphService.animateMove(node, pos.x, pos.y));
-                else node.setPosition(pos.x, pos.y);
+                pos = this.unmapPosition(this.applyRandomOffset(cellTopLeftPos, this.randomOffset));
                 if (this.freeCell(gridCells, cellTopRight, node) == 0) occupiedCellCount--;
                 if (this.freeCell(gridCells, cellBottomLeft, node) == 0) occupiedCellCount--;
                 if (this.freeCell(gridCells, cellBottomRight, node) == 0) occupiedCellCount--;
             } else if (minDist2 == dist2TopRight) {
-                const pos = this.unmapPosition(this.applyRandomOffset(cellTopRightPos, this.randomOffset));
-                if (animated) transitionFinished.push(this.graphService.animateMove(node, pos.x, pos.y));
-                else node.setPosition(pos.x, pos.y);
+                pos = this.unmapPosition(this.applyRandomOffset(cellTopRightPos, this.randomOffset));
                 if (this.freeCell(gridCells, cellTopLeft, node) == 0) occupiedCellCount--;
                 if (this.freeCell(gridCells, cellBottomLeft, node) == 0) occupiedCellCount--;
                 if (this.freeCell(gridCells, cellBottomRight, node) == 0) occupiedCellCount--;
             } else if (minDist2 == dist2BottomLeft) {
-                const pos = this.unmapPosition(this.applyRandomOffset(cellBottomLeftPos, this.randomOffset));
-                if (animated) transitionFinished.push(this.graphService.animateMove(node, pos.x, pos.y));
-                else node.setPosition(pos.x, pos.y);
+                pos = this.unmapPosition(this.applyRandomOffset(cellBottomLeftPos, this.randomOffset));
+
                 if (this.freeCell(gridCells, cellTopLeft, node) == 0) occupiedCellCount--;
                 if (this.freeCell(gridCells, cellTopRight, node) == 0) occupiedCellCount--;
                 if (this.freeCell(gridCells, cellBottomRight, node) == 0) occupiedCellCount--;
             } else {
-                const pos = this.unmapPosition(this.applyRandomOffset(cellBottomRightPos, this.randomOffset));
-                if (animated) transitionFinished.push(this.graphService.animateMove(node, pos.x, pos.y));
-                else node.setPosition(pos.x, pos.y);
+                pos = this.unmapPosition(this.applyRandomOffset(cellBottomRightPos, this.randomOffset));
                 if (this.freeCell(gridCells, cellTopLeft, node) == 0) occupiedCellCount--;
                 if (this.freeCell(gridCells, cellTopRight, node) == 0) occupiedCellCount--;
                 if (this.freeCell(gridCells, cellBottomLeft, node) == 0) occupiedCellCount--;
             }
+            if (animated) transitionFinished.push(this.graphService.animateMove(node, pos.x, pos.y));
+            else node.setPosition(pos.x, pos.y);
         }
 
         return forkJoin(transitionFinished);
@@ -231,8 +239,8 @@ export class Layout {
         bottomLeft: PointLike;
         bottomRight: PointLike;
     } {
-        const pos = this.mapPosition(node.getPosition());
-        const nodeSize = node.size();
+        const pos: PointLike = this.mapPosition(node.getPosition());
+        const nodeSize: Size = node.size();
         return {
             topLeft: {
                 x: pos.x,
@@ -281,9 +289,9 @@ export class Layout {
         animated: boolean,
         gridCells: Array<Array<Array<Node<Node.Properties>>>>
     ): Observable<void[]> {
-        let targetNodeIndex = 0;
-        let nodeExist = true;
-        const dummyObservable = new ReplaySubject<void>();
+        let targetNodeIndex: number = 0;
+        let nodeExist: boolean = true;
+        const dummyObservable: ReplaySubject<void> = new ReplaySubject<void>();
         dummyObservable.next();
         dummyObservable.complete();
         const transitionFinished: Observable<void>[] = [dummyObservable];
@@ -316,18 +324,18 @@ export class Layout {
         animated: boolean,
         gridCells: Array<Array<Array<Node<Node.Properties>>>>
     ): Observable<void[]> {
-        let targetNodeIndex = 0;
-        let nodeExist = true;
-        const dummyObservable = new ReplaySubject<void>();
+        let targetNodeIndex: number = 0;
+        let nodeExist: boolean = true;
+        const dummyObservable: ReplaySubject<void> = new ReplaySubject<void>();
         dummyObservable.next();
         dummyObservable.complete();
         const transitionFinished: Observable<void>[] = [dummyObservable];
 
-        const topLeft = this.mapPosition(centerNode.getPosition());
-        const cellTopLeft = this.calcGridCell(topLeft);
-        let radius = 1;
+        const topLeft: PointLike = this.mapPosition(centerNode.getPosition());
+        const cellTopLeft: RowCol = this.calcGridCell(topLeft);
+        let radius: number = 1;
         while (true) {
-            const ring = this.calcRing(cellTopLeft, this.gridData.rowCount, this.gridData.colCount, radius);
+            const ring: RowCol[] = this.calcRing(cellTopLeft, this.gridData.rowCount, this.gridData.colCount, radius);
             if (ring.length == 0) break;
 
             for (let i = 0; i < ring.length; i++) {
@@ -357,46 +365,46 @@ export class Layout {
 
     private calcRing(rowCol: RowCol, rowCount: number, colCount: number, radius: number): RowCol[] {
         const ring: RowCol[] = [];
-        const topLeft = {
+        const topLeft: RowCol = {
             row: rowCol.row - radius,
             col: rowCol.col - radius,
         };
-        const topRight = {
+        const topRight: RowCol = {
             row: rowCol.row - radius,
             col: rowCol.col + radius,
         };
-        const bottomLeft = {
+        const bottomLeft: RowCol = {
             row: rowCol.row + radius,
             col: rowCol.col - radius,
         };
-        const bottomRight = {
+        const bottomRight: RowCol = {
             row: rowCol.row + radius,
             col: rowCol.col + radius,
         };
 
         for (let i = 1; i <= radius * 2 - 1; i++) {
-            const newRowCol = {
+            const newRowCol: RowCol = {
                 row: topLeft.row,
                 col: topLeft.col + i,
             };
             if (this.validRowCol(newRowCol, rowCount, colCount)) ring.push(newRowCol);
         }
         for (let i = 1; i <= radius * 2 - 1; i++) {
-            const newRowCol = {
+            const newRowCol: RowCol = {
                 row: topLeft.row + i,
                 col: topLeft.col,
             };
             if (this.validRowCol(newRowCol, rowCount, colCount)) ring.push(newRowCol);
         }
         for (let i = 1; i <= radius * 2 - 1; i++) {
-            const newRowCol = {
+            const newRowCol: RowCol = {
                 row: topRight.row + i,
                 col: topRight.col,
             };
             if (this.validRowCol(newRowCol, rowCount, colCount)) ring.push(newRowCol);
         }
         for (let i = 1; i <= radius * 2 - 1; i++) {
-            const newRowCol = {
+            const newRowCol: RowCol = {
                 row: bottomLeft.row,
                 col: bottomLeft.col + i,
             };
@@ -425,14 +433,14 @@ export class Layout {
         gridCells: Array<Array<Array<Node<Node.Properties>>>>,
         nodeGridCellOccupation: Array<[Node<Node.Properties>, number]>
     ): number {
-        let occupiedCellCount = 0;
+        let occupiedCellCount: number = 0;
         for (let node of staticNodes) {
-            const {topLeft, topRight, bottomLeft, bottomRight} = this.calcCorners(node);
+            const {topLeft, topRight, bottomLeft, bottomRight}: {[key: string]: PointLike} = this.calcCorners(node);
 
-            const cellTopLeft = this.calcGridCell(topLeft);
-            const cellTopRight = this.calcGridCell(topRight);
-            const cellBottomLeft = this.calcGridCell(bottomLeft);
-            const cellBottomRight = this.calcGridCell(bottomRight);
+            const cellTopLeft: RowCol = this.calcGridCell(topLeft);
+            const cellTopRight: RowCol = this.calcGridCell(topRight);
+            const cellBottomLeft: RowCol = this.calcGridCell(bottomLeft);
+            const cellBottomRight: RowCol = this.calcGridCell(bottomRight);
 
             const uniqueCells: RowCol[] = this.calcUniqueCells([
                 cellTopLeft,
@@ -489,8 +497,8 @@ export class Layout {
     }
 
     private applyRandomOffset(pos: PointLike, randomOffset: number): PointLike {
-        const x = pos.x + Math.floor(Math.random() * (randomOffset * 2 + 1)) - randomOffset;
-        const y = pos.y + Math.floor(Math.random() * (randomOffset * 2 + 1)) - randomOffset;
+        const x: number = pos.x + Math.floor(Math.random() * (randomOffset * 2 + 1)) - randomOffset;
+        const y: number = pos.y + Math.floor(Math.random() * (randomOffset * 2 + 1)) - randomOffset;
         return {x, y};
     }
 }
