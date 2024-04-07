@@ -4,16 +4,13 @@ import {BankAccount} from '../models/bank-account';
 import {BankGraphEdge} from '../models/bank-graph-edge';
 import {GraphService} from './graph.service';
 import {BankGraphNode} from '../models/bank-graph-node';
-import {ApiService} from './api.service';
-import {BehaviorSubject, forkJoin, Observable, ReplaySubject} from 'rxjs';
+import {Observable} from 'rxjs';
 import {BankAccountComponent} from '../graph/node/bank-account/bank-account.component';
 import {PointLike} from '@antv/x6';
 import {AccountCreation, PartialAccountCreationArray} from '../models/account-creation';
-import {NzModalService} from 'ng-zorro-antd/modal';
 import {register} from '@antv/x6-angular-shape';
 import {TransactionComponent} from '../graph/edge/transcation/transaction.component';
 import {BankAccountSelectionService} from './bank-account-selection.service';
-import {LiteModeService} from './lite-mode.service';
 import {BankAccountService} from './bank-account.service';
 import {TransactionService} from './transaction.service';
 import {AccountExpansionService} from './account-expansion.service';
@@ -47,7 +44,7 @@ export class BankGraphService {
         this.bankAccountSelectionService.init(this.SELECTION_LIMIT);
     }
 
-    public init(injector: Injector) {
+    public init(injector: Injector): void {
         this.graphService.registerEdgeLabel('transaction-label', TransactionComponent);
         register({
             shape: 'custom-angular-component-node',

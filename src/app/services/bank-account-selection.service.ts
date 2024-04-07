@@ -21,7 +21,7 @@ export class BankAccountSelectionService {
         return this.deselection;
     }
 
-    public init(selectionCount: number) {
+    public init(selectionCount: number): void {
         this.selectionCount = selectionCount;
     }
 

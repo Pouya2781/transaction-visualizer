@@ -52,7 +52,7 @@ export class Layout {
         this.gridCellCount = this.gridRowCount * this.gridColCount;
     }
 
-    layout(targetNodes: Node<Node.Properties>[], animated: boolean): Observable<[void[], void[]]> {
+    public layout(targetNodes: Node<Node.Properties>[], animated: boolean): Observable<[void[], void[]]> {
         const nodeGridCellOccupation: Array<[Node<Node.Properties>, number]> = [];
         const allNodes = this.graph.getNodes();
         const staticNodes = allNodes.filter((node) => !targetNodes.includes(node));
@@ -77,7 +77,7 @@ export class Layout {
         ]);
     }
 
-    layoutAroundCenter(
+    public layoutAroundCenter(
         centerNode: Node<Node.Properties>,
         targetNodes: Node<Node.Properties>[],
         animated: boolean

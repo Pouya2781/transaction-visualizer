@@ -8,6 +8,4 @@ import {BankAccount} from '../models/bank-account';
 })
 export class DrawerComponent {
     @Input() public bankAccount!: BankAccount;
-
-    constructor() {}
 }

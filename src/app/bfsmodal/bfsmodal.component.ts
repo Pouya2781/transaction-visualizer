@@ -7,11 +7,11 @@ import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
     styleUrls: ['./bfsmodal.component.scss'],
 })
 export class BFSModalComponent {
-    readonly #modal = inject(NzModalRef);
+    readonly #modal: NzModalRef = inject(NzModalRef);
 
-    public routeLength!: number;
+    protected routeLength!: number;
 
-    destroyModal(): void {
+    protected destroyModal(): void {
         this.#modal.destroy({routeLength: this.routeLength});
     }
 }

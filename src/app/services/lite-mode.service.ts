@@ -10,7 +10,6 @@ export class LiteModeService {
     public get liteMode(): Observable<boolean> {
         return this._liteMode;
     }
-    constructor() {}
 
     public setLiteMode(value: boolean) {
         this._liteMode.next(value);
