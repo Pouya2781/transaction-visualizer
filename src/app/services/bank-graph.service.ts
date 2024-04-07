@@ -17,6 +17,7 @@ import {LiteModeService} from './lite-mode.service';
 import {BankAccountService} from './bank-account.service';
 import {TransactionService} from './transaction.service';
 import {AccountExpansionService} from './account-expansion.service';
+import {AccountRouterService} from './account-router.service';
 
 @Injectable({
     providedIn: 'root',
@@ -28,6 +29,7 @@ export class BankGraphService {
     public get canExecuteRouting() {
         return this.bankAccountSelectionService.selectedComponents.length == this.SELECTION_LIMIT;
     }
+
     public get selectedComponents() {
         return this.bankAccountSelectionService.selectedComponents;
     }
@@ -36,12 +38,11 @@ export class BankGraphService {
 
     constructor(
         private readonly graphService: GraphService,
-        private readonly apiService: ApiService,
-        private readonly modalService: NzModalService,
         private readonly bankAccountSelectionService: BankAccountSelectionService,
         private readonly bankAccountService: BankAccountService,
         private readonly transactionService: TransactionService,
-        private readonly accountExpansionService: AccountExpansionService
+        private readonly accountExpansionService: AccountExpansionService,
+        private readonly accountRouterService: AccountRouterService
     ) {
         this.bankAccountSelectionService.init(this.SELECTION_LIMIT);
     }
@@ -123,90 +124,22 @@ export class BankGraphService {
         }[],
         destinationBankGraphNode: BankGraphNode,
         routes: {bankGraphNodes: BankGraphNode[]; bankGraphEdges: BankGraphEdge[]}[]
-    ) {
-        while (openAccounts.length > 0) {
-            const account = openAccounts.shift();
-
-            if (account) {
-                if (account.bankGraphNode == destinationBankGraphNode) {
-                    routes.push({
-                        bankGraphNodes: [...account.route.bankGraphNodes],
-                        bankGraphEdges: [...account.route.bankGraphEdges],
-                    });
-                } else {
-                    if (account.length > 0) {
-                        const uniqueEdges: BankGraphEdge[] = [];
-                        for (let bankGraphEdge of account.bankGraphNode.outgoingBankGraphEdges) {
-                            if (
-                                !uniqueEdges.find(
-                                    (p) => p.destinationBankGraphNode == bankGraphEdge.destinationBankGraphNode
-                                )
-                            ) {
-                                uniqueEdges.push(bankGraphEdge);
-                            }
-                        }
-
-                        for (let bankGraphEdge of uniqueEdges) {
-                            if (!account.route.bankGraphNodes.includes(bankGraphEdge.destinationBankGraphNode)) {
-                                openAccounts.push({
-                                    bankGraphNode: bankGraphEdge.destinationBankGraphNode,
-                                    length: account.length - 1,
-                                    route: {
-                                        bankGraphNodes: [
-                                            ...account.route.bankGraphNodes,
-                                            bankGraphEdge.destinationBankGraphNode,
-                                        ],
-                                        bankGraphEdges: [...account.route.bankGraphEdges, bankGraphEdge],
-                                    },
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    ): void {
+        this.accountRouterService.routeInLength(openAccounts, destinationBankGraphNode, routes);
     }
 
-    public route(sourceAccountId: number, destinationAccountId: number, length: number) {
-        const sourceBankGraphNode = this.bankGraphNodes.get(sourceAccountId);
-        if (!sourceBankGraphNode) return [];
-        const destinationBankGraphNode = this.bankGraphNodes.get(destinationAccountId);
-        if (!destinationBankGraphNode) return [];
-        if (sourceBankGraphNode == destinationBankGraphNode) return [];
-        length = Math.max(0, Math.min(7, length));
-
-        const routes: {bankGraphNodes: BankGraphNode[]; bankGraphEdges: BankGraphEdge[]}[] = [];
-        this.routeInLength(
-            [
-                {
-                    bankGraphNode: sourceBankGraphNode,
-                    length: length,
-                    route: {bankGraphNodes: [sourceBankGraphNode], bankGraphEdges: []},
-                },
-            ],
-            destinationBankGraphNode,
-            routes
-        );
-        return routes;
+    public route(
+        sourceAccountId: number,
+        destinationAccountId: number,
+        length: number
+    ): {
+        bankGraphNodes: BankGraphNode[];
+        bankGraphEdges: BankGraphEdge[];
+    }[] {
+        return this.accountRouterService.route(this.bankGraphNodes, sourceAccountId, destinationAccountId, length);
     }
 
-    public executeRouting(length: number, showModal: boolean) {
-        this.graphService.resetAllEdgeHighlights();
-        const routes = this.route(
-            this.selectedComponents[0].bankAccount.accountId,
-            this.selectedComponents[1].bankAccount.accountId,
-            length
-        );
-        if (showModal && routes.length == 0) {
-            this.modalService.warning({
-                nzTitle: 'مسیر پیدا نشد',
-                nzContent: `!مسیری با حداقل طول ${length}  وجود ندارد`,
-            });
-        }
-        for (let route of routes) {
-            for (let bankGraphEdge of route.bankGraphEdges) {
-                this.graphService.highlightEdge(bankGraphEdge.transactionEdge);
-            }
-        }
+    public executeRouting(length: number, showModal: boolean): void {
+        this.accountRouterService.executeRouting(this.bankGraphNodes, length, showModal);
     }
 }
