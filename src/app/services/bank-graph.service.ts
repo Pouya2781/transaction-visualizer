@@ -9,6 +9,7 @@ import {BehaviorSubject, forkJoin, Observable, ReplaySubject} from 'rxjs';
 import {BankAccountComponent} from '../graph/node/bank-account/bank-account.component';
 import {PointLike} from '@antv/x6';
 import {AccountCreation, PartialAccountCreationArray} from './account-creation';
+import {NzModalService} from 'ng-zorro-antd/modal';
 
 @Injectable({
     providedIn: 'root',
@@ -39,7 +40,8 @@ export class BankGraphService {
 
     constructor(
         private readonly graphService: GraphService,
-        private apiService: ApiService
+        private apiService: ApiService,
+        private modalService: NzModalService
     ) {
         this.bankGraphNodes = new Map<number, BankGraphNode>();
         this.bankGraphEdges = new Map<number, BankGraphEdge>();
@@ -78,8 +80,8 @@ export class BankGraphService {
             this.selectedComponents[0].updateSelectionIndex(selectionIndex);
     }
 
-    public addAccountById(accountId: number, pos: PointLike) {
-        const replaySubject = new ReplaySubject<AccountCreation>();
+    public addAccountById(accountId: number, pos: PointLike, showModal: boolean) {
+        const replaySubject = new ReplaySubject<Partial<AccountCreation>>();
         let bankGraphNode = this.bankGraphNodes.get(accountId);
         if (bankGraphNode) {
             replaySubject.next({created: false, bankGraphNode});
@@ -87,8 +89,19 @@ export class BankGraphService {
             return replaySubject;
         }
         this.apiService.getAccount(accountId).subscribe((bankAccount: BankAccount) => {
-            bankGraphNode = this.addAccount(bankAccount, pos);
-            replaySubject.next({created: true, bankGraphNode});
+            if (!bankAccount) console.log(bankAccount);
+            if (bankAccount) {
+                bankGraphNode = this.addAccount(bankAccount, pos);
+                replaySubject.next({created: true, bankGraphNode});
+            } else {
+                replaySubject.next({created: false});
+                if (showModal) {
+                    this.modalService.warning({
+                        nzTitle: 'حساب پیدا نشد',
+                        nzContent: `!حسابی با شماره حساب ${accountId} وجود ندارد`,
+                    });
+                }
+            }
             replaySubject.complete();
         });
 
@@ -212,10 +225,12 @@ export class BankGraphService {
             const expandedNodePos = bankGraphNode.bankAccountNode.getPosition();
             this.apiService.getOutgoingTransaction(accountId).subscribe((transactions) => {
                 for (let transaction of transactions) {
-                    const accountAdded = this.addAccountById(transaction.destinationAccountId, expandedNodePos);
+                    const accountAdded = this.addAccountById(transaction.destinationAccountId, expandedNodePos, false);
                     accountsAdded.push(accountAdded);
-                    accountAdded.subscribe((created) => {
-                        this.addTransaction(transaction);
+                    accountAdded.subscribe((accountCreation) => {
+                        if (accountCreation.bankGraphNode != undefined) {
+                            this.addTransaction(transaction);
+                        }
                     });
                 }
                 apiCallResolved.next(forkJoin(accountsAdded));
@@ -232,7 +247,9 @@ export class BankGraphService {
         if (bankGraphNode) {
             this.expandAccount(accountId).subscribe((accountsAddedObservable) => {
                 accountsAddedObservable.subscribe((accountCreationData) => {
-                    const pureAccountCreationData = accountCreationData.slice(1) as AccountCreation[];
+                    const pureAccountCreationData = accountCreationData.filter(
+                        (accountCreation) => accountCreation.bankGraphNode != undefined
+                    ) as AccountCreation[];
                     const bankAccountNodes = pureAccountCreationData
                         .filter((accountCreation) => {
                             return !ignoreAccountLayout.find((ignoredAccount) => {

@@ -21,7 +21,8 @@ export class HeaderComponent {
         private modalService: NzModalService
     ) {}
     onSearch(value: string) {
-        this.bankGraphService.addAccountById(6534454617, {x: 200, y: 200});
+        this.bankGraphService.addAccountById(6534454617, {x: 200, y: 200}, true);
+        // this.bankGraphService.addAccountById(6534454617, {x: 200, y: 200});
     }
 
     onLiteMode(value: boolean) {
