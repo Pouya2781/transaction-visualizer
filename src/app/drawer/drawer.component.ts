@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {AccountType} from '../enums/account-type';
+import {BankAccount} from '../models/bank-account';
 
 @Component({
     selector: 'app-drawer',
@@ -7,16 +7,7 @@ import {AccountType} from '../enums/account-type';
     styleUrls: ['./drawer.component.scss'],
 })
 export class DrawerComponent {
-    @Input() public ownerName!: string;
-    @Input() public ownerId!: number;
-    @Input() public ownerFamilyName!: string;
-    @Input() public branchName!: string;
-    @Input() public branchAddress!: string;
-    @Input() public branchTelephone!: number;
-    @Input() public accountType!: AccountType;
-    @Input() public sheba!: string;
-    @Input() public cardId!: string;
-    @Input() public accountId!: number;
+    @Input() public bankAccount!: BankAccount;
 
     constructor() {}
 }

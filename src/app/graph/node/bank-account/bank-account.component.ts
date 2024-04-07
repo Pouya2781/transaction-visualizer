@@ -7,6 +7,7 @@ import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropd
 import {BankGraphService} from '../../../services/bank-graph.service';
 import {NzDrawerService} from 'ng-zorro-antd/drawer';
 import {DrawerComponent} from '../../../drawer/drawer.component';
+import {BankAccount} from '../../../models/bank-account';
 
 @Component({
     selector: 'app-bank-account',
@@ -15,19 +16,11 @@ import {DrawerComponent} from '../../../drawer/drawer.component';
 })
 export class BankAccountComponent implements AfterViewInit, DynamicNodeView, InterconnectedNode {
     @ViewChild('dynamicNodeView') dynamicNodeView!: ElementRef;
-    @Input() public nodeId: string = 'adsa';
+    @Input() public nodeId!: string;
 
+    @Input() public bankAccount!: BankAccount;
     @Input() public transactionCount!: number;
-    @Input() public ownerName!: string;
-    @Input() public ownerId!: number;
-    @Input() public ownerFamilyName!: string;
-    @Input() public branchName!: string;
-    @Input() public branchAddress!: string;
-    @Input() public branchTelephone!: number;
-    @Input() public accountType!: AccountType;
-    @Input() public sheba!: string;
-    @Input() public cardId!: string;
-    @Input() public accountId!: number;
+
     protected readonly AccountType = AccountType;
     protected readonly NodeState = NodeState;
 
@@ -58,8 +51,8 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
     }
 
     getBorderColor() {
-        if (this.accountType == AccountType.CURRENT) return 'red';
-        if (this.accountType == AccountType.DEPOSIT) return 'green';
+        if (this.bankAccount.accountType == AccountType.CURRENT) return 'red';
+        if (this.bankAccount.accountType == AccountType.DEPOSIT) return 'green';
         return 'blue';
     }
 
@@ -84,11 +77,11 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
     }
 
     onExpand(depth: number) {
-        this.bankGraphService.expandAccountInDepth(this.accountId, depth);
+        this.bankGraphService.expandAccountInDepth(this.bankAccount.accountId, depth);
     }
 
     onDelete() {
-        this.bankGraphService.deleteAccount(this.accountId);
+        this.bankGraphService.deleteAccount(this.bankAccount.accountId);
     }
 
     onDetail() {
@@ -96,18 +89,7 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
             nzTitle: 'جزییات حساب',
             nzContent: DrawerComponent,
             nzContentParams: {
-                transactionCount: this.transactionCount,
-                ownerName: this.ownerName,
-                ownerId: this.ownerId,
-                ownerFamilyName: this.ownerFamilyName,
-                branchName: this.branchName,
-                branchAddress: this.branchAddress,
-                branchTelephone: this.branchTelephone,
-                accountType: this.accountType,
-                sheba: this.sheba,
-                cardId: this.cardId,
-                accountId: this.accountId,
-                // AccountType: this.AccountType,
+                bankAccount: this.bankAccount,
             },
         });
 

@@ -388,7 +388,11 @@ export class BankGraphService {
 
     public executeRouting(length: number, showModal: boolean) {
         this.graphService.resetAllEdgeHighlights();
-        const routes = this.route(this.selectedComponents[0].accountId, this.selectedComponents[1].accountId, length);
+        const routes = this.route(
+            this.selectedComponents[0].bankAccount.accountId,
+            this.selectedComponents[1].bankAccount.accountId,
+            length
+        );
         if (showModal && routes.length == 0) {
             this.modalService.warning({
                 nzTitle: 'مسیر پیدا نشد',
