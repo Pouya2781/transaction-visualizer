@@ -2,24 +2,8 @@ import {Graph, Node, PointLike, Size} from '@antv/x6';
 import {forkJoin, Observable, ReplaySubject} from 'rxjs';
 import {GraphService} from '../services/graph.service';
 import {RowCol} from '../models/row-col.type';
-
-interface GraphData {
-    containerWidth: number;
-    containerHeight: number;
-    zoom: number;
-    width: number;
-    height: number;
-    originX: number;
-    originY: number;
-}
-
-interface GridData {
-    cellWidth: number;
-    cellHeight: number;
-    rowCount: number;
-    colCount: number;
-    cellCount: number;
-}
+import {GraphData} from '../models/graph-data.type';
+import {GridData} from '../models/grid-data.type';
 
 export class Layout {
     private graphData: GraphData;

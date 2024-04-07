@@ -1,19 +1,18 @@
-import {Injectable, Injector} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Stencil} from '@antv/x6-plugin-stencil';
 import {Node} from '@antv/x6';
 import {GraphService} from './graph.service';
 import {AccountType} from '../enums/account-type';
-import {register} from '@antv/x6-angular-shape';
-import {BankAccountComponent} from '../graph/node/bank-account/bank-account.component';
-import {NzModalService} from 'ng-zorro-antd/modal';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {ModalComponent} from '../modal/modal.component';
+import {StencilGroupData} from '../models/stencil-group-data.type';
 
 @Injectable({
     providedIn: 'root',
 })
 export class StencilService {
     private stencil!: Stencil;
-    private nodes: {metaDatas: Node.Metadata[]; groupName: string}[] = [
+    private nodes: StencilGroupData[] = [
         {
             metaDatas: [
                 {
@@ -96,41 +95,37 @@ export class StencilService {
             groupName: 'group3',
         },
     ];
-    constructor(
+    public constructor(
         private graphService: GraphService,
         private modalService: NzModalService
     ) {}
 
-    public init(stencilContainerRef: HTMLElement) {
+    public init(stencilContainerRef: HTMLElement): void {
         this.stencil = new Stencil({
             title: 'انواع حساب',
             target: this.graphService.getGraph,
-            search(cell, keyword) {
+            search(cell: Node<Node.Properties>, keyword: string): boolean {
                 return cell.shape.indexOf(keyword) !== -1;
             },
             placeholder: 'جستجو بر اساس نام',
             notFoundText: 'یافت نشد!',
             collapsable: true,
             stencilGraphHeight: 0,
-            getDropNode: (draggingNode, options) => {
-                const node = draggingNode.clone();
+            getDropNode: (draggingNode: Node<Node.Properties>) => {
+                const node: Node<Node.Properties> = draggingNode.clone();
                 this.graphService.mountCustomNode(node);
 
-                const modal = this.modalService.create({
+                const modal: NzModalRef = this.modalService.create({
                     nzTitle: 'ایجاد حساب جدید',
                     nzContent: ModalComponent,
-                    nzData: {
-                        favoriteLibrary: 'angular',
-                        favoriteFramework: 'angular',
-                    },
                     nzCentered: true,
-                    nzOnCancel: () => {
+                    nzOnCancel: (): void => {
                         this.graphService.getGraph.removeNode(node.id);
                     },
                     nzFooter: null,
                 });
 
-                modal.afterClose.subscribe((result) => {
+                modal.afterClose.subscribe((result): void => {
                     node.setData({
                         ngArguments: {
                             bankAccount: result,
@@ -166,15 +161,17 @@ export class StencilService {
         this.renderNodesToStencil();
     }
 
-    public createStencilNode(metaData: Node.Metadata, groupName: string) {
-        let group = this.nodes.find((node) => node.groupName === groupName);
+    public createStencilNode(metaData: Node.Metadata, groupName: string): void {
+        let group: StencilGroupData | undefined = this.nodes.find(
+            (node: StencilGroupData): boolean => node.groupName === groupName
+        );
         if (group) group.metaDatas.push(metaData);
         else this.nodes.push({metaDatas: [metaData], groupName});
 
         this.renderNodesToStencil();
     }
 
-    public renderNodesToStencil() {
-        this.nodes.forEach(({metaDatas, groupName}) => this.stencil.load(metaDatas, groupName));
+    public renderNodesToStencil(): void {
+        this.nodes.forEach(({metaDatas, groupName}: StencilGroupData) => this.stencil.load(metaDatas, groupName));
     }
 }
