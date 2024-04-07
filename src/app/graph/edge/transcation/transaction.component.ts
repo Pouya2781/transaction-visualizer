@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, ElementRef, Input, Renderer2, ViewChild} from '@angular/core';
-import {TransactionType} from '../../../enums/transaction-type';
 import {BankGraphService} from '../../../services/bank-graph.service';
+import {Transaction} from '../../../models/transaction';
 
 @Component({
     selector: 'app-transcation',
@@ -8,33 +8,31 @@ import {BankGraphService} from '../../../services/bank-graph.service';
     styleUrls: ['./transaction.component.scss'],
 })
 export class TransactionComponent {
-    @Input() public sourceAccountId!: string;
-    @Input() public destinationAccountId!: string;
-    @Input() public amount!: string;
-    @Input() public date!: string;
-    @Input() public transactionId!: string;
-    @Input() public type!: TransactionType;
-    visible: boolean = false;
+    @Input() public transaction!: Transaction;
+
+    protected visible: boolean = false;
+    protected expanded: boolean = false;
+
+    protected readonly Number = Number;
+
+    private readonly EXPAND_ANIMATION_DELAY = 400;
 
     @ViewChild('targetElement') targetElement!: ElementRef;
     @ViewChild('targetIcon') targetIcon!: ElementRef;
     @ViewChild('targetLabel') targetLabel!: ElementRef;
     @ViewChild('wrapper') wrapper!: ElementRef;
 
-    protected readonly Number = Number;
-    expanded: boolean = false;
-
     constructor(
-        private changeDetector: ChangeDetectorRef,
-        private renderer: Renderer2,
-        private bankGraphService: BankGraphService
+        private readonly changeDetector: ChangeDetectorRef,
+        private readonly renderer: Renderer2,
+        private readonly bankGraphService: BankGraphService
     ) {
         this.bankGraphService.liteMode.subscribe((value) => {
             this.visible = !value;
         });
     }
 
-    clicked() {
+    onClick(): void {
         this.expanded = !this.expanded;
 
         const firstTarget = this.targetElement.nativeElement.getBoundingClientRect();
@@ -58,15 +56,15 @@ export class TransactionComponent {
 
         this.targetElement.nativeElement.animate(
             [{transform: `translate(${deltaXTarget}px, ${deltaYTarget}px`}, {transform: `translate(0)`}],
-            400
+            this.EXPAND_ANIMATION_DELAY
         );
         this.targetLabel.nativeElement.animate(
             [{transform: `translate(${deltaXLabel}px, ${deltaYLabel}px`}, {transform: `translate(0)`}],
-            400
+            this.EXPAND_ANIMATION_DELAY
         );
         this.targetIcon.nativeElement.animate(
             [{transform: `translate(${deltaXIcon}px, ${deltaYIcon}px`}, {transform: `translate(0)`}],
-            400
+            this.EXPAND_ANIMATION_DELAY
         );
     }
 }

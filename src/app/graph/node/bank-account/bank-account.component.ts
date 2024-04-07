@@ -60,8 +60,8 @@ export class BankAccountComponent implements AfterViewInit, DynamicNodeView, Int
         return this.SAVINGS_ACCOUNT_BORDER_COLOR;
     }
 
-    contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
-        this.nzContextMenuService.create($event, menu);
+    contextMenu(event: MouseEvent, menu: NzDropdownMenuComponent): void {
+        this.nzContextMenuService.create(event, menu);
     }
 
     onSelect(): void {
