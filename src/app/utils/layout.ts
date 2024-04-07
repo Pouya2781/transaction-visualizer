@@ -3,53 +3,55 @@ import {forkJoin, Observable, ReplaySubject} from 'rxjs';
 import {GraphService} from '../services/graph.service';
 import {RowCol} from '../models/row-col.type';
 
+interface GraphData {
+    containerWidth: number;
+    containerHeight: number;
+    zoom: number;
+    width: number;
+    height: number;
+    originX: number;
+    originY: number;
+}
+
+interface GridData {
+    cellWidth: number;
+    cellHeight: number;
+    rowCount: number;
+    colCount: number;
+    cellCount: number;
+}
+
 export class Layout {
-    private readonly nodeWidth: number;
-    private readonly nodeHeight: number;
-    private readonly cellPadding: number;
-    private readonly randomOffset: number;
-    private readonly containerWidth: number;
-    private readonly containerHeight: number;
-    private readonly gridCellWidth: number;
-    private readonly gridCellHeight: number;
-    private readonly graphZoom: number;
+    private graphData: GraphData;
+    private gridData: GridData;
 
-    private graph: Graph;
-    private graphService: GraphService;
-    private graphWidth: number;
-    private graphHeight: number;
-    private graphOriginX: number;
-    private graphOriginY: number;
-    private gridRowCount: number;
-    private gridColCount: number;
-    private gridCellCount: number;
-
-    constructor(
-        graph: Graph,
-        graphService: GraphService,
-        nodeWidth: number,
-        nodeHeight: number,
-        cellPadding: number,
-        randomOffset: number = 0
+    public constructor(
+        private readonly graph: Graph,
+        private readonly graphService: GraphService,
+        private readonly nodeWidth: number,
+        private readonly nodeHeight: number,
+        private readonly cellPadding: number,
+        private readonly randomOffset: number = 0
     ) {
-        this.graph = graph;
-        this.graphService = graphService;
-        this.nodeWidth = nodeWidth;
-        this.nodeHeight = nodeHeight;
-        this.cellPadding = cellPadding;
+        this.graphData = {
+            containerWidth: graph.container.clientWidth,
+            containerHeight: graph.container.clientHeight,
+            zoom: graph.zoom(),
+            width: graph.container.clientWidth / graph.zoom(),
+            height: graph.container.clientHeight / graph.zoom(),
+            originX: graph.options.x,
+            originY: graph.options.y,
+        };
+
+        this.gridData = {
+            cellWidth: this.nodeWidth + 2 * this.cellPadding;
+            cellHeight: this.nodeHeight + 2 * this.cellPadding;
+            colCount: Math.floor(this.graphData.width / this.gridData.cellWidth);
+            rowCount: Math.floor(this.graphData.height / this.gridData.cellHeight);
+            cellCount: this.gridData.rowCount * this.gridData.colCount;
+        }
+
         this.randomOffset = Math.min(randomOffset, cellPadding);
-        this.containerWidth = graph.container.clientWidth;
-        this.containerHeight = graph.container.clientHeight;
-        this.graphZoom = graph.zoom();
-        this.graphWidth = this.containerWidth / this.graphZoom;
-        this.graphHeight = this.containerHeight / this.graphZoom;
-        this.graphOriginX = graph.options.x;
-        this.graphOriginY = graph.options.y;
-        this.gridCellWidth = this.nodeWidth + 2 * this.cellPadding;
-        this.gridCellHeight = this.nodeHeight + 2 * this.cellPadding;
-        this.gridColCount = Math.floor(this.graphWidth / this.gridCellWidth);
-        this.gridRowCount = Math.floor(this.graphHeight / this.gridCellHeight);
-        this.gridCellCount = this.gridRowCount * this.gridColCount;
     }
 
     public layout(targetNodes: Node<Node.Properties>[], animated: boolean): Observable<[void[], void[]]> {
@@ -58,14 +60,14 @@ export class Layout {
         const staticNodes = allNodes.filter((node) => !targetNodes.includes(node));
         let occupiedCellCount = 0;
 
-        if (this.gridCellCount < allNodes.length) {
+        if (this.gridData.cellCount < allNodes.length) {
             const scaleFactor = this.findSmallestScale(allNodes.length);
-            this.graph.zoomTo(this.graphZoom / scaleFactor, {center: {x: 0, y: 0}});
-            this.graphWidth = this.graphWidth * scaleFactor;
-            this.graphHeight = this.graphHeight * scaleFactor;
-            this.gridColCount = Math.floor(this.graphWidth / this.gridCellWidth);
-            this.gridRowCount = Math.floor(this.graphHeight / this.gridCellHeight);
-            this.gridCellCount = this.gridRowCount * this.gridColCount;
+            this.graph.zoomTo(this.graphData.zoom / scaleFactor, {center: {x: 0, y: 0}});
+            this.graphData.width = this.graphData.width * scaleFactor;
+            this.graphData.height = this.graphData.height * scaleFactor;
+            this.gridData.colCount = Math.floor(this.graphData.width / this.gridData.cellWidth);
+            this.gridData.rowCount = Math.floor(this.graphData.height / this.gridData.cellHeight);
+            this.gridData.cellCount = this.gridData.rowCount * this.gridData.colCount;
         }
 
         const gridCells: Array<Array<Array<Node<Node.Properties>>>> = this.initArray();
@@ -90,16 +92,16 @@ export class Layout {
         const staticNodes = allNodes.filter((node) => !targetNodes.includes(node));
         let occupiedCellCount = 0;
 
-        if (this.gridCellCount < allNodes.length) {
+        if (this.gridData.cellCount < allNodes.length) {
             const scaleFactor = this.findSmallestScale(allNodes.length);
-            this.graph.zoomTo(this.graphZoom / scaleFactor, {center: {x: 0, y: 0}});
-            this.graphOriginX = this.graph.options.x;
-            this.graphOriginY = this.graph.options.y;
-            this.graphWidth = this.graphWidth * scaleFactor;
-            this.graphHeight = this.graphHeight * scaleFactor;
-            this.gridColCount = Math.floor(this.graphWidth / this.gridCellWidth);
-            this.gridRowCount = Math.floor(this.graphHeight / this.gridCellHeight);
-            this.gridCellCount = this.gridRowCount * this.gridColCount;
+            this.graph.zoomTo(this.graphData.zoom / scaleFactor, {center: {x: 0, y: 0}});
+            this.graphData.originX = this.graph.options.x;
+            this.graphData.originY = this.graph.options.y;
+            this.graphData.width = this.graphData.width * scaleFactor;
+            this.graphData.height = this.graphData.height * scaleFactor;
+            this.gridData.colCount = Math.floor(this.graphData.width / this.gridData.cellWidth);
+            this.gridData.rowCount = Math.floor(this.graphData.height / this.gridData.cellHeight);
+            this.gridData.cellCount = this.gridData.rowCount * this.gridData.colCount;
         }
 
         const gridCells: Array<Array<Array<Node<Node.Properties>>>> = this.initArray();
@@ -113,21 +115,21 @@ export class Layout {
 
     private mapPosition(pos: PointLike): PointLike {
         return {
-            x: pos.x + this.graphOriginX,
-            y: pos.y + this.graphOriginY,
+            x: pos.x + this.graphData.originX,
+            y: pos.y + this.graphData.originY,
         };
     }
 
     private unmapPosition(pos: PointLike): PointLike {
         return {
-            x: pos.x - this.graphOriginX,
-            y: pos.y - this.graphOriginY,
+            x: pos.x - this.graphData.originX,
+            y: pos.y - this.graphData.originY,
         };
     }
 
     private findSmallestScale(nodeCount: number): number {
-        const gridColCount = this.graphWidth / this.gridCellWidth;
-        const grindRowCount = this.graphHeight / this.gridCellHeight;
+        const gridColCount = this.graphData.width / this.gridData.cellWidth;
+        const grindRowCount = this.graphData.height / this.gridData.cellHeight;
 
         let minScale = 0;
         let maxScale = nodeCount / Math.floor(Math.max(gridColCount, grindRowCount));
@@ -164,7 +166,7 @@ export class Layout {
         dummyObservable.complete();
         const transitionFinished: Observable<void>[] = [dummyObservable];
 
-        while (this.gridCellCount - occupiedCellCount < targetNodesCount) {
+        while (this.gridData.cellCount - occupiedCellCount < targetNodesCount) {
             const nodeCell = nodeGridCellOccupation.shift();
             if (!nodeCell) break;
 
@@ -253,15 +255,15 @@ export class Layout {
 
     private calcGridCell(pos: PointLike): RowCol {
         return {
-            col: this.clampCol(pos.x / this.gridCellWidth),
-            row: this.clampRow(pos.y / this.gridCellHeight),
+            col: this.clampCol(pos.x / this.gridData.cellWidth),
+            row: this.clampRow(pos.y / this.gridData.cellHeight),
         };
     }
 
     private calcNodePosInCell(cell: RowCol): PointLike {
         return {
-            x: cell.col * this.gridCellWidth + this.cellPadding,
-            y: cell.row * this.gridCellHeight + this.cellPadding,
+            x: cell.col * this.gridData.cellWidth + this.cellPadding,
+            y: cell.row * this.gridData.cellHeight + this.cellPadding,
         };
     }
 
@@ -285,8 +287,8 @@ export class Layout {
         dummyObservable.next();
         dummyObservable.complete();
         const transitionFinished: Observable<void>[] = [dummyObservable];
-        for (let row = 0; row < this.gridRowCount; row++) {
-            for (let col = 0; col < this.gridColCount; col++) {
+        for (let row = 0; row < this.gridData.rowCount; row++) {
+            for (let col = 0; col < this.gridData.colCount; col++) {
                 if (gridCells[row][col].length == 0) {
                     const posInCell = this.calcNodePosInCell({row: row, col: col});
                     const finalPos = this.unmapPosition(this.applyRandomOffset(posInCell, this.randomOffset));
@@ -325,7 +327,7 @@ export class Layout {
         const cellTopLeft = this.calcGridCell(topLeft);
         let radius = 1;
         while (true) {
-            const ring = this.calcRing(cellTopLeft, this.gridRowCount, this.gridColCount, radius);
+            const ring = this.calcRing(cellTopLeft, this.gridData.rowCount, this.gridData.colCount, radius);
             if (ring.length == 0) break;
 
             for (let i = 0; i < ring.length; i++) {
@@ -459,19 +461,19 @@ export class Layout {
     }
 
     private clampRow(row: number): number {
-        return this.clamp(Math.floor(row), 0, this.gridRowCount - 1);
+        return this.clamp(Math.floor(row), 0, this.gridData.rowCount - 1);
     }
 
     private clampCol(col: number): number {
-        return this.clamp(Math.floor(col), 0, this.gridColCount - 1);
+        return this.clamp(Math.floor(col), 0, this.gridData.colCount - 1);
     }
 
     private initArray(): Node<Node.Properties>[][][] {
-        const gridCells: Array<Array<Array<Node<Node.Properties>>>> = Array(this.gridRowCount);
-        for (let i = 0; i < this.gridRowCount; i++) {
-            gridCells[i] = Array(this.gridColCount);
+        const gridCells: Array<Array<Array<Node<Node.Properties>>>> = Array(this.gridData.rowCount);
+        for (let i = 0; i < this.gridData.rowCount; i++) {
+            gridCells[i] = Array(this.gridData.colCount);
 
-            for (let j = 0; j < this.gridColCount; j++) {
+            for (let j = 0; j < this.gridData.colCount; j++) {
                 gridCells[i][j] = [];
             }
         }
