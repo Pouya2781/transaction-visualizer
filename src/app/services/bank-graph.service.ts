@@ -14,13 +14,14 @@ import {register} from '@antv/x6-angular-shape';
 import {TransactionComponent} from '../graph/edge/transcation/transaction.component';
 import {BankAccountSelectionService} from './bank-account-selection.service';
 import {LiteModeService} from './lite-mode.service';
+import {BankAccountService} from './bank-account.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class BankGraphService {
-    private bankGraphNodes: Map<number, BankGraphNode>;
-    private bankGraphEdges: Map<number, BankGraphEdge>;
+    public bankGraphNodes: Map<number, BankGraphNode> = new Map<number, BankGraphNode>();
+    public bankGraphEdges: Map<number, BankGraphEdge> = new Map<number, BankGraphEdge>();
 
     public get canExecuteRouting() {
         return this.bankAccountSelectionService.selectedComponents.length == this.SELECTION_LIMIT;
@@ -51,10 +52,9 @@ export class BankGraphService {
         private readonly apiService: ApiService,
         private readonly modalService: NzModalService,
         private readonly bankAccountSelectionService: BankAccountSelectionService,
-        private readonly liteModeService: LiteModeService
+        private readonly liteModeService: LiteModeService,
+        private readonly bankAccountService: BankAccountService
     ) {
-        this.bankGraphNodes = new Map<number, BankGraphNode>();
-        this.bankGraphEdges = new Map<number, BankGraphEdge>();
         this.bankAccountSelectionService.init(this.SELECTION_LIMIT);
         this.liteModeService.liteMode.subscribe((value) => {
             if (!value) {
@@ -89,56 +89,16 @@ export class BankGraphService {
         return this.bankAccountSelectionService.requestDeselection(component);
     }
 
-    public addAccountById(accountId: number, pos: PointLike, showModal: boolean) {
-        const replaySubject = new ReplaySubject<Partial<AccountCreation>>();
-        let bankGraphNode = this.bankGraphNodes.get(accountId);
-        if (bankGraphNode) {
-            replaySubject.next({created: false, bankGraphNode});
-            replaySubject.complete();
-            return replaySubject;
-        }
-        this.apiService.getAccount(accountId).subscribe((bankAccount: BankAccount) => {
-            if (!bankAccount) console.log(bankAccount);
-            if (bankAccount) {
-                bankGraphNode = this.addAccount(bankAccount, pos);
-                replaySubject.next({created: true, bankGraphNode});
-            } else {
-                replaySubject.next({created: false});
-                if (showModal) {
-                    this.modalService.warning({
-                        nzTitle: 'حساب پیدا نشد',
-                        nzContent: `!حسابی با شماره حساب ${accountId} وجود ندارد`,
-                    });
-                }
-            }
-            replaySubject.complete();
-        });
-
-        return replaySubject;
+    public addAccountById(accountId: number, pos: PointLike, showModal: boolean): Observable<Partial<AccountCreation>> {
+        return this.bankAccountService.addAccountById(accountId, pos, showModal);
     }
 
-    public addAccount(bankAccount: BankAccount, pos: PointLike) {
-        let bankGraphNode = this.bankGraphNodes.get(bankAccount.accountId);
-        if (bankGraphNode) return bankGraphNode;
-        const node = this.graphService.addCustomNode({
-            shape: 'custom-angular-component-node',
-            x: pos.x,
-            y: pos.y,
-            data: {
-                ngArguments: {
-                    bankAccount,
-                    transactionCount: 0,
-                },
-            },
-        });
-        bankGraphNode = {
-            bankAccount,
-            bankAccountNode: node,
-            incomingBankGraphEdges: [],
-            outgoingBankGraphEdges: [],
-        };
-        this.bankGraphNodes.set(bankAccount.accountId, bankGraphNode);
-        return bankGraphNode;
+    public addAccount(bankAccount: BankAccount, pos: PointLike): BankGraphNode {
+        return this.bankAccountService.addAccount(bankAccount, pos);
+    }
+
+    public deleteAccount(accountID: number): void {
+        return this.bankAccountService.deleteAccount(accountID);
     }
 
     public addTransaction(transaction: Transaction) {
@@ -177,22 +137,6 @@ export class BankGraphService {
             sourceBankGraphNode.outgoingBankGraphEdges.push(bankGraphEdge);
             destinationBankGraphNode.incomingBankGraphEdges.push(bankGraphEdge);
             this.bankGraphEdges.set(transaction.transactionId, bankGraphEdge);
-        }
-    }
-
-    public deleteAccount(accountID: number) {
-        const bankGraphNode = this.bankGraphNodes.get(accountID);
-
-        if (!!bankGraphNode) {
-            for (let bankAccountEdge of bankGraphNode.outgoingBankGraphEdges) {
-                this.deleteTransaction(bankAccountEdge.transaction.transactionId);
-            }
-            for (let bankAccountEdge of bankGraphNode.incomingBankGraphEdges) {
-                this.deleteTransaction(bankAccountEdge.transaction.transactionId);
-            }
-
-            this.bankGraphNodes.delete(bankGraphNode.bankAccount.accountId);
-            this.graphService.removeNode(bankGraphNode.bankAccountNode.id);
         }
     }
 
