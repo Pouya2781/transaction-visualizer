@@ -3,21 +3,27 @@
 }
 
 .all-wrapper {
-    font-size: 1.25rem;
     display: inline-block;
 
+    font-size: 1.25rem;
+
     .tiny {
-        display: inline-block;
-        text-align: center;
-        font-weight: 600;
-        box-shadow: 0 0 5px 0.5px gray;
-        border-radius: 0.75rem;
         color: white;
+        box-shadow: 0 0 5px 0.5px gray;
+
+        display: inline-block;
+
         padding-block: 1rem;
         padding-inline: 2rem;
 
+        border-radius: 0.75rem;
+
+        font-weight: 600;
+
+        text-align: center;
+
         &.current {
-            background: #770000;
+            background: #700;
         }
 
         &.deposit {
@@ -38,16 +44,18 @@
     }
 
     .full-wrapper {
-        background-color: #eeeeee;
+        background-color: #eee;
         box-shadow: 0 0 5px 0.5px gray;
-        border-radius: 0.75rem;
+
         display: flex;
         flex-direction: column;
         align-items: center;
-        border-inline-start-width: 0.5rem;
-        border-inline-start-style: solid;
+
         width: 27rem;
-        //pointer-events: none;
+
+        border-inline-start-style: solid;
+        border-inline-start-width: 0.5rem;
+        border-radius: 0.75rem;
 
         &.selected0 {
             box-shadow: 0 0 5px 3px green;
@@ -60,19 +68,24 @@
         .wrapper {
             display: flex;
             flex-direction: row-reverse;
-            justify-content: center;
             align-items: center;
-            font-size: 1.25rem;
+            justify-content: center;
+
             padding-block: 0.5rem;
 
+            font-size: 1.25rem;
+
             .more-info {
-                font-size: 2rem;
                 position: absolute;
                 inset-block-start: 0.75rem;
                 inset-inline-start: 1rem;
-                cursor: pointer;
+
+                font-size: 2rem;
+
                 transition: opacity;
                 transition-delay: 150ms;
+
+                cursor: pointer;
 
                 &:hover {
                     opacity: 0.75;
@@ -80,8 +93,9 @@
             }
 
             nz-divider {
-                height: 7rem;
                 background-color: black;
+
+                height: 7rem;
             }
 
             > span {
@@ -89,15 +103,16 @@
             }
 
             .info div {
-                padding-block: 0.5rem;
-                padding-inline: 1rem;
-                text-align: right;
-
                 display: flex;
-                align-items: flex-start;
                 flex-direction: row-reverse;
+                align-items: flex-start;
                 justify-content: flex-start;
                 gap: 0.35rem;
+
+                padding-block: 0.5rem;
+                padding-inline: 1rem;
+
+                text-align: right;
 
                 span:nth-child(2) {
                     font-weight: 600;
@@ -106,27 +121,32 @@
         }
 
         .detail {
+            opacity: 0;
+
+            overflow: hidden;
+
             display: flex;
             flex-direction: column;
             align-items: flex-end;
             justify-content: flex-start;
+
             width: 100%;
             height: 0;
-            overflow: hidden;
-            opacity: 0;
+
             transition:
                 opacity,
                 height,
                 0.5s cubic-bezier(0, 0.4, 0, 1);
 
             &.expand {
-                height: 17rem;
                 opacity: 1;
+
+                height: 17rem;
             }
 
             nz-divider {
-                //height: 0.35rem;
                 background-color: #222;
+
                 margin-block: 0.5rem;
             }
 
@@ -135,21 +155,29 @@
                 flex-direction: row-reverse;
                 align-items: flex-start;
                 gap: 0.5rem;
+
                 padding-inline: 1rem;
 
                 span {
-                    padding-block: 0.5rem;
-                    display: inline-block;
                     flex-shrink: 0;
 
+                    display: inline-block;
+
+                    padding-block: 0.5rem;
+
                     &:nth-child(2) {
-                        direction: rtl;
                         flex-shrink: 1;
-                        font-weight: 600;
+
+                        direction: rtl;
+
                         overflow: hidden;
+
+                        width: 20rem;
+
+                        font-weight: 600;
+
                         text-overflow: ellipsis;
                         white-space: nowrap;
-                        width: 20rem;
                     }
                 }
             }
@@ -159,15 +187,20 @@
 
 .popover-content {
     list-style: none;
+
     padding: 0.5rem;
 
     li {
-        cursor: pointer;
-        font-weight: 600;
+        opacity: 1;
+
         padding-block: 0.5rem;
         padding-inline: 2rem;
+
+        font-weight: 600;
+
         transition: opacity 200ms ease-in;
-        opacity: 1;
+
+        cursor: pointer;
 
         &:not(:last-of-type) {
             border-block-end: 1px solid gray;
