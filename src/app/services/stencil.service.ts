@@ -24,7 +24,7 @@ export class StencilService {
             title: 'انواع حساب',
             target: this.graphService.getGraph,
             search(cell: Node<Node.Properties>, keyword: string): boolean {
-                return cell.shape.indexOf(keyword) !== -1;
+                return cell.data.ngArguments.bankAccount.accountType.indexOf(keyword) !== -1;
             },
             placeholder: 'جستجو بر اساس نام',
             notFoundText: 'یافت نشد!',
