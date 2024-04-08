@@ -34,22 +34,32 @@ export class BankAccountService {
             replaySubject.complete();
             return replaySubject;
         }
-        this.apiService.getAccount(accountId).subscribe((bankAccount: BankAccount) => {
-            if (!bankAccount) console.log(bankAccount);
-            if (bankAccount) {
-                bankGraphNode = this.addAccount(bankGraphNodes, bankAccount, pos);
-                replaySubject.next({created: true, bankGraphNode});
-            } else {
+        this.apiService.getAccount(accountId).subscribe(
+            (bankAccount: BankAccount) => {
+                if (bankAccount) {
+                    bankGraphNode = this.addAccount(bankGraphNodes, bankAccount, pos);
+                    replaySubject.next({created: true, bankGraphNode});
+                } else {
+                    replaySubject.next({created: false});
+                    if (showModal) {
+                        this.modalService.warning({
+                            nzTitle: 'حساب پیدا نشد',
+                            nzContent: `!حسابی با شماره حساب ${accountId} وجود ندارد`,
+                        });
+                    }
+                }
+                replaySubject.complete();
+            },
+            (_error) => {
                 replaySubject.next({created: false});
                 if (showModal) {
                     this.modalService.warning({
-                        nzTitle: 'حساب پیدا نشد',
-                        nzContent: `!حسابی با شماره حساب ${accountId} وجود ندارد`,
+                        nzTitle: 'خطای اتصال به سرور',
+                        nzContent: '!لطفا بعدا تلاش کنید',
                     });
                 }
             }
-            replaySubject.complete();
-        });
+        );
 
         return replaySubject;
     }
