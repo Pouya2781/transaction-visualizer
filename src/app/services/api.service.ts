@@ -9,7 +9,8 @@ import {Transaction} from '../models/transaction.type';
 })
 export class ApiService {
     private readonly BASE_URL: string = 'http://localhost:3000/';
-    public constructor(private httpClient: HttpClient) {}
+
+    public constructor(private readonly httpClient: HttpClient) {}
 
     public getAccount(id: number): Observable<BankAccount> {
         return this.httpClient.get<BankAccount>(this.BASE_URL + 'accounts', {params: new HttpParams().set('id', id)});

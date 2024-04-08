@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, Injector, Renderer2, ViewChild} from '@angular/core';
-import {GraphService} from '../services/graph.service';
-import {StencilService} from '../services/stencil.service';
-import {BankGraphService} from '../services/bank-graph.service';
+import {GraphService} from '../../services/graph.service';
+import {StencilService} from '../../services/stencil.service';
+import {BankGraphService} from '../../services/bank-graph.service';
 
 @Component({
     selector: 'app-main',

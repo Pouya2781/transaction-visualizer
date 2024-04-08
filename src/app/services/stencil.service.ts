@@ -2,102 +2,21 @@ import {Injectable} from '@angular/core';
 import {Stencil} from '@antv/x6-plugin-stencil';
 import {Node} from '@antv/x6';
 import {GraphService} from './graph.service';
-import {AccountType} from '../enums/account-type';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {ModalComponent} from '../modal/modal.component';
+import {ModalComponent} from '../components/modal/modal.component';
 import {StencilGroupData} from '../models/stencil-group-data.type';
+import {STENCIL_GROUP_DATA} from '../data/stencil-group';
 
 @Injectable({
     providedIn: 'root',
 })
 export class StencilService {
     private stencil!: Stencil;
-    private nodes: StencilGroupData[] = [
-        {
-            metaDatas: [
-                {
-                    shape: 'custom-angular-component-node',
-                    width: 290,
-                    height: 80,
-                    data: {
-                        ngArguments: {
-                            bankAccount: {
-                                ownerName: 'افسر',
-                                ownerId: 1253664585,
-                                ownerFamilyName: 'طباطبایی',
-                                accountId: '6534454617',
-                                branchName: 'گلوبندک',
-                                branchAddress: 'تهران-خیابان خیام-بالاتر از چهارراه گلوبندک',
-                                branchTelephone: '55638667',
-                                sheba: 'IR120778801496000000198',
-                                cardId: '6104335000000190',
-                                accountType: AccountType.CURRENT,
-                                transactionCount: 196,
-                            },
-                        },
-                    },
-                },
-            ],
-            groupName: 'group1',
-        },
-        {
-            metaDatas: [
-                {
-                    shape: 'custom-angular-component-node',
-                    width: 290,
-                    height: 80,
-                    data: {
-                        ngArguments: {
-                            bankAccount: {
-                                ownerName: 'افسر',
-                                ownerId: 1253664585,
-                                ownerFamilyName: 'طباطبایی',
-                                accountId: '6534454617',
-                                branchName: 'گلوبندک',
-                                branchAddress: 'تهران-خیابان خیام-بالاتر از چهارراه گلوبندک',
-                                branchTelephone: '55638667',
-                                sheba: 'IR120778801496000000198',
-                                cardId: '6104335000000190',
-                                accountType: AccountType.DEPOSIT,
-                                transactionCount: 196,
-                            },
-                        },
-                    },
-                },
-            ],
-            groupName: 'group2',
-        },
-        {
-            metaDatas: [
-                {
-                    shape: 'custom-angular-component-node',
-                    width: 290,
-                    height: 80,
-                    data: {
-                        ngArguments: {
-                            bankAccount: {
-                                ownerName: 'افسر',
-                                ownerId: 1253664585,
-                                ownerFamilyName: 'طباطبایی',
-                                accountId: '6534454617',
-                                branchName: 'گلوبندک',
-                                branchAddress: 'تهران-خیابان خیام-بالاتر از چهارراه گلوبندک',
-                                branchTelephone: '55638667',
-                                sheba: 'IR120778801496000000198',
-                                cardId: '6104335000000190',
-                                accountType: AccountType.SAVINGS,
-                                transactionCount: 196,
-                            },
-                        },
-                    },
-                },
-            ],
-            groupName: 'group3',
-        },
-    ];
+    private stencilGroupData: StencilGroupData[] = STENCIL_GROUP_DATA;
+
     public constructor(
-        private graphService: GraphService,
-        private modalService: NzModalService
+        private readonly graphService: GraphService,
+        private readonly modalService: NzModalService
     ) {}
 
     public init(stencilContainerRef: HTMLElement): void {
@@ -162,16 +81,18 @@ export class StencilService {
     }
 
     public createStencilNode(metaData: Node.Metadata, groupName: string): void {
-        let group: StencilGroupData | undefined = this.nodes.find(
+        let group: StencilGroupData | undefined = this.stencilGroupData.find(
             (node: StencilGroupData): boolean => node.groupName === groupName
         );
         if (group) group.metaDatas.push(metaData);
-        else this.nodes.push({metaDatas: [metaData], groupName});
+        else this.stencilGroupData.push({metaDatas: [metaData], groupName});
 
         this.renderNodesToStencil();
     }
 
     public renderNodesToStencil(): void {
-        this.nodes.forEach(({metaDatas, groupName}: StencilGroupData) => this.stencil.load(metaDatas, groupName));
+        this.stencilGroupData.forEach(({metaDatas, groupName}: StencilGroupData) =>
+            this.stencil.load(metaDatas, groupName)
+        );
     }
 }

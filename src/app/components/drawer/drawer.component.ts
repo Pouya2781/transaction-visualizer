@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {BankAccount} from '../models/bank-account.type';
+import {BankAccount} from '../../models/bank-account.type';
 
 @Component({
     selector: 'app-drawer',

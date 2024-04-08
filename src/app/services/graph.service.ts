@@ -27,9 +27,9 @@ export class GraphService {
     private edgeMap: Map<string, CustomEdge> = new Map<string, CustomEdge>();
     private resizeObserver: ResizeObserver;
 
-    constructor(
-        private componentCreatorService: ComponentCreatorService,
-        private injector: Injector
+    public constructor(
+        private readonly componentCreatorService: ComponentCreatorService,
+        private readonly injector: Injector
     ) {
         this.resizeObserver = new ResizeObserver((entries) => {
             for (let entry of entries) {

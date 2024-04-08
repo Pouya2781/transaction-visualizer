@@ -33,7 +33,7 @@ export class AccountExpansionService {
         private readonly bankAccountService: BankAccountService,
         private readonly transactionService: TransactionService,
         private readonly graphService: GraphService,
-        private liteModeService: LiteModeService
+        private readonly liteModeService: LiteModeService
     ) {
         this.liteModeService.liteMode.subscribe((value) => {
             if (!value) {

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {BankAccountComponent} from '../graph/node/bank-account/bank-account.component';
+import {BankAccountComponent} from '../components/graph/node/bank-account/bank-account.component';
 import {Observable, Subject} from 'rxjs';
 
 @Injectable({

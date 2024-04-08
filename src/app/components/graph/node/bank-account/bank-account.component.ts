@@ -1,14 +1,14 @@
 import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import {DynamicNodeView, InterconnectedNode} from '../../../models/node.type';
+import {DynamicNodeView, InterconnectedNode} from '../../../../models/node.type';
 import {AccountType} from 'src/app/enums/account-type';
 import {NodeState} from 'src/app/enums/node-state';
-import {GraphService} from '../../../services/graph.service';
+import {GraphService} from '../../../../services/graph.service';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
-import {BankGraphService} from '../../../services/bank-graph.service';
+import {BankGraphService} from '../../../../services/bank-graph.service';
 import {NzDrawerService} from 'ng-zorro-antd/drawer';
 import {DrawerComponent} from '../../../drawer/drawer.component';
-import {BankAccount} from '../../../models/bank-account.type';
-import {LiteModeService} from '../../../services/lite-mode.service';
+import {BankAccount} from '../../../../models/bank-account.type';
+import {LiteModeService} from '../../../../services/lite-mode.service';
 
 @Component({
     selector: 'app-bank-account',

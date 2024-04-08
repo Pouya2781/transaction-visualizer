@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
-import {BankGraphService} from '../services/bank-graph.service';
+import {BankGraphService} from '../../services/bank-graph.service';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {LiteModeService} from '../../services/lite-mode.service';
 import {BFSModalComponent} from '../bfsmodal/bfsmodal.component';
-import {LiteModeService} from '../services/lite-mode.service';
 
 @Component({
     selector: 'app-header',
@@ -15,6 +15,7 @@ export class HeaderComponent {
         private readonly modalService: NzModalService,
         private readonly liteModeService: LiteModeService
     ) {}
+
     protected onSearch(value: string): void {
         this.bankGraphService.addAccountById(6534454617, {x: 200, y: 200}, true);
     }
