@@ -17,7 +17,7 @@ export class HeaderComponent {
     ) {}
 
     protected onSearch(value: string): void {
-        this.bankGraphService.addAccountById(6534454617, {x: 200, y: 200}, true);
+        this.bankGraphService.addAccountById(+value || 6534454617, {x: 200, y: 200}, true);
     }
 
     protected onLiteMode(value: boolean): void {
