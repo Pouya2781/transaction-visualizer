@@ -12,22 +12,25 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {IconsProviderModule} from './icons-provider.module';
 import {NzLayoutModule} from 'ng-zorro-antd/layout';
 import {NzMenuModule} from 'ng-zorro-antd/menu';
-import {MainComponent} from './main/main.component';
-import {HeaderComponent} from './header/header.component';
+import {MainComponent} from './components/main/main.component';
+import {HeaderComponent} from './components/header/header.component';
 import {NzInputModule} from 'ng-zorro-antd/input';
-import {SwitchComponent} from './header/switch/switch.component';
+import {SwitchComponent} from './components/header/switch/switch.component';
 import {NzSwitchModule} from 'ng-zorro-antd/switch';
-import {SearchboxComponent} from './header/searchbox/searchbox.component';
-import {BankAccountComponent} from './graph/node/bank-account/bank-account.component';
+import {SearchboxComponent} from './components/header/searchbox/searchbox.component';
+import {BankAccountComponent} from './components/graph/node/bank-account/bank-account.component';
 import {NzDividerModule} from 'ng-zorro-antd/divider';
 import {NzIconModule} from 'ng-zorro-antd/icon';
 import {NzBadgeModule} from 'ng-zorro-antd/badge';
-import {TransactionComponent} from './graph/edge/transcation/transaction.component';
+import {TransactionComponent} from './components/graph/edge/transcation/transaction.component';
 import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
 import {NzDrawerModule} from 'ng-zorro-antd/drawer';
-import {DrawerComponent} from './drawer/drawer.component';
 import {NzFormModule} from 'ng-zorro-antd/form';
 import {NzButtonModule} from 'ng-zorro-antd/button';
+import {NzModalModule} from 'ng-zorro-antd/modal';
+import {ModalComponent} from './components/modal/modal.component';
+import {DrawerComponent} from './components/drawer/drawer.component';
+import {BFSModalComponent} from './components/bfsmodal/bfsmodal.component';
 
 registerLocaleData(en);
 
@@ -41,6 +44,8 @@ registerLocaleData(en);
         BankAccountComponent,
         TransactionComponent,
         DrawerComponent,
+        ModalComponent,
+        BFSModalComponent,
     ],
     imports: [
         BrowserModule,
@@ -59,6 +64,7 @@ registerLocaleData(en);
         NzDrawerModule,
         NzFormModule,
         NzButtonModule,
+        NzModalModule,
     ],
     providers: [{provide: NZ_I18N, useValue: en_US}],
     bootstrap: [AppComponent],

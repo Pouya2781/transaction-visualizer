@@ -1,0 +1,55 @@
+<div class="wrapper">
+    <div class="detail">
+        <span>نام: </span>
+        <span>{{ bankAccount.ownerName + ' ' + bankAccount.ownerFamilyName }}</span>
+    </div>
+    <nz-divider nzType="horizontal"></nz-divider>
+
+    <div class="detail">
+        <span>کد ملی: </span>
+        <span class="line-height">{{ bankAccount.ownerId }}</span>
+    </div>
+    <nz-divider nzType="horizontal"></nz-divider>
+
+    <div class="detail">
+        <span>شماره حساب: </span>
+        <span class="line-height">{{ bankAccount.accountId }}</span>
+    </div>
+    <nz-divider nzType="horizontal"></nz-divider>
+
+    <div class="detail">
+        <span>شعبه: </span>
+        <span [title]="bankAccount.branchName">{{ bankAccount.branchName }}</span>
+    </div>
+    <nz-divider nzType="horizontal"></nz-divider>
+
+    <div class="detail">
+        <span>آدرس شعبه: </span>
+        <span [title]="bankAccount.branchAddress">{{ bankAccount.branchAddress }}</span>
+    </div>
+    <nz-divider nzType="horizontal"></nz-divider>
+
+    <div class="detail">
+        <span>تلفن شعبه: </span>
+        <span [title]="bankAccount.branchTelephone" class="line-height">{{ bankAccount.branchTelephone }}</span>
+    </div>
+    <nz-divider nzType="horizontal"></nz-divider>
+
+    <div class="detail">
+        <span>شماره شبا: </span>
+        <span [title]="bankAccount.sheba" class="line-height">{{ bankAccount.sheba }}</span>
+    </div>
+    <nz-divider nzType="horizontal"></nz-divider>
+
+    <div class="detail">
+        <span>نوع حساب: </span>
+        <span [title]="bankAccount.accountType">{{ bankAccount.accountType }}</span>
+    </div>
+    <nz-divider nzType="horizontal"></nz-divider>
+
+    <div class="detail">
+        <span>شماره کارت: </span>
+        <span [title]="bankAccount.cardId" class="line-height">{{ bankAccount.cardId }}</span>
+    </div>
+    <nz-divider nzType="horizontal"></nz-divider>
+</div>

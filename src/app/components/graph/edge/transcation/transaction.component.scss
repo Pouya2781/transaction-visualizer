@@ -1,0 +1,151 @@
+.wrapper {
+    background-color: #eee;
+    box-shadow: 0 0 5px 0.5px gray;
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+
+    width: 12rem;
+    height: 3rem;
+
+    border-radius: 0.75rem;
+
+    font-size: 1.25rem;
+
+    transition-duration: 400ms;
+    transition-property: width, height;
+    transition-timing-function: ease-in;
+
+    cursor: pointer;
+
+    > div {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-start;
+
+        width: 100%;
+
+        text-align: right;
+
+        &.more-info {
+            opacity: 0;
+
+            overflow: hidden;
+
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: flex-start;
+
+            height: 0;
+
+            transition-duration: 400ms;
+            transition-property: opacity, height;
+            transition-timing-function: ease-in;
+
+            > div {
+                display: flex;
+                flex-direction: row-reverse;
+                justify-content: flex-start;
+
+                width: 100%;
+
+                text-align: right;
+            }
+        }
+
+        .value {
+            padding-inline: 0.2rem;
+
+            font-weight: 600;
+
+            &.line-height {
+                line-height: 1.75;
+            }
+        }
+
+        [nz-icon] {
+            padding-block-start: 0.3rem;
+            padding-inline: 0.5rem;
+
+            font-weight: 600;
+
+            &.line-height {
+                line-height: 1.75;
+            }
+        }
+
+        &.amount {
+            justify-content: center;
+
+            .label {
+                justify-self: flex-start;
+
+                opacity: 0;
+
+                position: relative;
+                left: 5rem;
+
+                width: 2.25rem;
+
+                transition-duration: 400ms;
+                transition-property: opacity;
+                transition-timing-function: ease-in;
+            }
+
+            .icon {
+                justify-self: flex-start;
+
+                opacity: 0;
+
+                position: relative;
+                left: 5rem;
+
+                width: 2.5rem;
+
+                transition-duration: 400ms;
+                transition-property: opacity;
+                transition-timing-function: ease-in;
+            }
+
+            .value {
+                margin-inline-start: 4.5rem;
+            }
+        }
+    }
+
+    &.expand {
+        width: 20rem;
+        height: 14rem;
+
+        div {
+            justify-content: flex-start;
+
+            &.more-info {
+                opacity: 1;
+
+                height: 10.5rem;
+            }
+
+            .label {
+                opacity: 1;
+
+                left: 0;
+            }
+
+            .icon {
+                opacity: 1;
+
+                left: 0;
+            }
+
+            .value {
+                padding-inline: 0.2rem;
+            }
+        }
+    }
+}

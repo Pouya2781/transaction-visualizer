@@ -1,0 +1,172 @@
+<div (contextmenu)="contextMenu($event, menu)" class="all-wrapper" #dynamicNodeView>
+    <div
+        *ngIf="nodeState == NodeState.TINY; else normalNodeRef"
+        [class.selected0]="selectionIndex == 0"
+        [class.selected1]="selectionIndex == 1"
+        [class.current]="bankAccount.accountType == AccountType.CURRENT"
+        [class.deposit]="bankAccount.accountType == AccountType.DEPOSIT"
+        [class.saving]="bankAccount.accountType == AccountType.SAVINGS"
+        class="tiny"
+    >
+        {{ bankAccount.accountId }}
+    </div>
+    <ng-template #normalNodeRef>
+        <nz-badge [nzCount]="transactionCount" [nzOverflowCount]="100">
+            <div
+                [class.selected0]="selectionIndex == 0"
+                [class.selected1]="selectionIndex == 1"
+                [style.border-inline-start-color]="getBorderColor()"
+                class="full-wrapper"
+            >
+                <div class="wrapper">
+                    <span
+                        nz-icon
+                        nzType="question-circle"
+                        nzTheme="outline"
+                        (click)="showDetail()"
+                        class="more-info"
+                        title="اطلاعات بیشتر"
+                    ></span>
+                    <ng-container [ngSwitch]="bankAccount.accountType">
+                        <span
+                            *ngSwitchCase="AccountType.CURRENT"
+                            nz-icon
+                            nzType="wallet"
+                            nzTheme="outline"
+                            title="حساب جاری"
+                        ></span>
+
+                        <span
+                            *ngSwitchCase="AccountType.DEPOSIT"
+                            nz-icon
+                            nzType="bank"
+                            nzTheme="outline"
+                            title="حساب سپرده"
+                        ></span>
+
+                        <span
+                            *ngSwitchCase="AccountType.SAVINGS"
+                            nz-icon
+                            nzType="dollar"
+                            nzTheme="outline"
+                            title="حساب پس انداز"
+                        ></span>
+                    </ng-container>
+
+                    <nz-divider nzType="vertical"></nz-divider>
+
+                    <div class="info">
+                        <div>
+                            <span>:نام</span>
+                            <span>{{ bankAccount.ownerName + ' ' + bankAccount.ownerFamilyName }}</span>
+                        </div>
+
+                        <div>
+                            <span>:کد ملی</span>
+                            <span class="line-height">{{ bankAccount.ownerId }}</span>
+                        </div>
+
+                        <div>
+                            <span>:شماره حساب</span>
+                            <span class="line-height">{{ bankAccount.accountId }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div [class.expand]="nodeState == NodeState.EXPANDED" class="detail">
+                    <nz-divider></nz-divider>
+                    <div>
+                        <span>:شعبه</span>
+                        <span [title]="bankAccount.branchName">{{ bankAccount.branchName }}</span>
+                    </div>
+
+                    <div>
+                        <span>:آدرس شعبه</span>
+                        <span [title]="bankAccount.branchAddress">{{ bankAccount.branchAddress }}</span>
+                    </div>
+
+                    <div>
+                        <span>:تلفن شعبه</span>
+                        <span [title]="bankAccount.branchTelephone" class="line-height">
+                            {{ bankAccount.branchTelephone }}
+                        </span>
+                    </div>
+
+                    <div>
+                        <span>:شماره شبا</span>
+                        <span [title]="bankAccount.sheba" class="line-height">{{ bankAccount.sheba }}</span>
+                    </div>
+
+                    <div>
+                        <span>:نوع حساب</span>
+                        <span [title]="bankAccount.accountType">{{ bankAccount.accountType }}</span>
+                    </div>
+
+                    <div>
+                        <span>:شماره کارت</span>
+                        <span [title]="bankAccount.cardId" class="line-height">{{ bankAccount.cardId }}</span>
+                    </div>
+                </div>
+            </div>
+        </nz-badge>
+    </ng-template>
+</div>
+
+<nz-dropdown-menu #menu="nzDropdownMenu">
+    <ul nz-menu class="context">
+        <li *ngIf="selectionIndex == -1; else deselect" nz-menu-item (click)="onSelect()">
+            <span class="context-item">
+                <span nz-icon nzType="check" nzTheme="outline"></span>
+                <span class="context-text">انتخاب</span>
+            </span>
+        </li>
+
+        <ng-template #deselect>
+            <li nz-menu-item (click)="onDeselect()">
+                <span class="context-item">
+                    <span nz-icon nzType="close" nzTheme="outline"></span>
+                    <span class="context-text">لغو</span>
+                </span>
+            </li>
+        </ng-template>
+
+        <li nz-submenu nzTitle="گسترش">
+            <ul class="context">
+                <li nz-menu-item (click)="onExpand(1)">
+                    <span class="context-item">
+                        <span nz-icon nzType="fullscreen" nzTheme="outline"></span>
+                        <span class="context-text">عمق یک</span>
+                    </span>
+                </li>
+
+                <li nz-menu-item (click)="onExpand(2)">
+                    <span class="context-item">
+                        <span nz-icon nzType="fullscreen" nzTheme="outline"></span>
+                        <span class="context-text">عمق دو</span>
+                    </span>
+                </li>
+
+                <li nz-menu-item (click)="onExpand(3)">
+                    <span class="context-item">
+                        <span nz-icon nzType="fullscreen" nzTheme="outline"></span>
+                        <span class="context-text">عمق سه</span>
+                    </span>
+                </li>
+            </ul>
+        </li>
+
+        <li *ngIf="nodeState == NodeState.TINY" nz-menu-item (click)="onDetail()">
+            <span class="context-item">
+                <span nz-icon nzType="info-circle" nzTheme="outline"></span>
+                <span class="context-text">جزئیات</span>
+            </span>
+        </li>
+
+        <li nz-menu-item (click)="onDelete()">
+            <span class="context-item">
+                <span nz-icon nzType="delete" nzTheme="outline"></span>
+                <span class="context-text">حذف</span>
+            </span>
+        </li>
+    </ul>
+</nz-dropdown-menu>

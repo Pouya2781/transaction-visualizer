@@ -5,14 +5,14 @@ import {ComponentPortal, DomPortalOutlet, ComponentType} from '@angular/cdk/port
     providedIn: 'root',
 })
 export class ComponentCreatorService {
-    constructor(
-        private injector: Injector,
-        private componentFactoryResolver: ComponentFactoryResolver,
-        private applicationRef: ApplicationRef
+    public constructor(
+        private readonly injector: Injector,
+        private readonly componentFactoryResolver: ComponentFactoryResolver,
+        private readonly applicationRef: ApplicationRef
     ) {}
 
     public createComponent<T>(element: Element, component: ComponentType<T>): ComponentRef<T> {
-        const domPortalOutlet = new DomPortalOutlet(
+        const domPortalOutlet: DomPortalOutlet = new DomPortalOutlet(
             element,
             this.componentFactoryResolver,
             this.applicationRef,

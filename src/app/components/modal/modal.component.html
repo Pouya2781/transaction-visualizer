@@ -1,0 +1,111 @@
+<form nz-form dir="rtl" #form="ngForm">
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">نام </nz-form-label>
+        <nz-form-control nzHasFeedback nzErrorTip="نام الزامی است!" [nzSpan]="13">
+            <input nz-input [(ngModel)]="ownerName" name="ownerName" required minlength="3" maxLength="20" />
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">نام خانوادگی </nz-form-label>
+        <nz-form-control nzHasFeedback nzErrorTip="نام خانوادگی الزامی است!" [nzSpan]="13">
+            <input
+                nz-input
+                [(ngModel)]="ownerFamilyName"
+                name="ownerFamilyName"
+                required
+                minlength="5"
+                maxLength="20"
+            />
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">کد ملی </nz-form-label>
+        <nz-form-control nzHasFeedback nzErrorTip="کد ملی الزامی است!" [nzSpan]="13">
+            <input
+                nz-input
+                [(ngModel)]="ownerId"
+                name="ownerId"
+                type="number"
+                required
+                min="1000000000"
+                max="9999999999"
+            />
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">شماره حساب </nz-form-label>
+        <nz-form-control nzHasFeedback nzErrorTip="شماره حساب الزامی است!" [nzSpan]="13">
+            <input
+                nz-input
+                [(ngModel)]="accountId"
+                name="accountId"
+                type="number"
+                required
+                min="1000000000"
+                max="9999999999"
+            />
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">شماره شبا </nz-form-label>
+        <nz-form-control nzHasFeedback nzErrorTip="شماره شبا الزامی است!" [nzSpan]="13">
+            <input nz-input [(ngModel)]="sheba" name="sheba" required pattern="^IR\d{21}$" />
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">شماره کارت </nz-form-label>
+        <nz-form-control nzHasFeedback nzErrorTip="شماره کارت الزامی است!" [nzSpan]="13">
+            <input
+                nz-input
+                [(ngModel)]="cardId"
+                name="cardId"
+                type="number"
+                required
+                min="1000000000000000"
+                max="9999999999999999"
+            />
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">شعبه </nz-form-label>
+        <nz-form-control nzHasFeedback nzErrorTip="شعبه الزامی است!" [nzSpan]="13">
+            <input nz-input [(ngModel)]="branchName" name="branchName" required minlength="3" maxLength="20" />
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">آدرس شعبه </nz-form-label>
+        <nz-form-control nzHasFeedback nzErrorTip="آدرس شعبه الزامی است!" [nzSpan]="13">
+            <input nz-input [(ngModel)]="branchAddress" name="branchAddress" required minlength="3" maxLength="100" />
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">تلفن شعبه </nz-form-label>
+        <nz-form-control nzHasFeedback nzErrorTip="تلفن شعبه الزامی است!" [nzSpan]="13">
+            <input
+                nz-input
+                [(ngModel)]="branchTelephone"
+                name="branchTelephone"
+                type="number"
+                required
+                min="1000000"
+                max="9999999"
+            />
+        </nz-form-control>
+    </nz-form-item>
+</form>
+
+<nz-row>
+    <nz-col nzSpan="18" nzOffset="3">
+        <button nz-button nzBlock nzType="primary" [disabled]="form.invalid" (click)="destroyModal()">
+            ثبت اطلاعات
+        </button>
+    </nz-col>
+</nz-row>
