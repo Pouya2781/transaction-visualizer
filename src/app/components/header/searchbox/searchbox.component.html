@@ -1,10 +1,10 @@
 <nz-input-group [nzSuffix]="suffixIconSearch">
     <input
-        type="text"
-        [(ngModel)]="searchValue"
         nz-input
-        placeholder="شماره حساب را وارد کنید"
+        [(ngModel)]="searchValue"
         (keyup)="onSearch($event)"
+        type="text"
+        placeholder="شماره حساب را وارد کنید"
     />
 </nz-input-group>
 <ng-template #suffixIconSearch>

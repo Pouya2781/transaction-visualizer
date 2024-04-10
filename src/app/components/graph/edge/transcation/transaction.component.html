@@ -1,6 +1,6 @@
-<div class="wrapper" (click)="onClick()" #wrapper *ngIf="visible">
+<div *ngIf="visible" (click)="onClick()" class="wrapper" #wrapper>
     <div class="amount">
-        <span class="icon" nz-icon nzType="dollar" nzTheme="outline" #targetIcon></span>
+        <span nz-icon nzType="dollar" nzTheme="outline" class="icon" #targetIcon></span>
         <span class="label" #targetLabel>:مبلغ</span>
         <span class="line-height value" #targetElement>{{ transaction.amount }}</span>
     </div>

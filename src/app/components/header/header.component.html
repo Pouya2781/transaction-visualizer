@@ -4,14 +4,14 @@
     </div>
 
     <div class="nav">
-        <app-switch (change)="onLiteMode($event)" [defaultValue]="false"></app-switch>
+        <app-switch [defaultValue]="false" (change)="onLiteMode($event)"></app-switch>
 
         <button
-            [disabled]="!bankGraphService.canExecuteRouting"
-            (click)="onExecuteRouting()"
             nz-button
             nzType="primary"
             nzSize="default"
+            [disabled]="!bankGraphService.canExecuteRouting"
+            (click)="onExecuteRouting()"
         >
             مسیریابی
         </button>

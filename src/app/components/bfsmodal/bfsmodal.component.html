@@ -1,8 +1,8 @@
 <form nz-form dir="rtl">
     <nz-form-item>
         <nz-form-label [nzSpan]="5">طول مسیر</nz-form-label>
-        <nz-form-control nzHasFeedback [nzSpan]="13" nzErrorTip="طول مسیر معتبر نیست!">
-            <input nz-input type="number" min="1" max="7" [(ngModel)]="routeLength" name="required" required />
+        <nz-form-control nzHasFeedback nzErrorTip="طول مسیر معتبر نیست!" [nzSpan]="13">
+            <input nz-input [(ngModel)]="routeLength" name="required" type="number" min="1" max="7" required />
         </nz-form-control>
     </nz-form-item>
 </form>

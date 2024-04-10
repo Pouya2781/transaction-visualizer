@@ -1,58 +1,60 @@
-<div class="all-wrapper" #dynamicNodeView (contextmenu)="contextMenu($event, menu)">
+<div (contextmenu)="contextMenu($event, menu)" class="all-wrapper" #dynamicNodeView>
     <div
-        class="tiny"
+        *ngIf="nodeState == NodeState.TINY; else normalNodeRef"
         [class.selected0]="selectionIndex == 0"
         [class.selected1]="selectionIndex == 1"
         [class.current]="bankAccount.accountType == AccountType.CURRENT"
         [class.deposit]="bankAccount.accountType == AccountType.DEPOSIT"
         [class.saving]="bankAccount.accountType == AccountType.SAVINGS"
-        *ngIf="nodeState == NodeState.TINY; else normalNodeRef"
+        class="tiny"
     >
         {{ bankAccount.accountId }}
     </div>
     <ng-template #normalNodeRef>
         <nz-badge [nzCount]="transactionCount" [nzOverflowCount]="100">
             <div
-                class="full-wrapper"
                 [class.selected0]="selectionIndex == 0"
                 [class.selected1]="selectionIndex == 1"
                 [style.border-inline-start-color]="getBorderColor()"
+                class="full-wrapper"
             >
                 <div class="wrapper">
                     <span
-                        (click)="showDetail()"
-                        title="اطلاعات بیشتر"
-                        class="more-info"
                         nz-icon
                         nzType="question-circle"
                         nzTheme="outline"
+                        (click)="showDetail()"
+                        class="more-info"
+                        title="اطلاعات بیشتر"
                     ></span>
                     <ng-container [ngSwitch]="bankAccount.accountType">
                         <span
-                            title="حساب جاری"
                             *ngSwitchCase="AccountType.CURRENT"
                             nz-icon
                             nzType="wallet"
                             nzTheme="outline"
+                            title="حساب جاری"
                         ></span>
 
                         <span
-                            title="حساب سپرده"
                             *ngSwitchCase="AccountType.DEPOSIT"
                             nz-icon
                             nzType="bank"
                             nzTheme="outline"
+                            title="حساب سپرده"
                         ></span>
 
                         <span
-                            title="حساب پس انداز"
                             *ngSwitchCase="AccountType.SAVINGS"
                             nz-icon
                             nzType="dollar"
                             nzTheme="outline"
+                            title="حساب پس انداز"
                         ></span>
                     </ng-container>
+
                     <nz-divider nzType="vertical"></nz-divider>
+
                     <div class="info">
                         <div>
                             <span>:نام</span>
@@ -70,7 +72,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="detail" [class.expand]="nodeState == NodeState.EXPANDED">
+
+                <div [class.expand]="nodeState == NodeState.EXPANDED" class="detail">
                     <nz-divider></nz-divider>
                     <div>
                         <span>:شعبه</span>
@@ -84,14 +87,14 @@
 
                     <div>
                         <span>:تلفن شعبه</span>
-                        <span class="line-height" [title]="bankAccount.branchTelephone">
+                        <span [title]="bankAccount.branchTelephone" class="line-height">
                             {{ bankAccount.branchTelephone }}
                         </span>
                     </div>
 
                     <div>
                         <span>:شماره شبا</span>
-                        <span class="line-height" [title]="bankAccount.sheba">{{ bankAccount.sheba }}</span>
+                        <span [title]="bankAccount.sheba" class="line-height">{{ bankAccount.sheba }}</span>
                     </div>
 
                     <div>
@@ -101,7 +104,7 @@
 
                     <div>
                         <span>:شماره کارت</span>
-                        <span class="line-height" [title]="bankAccount.cardId">{{ bankAccount.cardId }}</span>
+                        <span [title]="bankAccount.cardId" class="line-height">{{ bankAccount.cardId }}</span>
                     </div>
                 </div>
             </div>
@@ -111,20 +114,22 @@
 
 <nz-dropdown-menu #menu="nzDropdownMenu">
     <ul nz-menu class="context">
-        <li nz-menu-item *ngIf="selectionIndex == -1; else deselect" (click)="onSelect()">
+        <li *ngIf="selectionIndex == -1; else deselect" nz-menu-item (click)="onSelect()">
             <span class="context-item">
                 <span nz-icon nzType="check" nzTheme="outline"></span>
                 <span class="context-text">انتخاب</span>
             </span>
         </li>
+
         <ng-template #deselect>
-            <li (click)="onDeselect()" nz-menu-item>
+            <li nz-menu-item (click)="onDeselect()">
                 <span class="context-item">
                     <span nz-icon nzType="close" nzTheme="outline"></span>
                     <span class="context-text">لغو</span>
                 </span>
             </li>
         </ng-template>
+
         <li nz-submenu nzTitle="گسترش">
             <ul class="context">
                 <li nz-menu-item (click)="onExpand(1)">
@@ -150,7 +155,7 @@
             </ul>
         </li>
 
-        <li nz-menu-item *ngIf="nodeState == NodeState.TINY" (click)="onDetail()">
+        <li *ngIf="nodeState == NodeState.TINY" nz-menu-item (click)="onDetail()">
             <span class="context-item">
                 <span nz-icon nzType="info-circle" nzTheme="outline"></span>
                 <span class="context-text">جزئیات</span>
